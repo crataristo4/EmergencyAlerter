@@ -1,0 +1,44 @@
+<resources>
+    <dimen name="eightDp">8dp</dimen>
+    <dimen name="fourDp">4dp</dimen>
+    <dimen name="sixteenDp">16dp</dimen>
+    <dimen name="twentyFourSp">24sp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="hundredDp">100dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="twentyFourDp">24dp</dimen>
+    <dimen name="eightyDp">80dp</dimen>
+    <dimen name="thirtyDp">30dp</dimen>
+    <dimen name="fortyDp">40dp</dimen>
+    <dimen name="TwoHundredDp">200dp</dimen>
+    <dimen name="ThreeHundredDp">300dp</dimen>
+    <dimen name="imageIconSize">80dp</dimen>
+    <dimen name="OneFiftyDp">150dp</dimen>
+    <dimen name="app_bar_height">300dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+
+    <dimen name="space_min">4dp</dimen>
+    <dimen name="space_small">8dp</dimen>
+    <dimen name="space_avg">16dp</dimen>
+    <dimen name="space_big">32dp</dimen>
+
+    <dimen name="padding_min">4dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_avg">10dp</dimen>
+    <dimen name="padding_big">32dp</dimen>
+
+    <dimen name="margin_min">4dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_avg">16dp</dimen>
+    <dimen name="margin_big">32dp</dimen>
+    <dimen name="margin_huge">64dp</dimen>
+
+    <dimen name="user_icon_width">36dp</dimen>
+    <dimen name="user_icon_height">36dp</dimen>
+
+    <dimen name="card_corner_radius">4dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+
+</resources>

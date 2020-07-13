@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Emergency Alerter</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_alerts">Alerts</string>
+    <string name="title_contacts">Contacts</string>
+    <string name="capture">Capture</string>
+    <string name="recordAudio">Record audio</string>
+    <string name="recordVideo">Record video</string>
+    <string name="helpText">Do you find something suspicious , a crime , emergency or do you need help?</string>
+    <string name="cancel">Cancel</string>
+</resources>

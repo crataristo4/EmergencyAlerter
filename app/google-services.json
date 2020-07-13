@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "742528769890",
+    "firebase_url": "https://emergerncy-alerter.firebaseio.com",
+    "project_id": "emergerncy-alerter",
+    "storage_bucket": "emergerncy-alerter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:742528769890:android:9aea14a180287d1ffed63b",
+        "android_client_info": {
+          "package_name": "com.emergency.alerter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "742528769890-v9i6e0g2c0nfvtaqidafuqabvkiopbln.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKQFnTpAZUm3lYgS88yGzfePKQ6UNT5e0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "742528769890-v9i6e0g2c0nfvtaqidafuqabvkiopbln.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

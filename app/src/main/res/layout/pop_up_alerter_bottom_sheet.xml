@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/sixteenDp"
+        android:includeFontPadding="true"
+        android:padding="@dimen/eightDp"
+        android:text="@string/helpText"
+        android:textColor="@color/colorRed"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/divider5"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="@dimen/eightDp"
+        android:background="@color/colorAsh" />
+
+    <ListView
+        android:id="@+id/alertList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:filterTouchesWhenObscured="true"
+        android:fitsSystemWindows="true"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true" />
+
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorRed"
+        android:text="@string/cancel"
+        android:textAlignment="center"
+        android:textColor="@color/white" />
+
+</LinearLayout>
+</layout>
