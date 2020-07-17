@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "742528769890-rb766d6ibkjuo8uhl4sve0qda9aa0hdg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.emergency.alerter",
+            "certificate_hash": "121eaab94eddbfa943e99be4569dcefbe1f75093"
+          }
+        },
+        {
           "client_id": "742528769890-v9i6e0g2c0nfvtaqidafuqabvkiopbln.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -9,4 +9,5 @@
     <string name="recordVideo">Record video</string>
     <string name="helpText">Do you find something suspicious , a crime , emergency or do you need help?</string>
     <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
 </resources>
