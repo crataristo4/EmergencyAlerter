@@ -29,7 +29,7 @@ ActivityMainBinding activityMainBinding;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
        activityMainBinding = DataBindingUtil.setContentView(this,R.layout.activity_main);
-     /*   BottomNavigationView navView = activityMainBinding.navView;
+        BottomNavigationView navView = activityMainBinding.navView;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -37,30 +37,9 @@ ActivityMainBinding activityMainBinding;
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);*/
-
-        cameraView = activityMainBinding.camera;
-
-        cameraView.setLifecycleOwner(this);
-
-        cameraView.addCameraListener(new CameraListener() {
-            @Override
-            public void onPictureTaken(@NonNull PictureResult result) {
-                super.onPictureTaken(result);
+        NavigationUI.setupWithNavController(navView, navController);
 
 
-
-                // Access the raw data if needed.
-                byte[] data = result.getData();
-                Log.i( "onPictureTaken: ", String.valueOf(data.length));
-            }
-
-            @Override
-            public void onVideoTaken(@NonNull VideoResult result) {
-                super.onVideoTaken(result);
-            }
-        });
-        cameraView.takePicture();
     }
 
     @Override

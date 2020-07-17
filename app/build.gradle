@@ -97,4 +97,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0'
     api 'com.otaliastudios:cameraview:2.6.3'
 
+    // dexter runtime permissions
+    implementation 'com.karumi:dexter:4.2.0'
+
 }
