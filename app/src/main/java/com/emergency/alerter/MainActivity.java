@@ -46,10 +46,10 @@ ActivityMainBinding activityMainBinding;
     protected void onStart() {
         super.onStart();
 
-           /* PopUpAlerter popUpAlerter = new PopUpAlerter();
+        PopUpAlerter popUpAlerter = new PopUpAlerter();
             popUpAlerter.setCancelable(false);
             popUpAlerter.show(getSupportFragmentManager(),"alert");
 
-*/
+
     }
 }
