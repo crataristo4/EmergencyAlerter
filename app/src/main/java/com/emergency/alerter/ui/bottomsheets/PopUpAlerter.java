@@ -3,6 +3,7 @@ package com.emergency.alerter.ui.bottomsheets;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -217,12 +218,17 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
 
             switch (position) {
                 case 0:
-                    DisplayViewUI.displayToast(getActivity(),"opening camera");
+                    /*DisplayViewUI.displayToast(getActivity(),"opening camera");
                     dismiss();
                     Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if (captureIntent.resolveActivity(requireActivity().getPackageManager()) != null){
 
                         startActivityForResult(captureIntent, AppConstants.CAMERA_REQUEST_CODE);
+                    }*/
+                    if (CameraUtils.checkPermissions(requireContext())) {
+                        captureImage();
+                    } else {
+                        requestCameraPermission(AppConstants.MEDIA_TYPE_IMAGE);
                     }
                     break;
                 case 1:
@@ -357,5 +363,15 @@ dismiss();
                         .show();
             }
         }
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 }
