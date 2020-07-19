@@ -10,7 +10,6 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.Settings;
-
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
@@ -18,7 +17,7 @@ import androidx.core.content.FileProvider;
 
 import com.emergency.alerter.BuildConfig;
 import com.emergency.alerter.CameraActivity;
-import com.emergency.alerter.MainActivity;
+import com.emergency.alerter.R;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -35,9 +34,7 @@ public class CameraUtils {
         // ScanFile so it will be appeared on Gallery
         MediaScannerConnection.scanFile(context,
                 new String[]{filePath}, null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-                    public void onScanCompleted(String path, Uri uri) {
-                    }
+                (path, uri) -> {
                 });
     }
 
@@ -66,14 +63,10 @@ public class CameraUtils {
      * android:required="true" is used in manifest file
      */
     public static boolean isDeviceSupportCamera(Context context) {
-        if (context.getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_CAMERA)) {
-            // this device has a camera
-            return true;
-        } else {
-            // no camera on this device
-            return false;
-        }
+        // this device has a camera
+        // no camera on this device
+        return context.getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_CAMERA);
     }
 
     /**
@@ -105,8 +98,8 @@ public class CameraUtils {
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.e(CameraActivity.GALLERY_DIRECTORY_NAME, "Oops! Failed create "
-                        + CameraActivity.GALLERY_DIRECTORY_NAME + " directory");
+                Log.e(CameraActivity.GALLERY_DIRECTORY_NAME, R.string.oops
+                        + CameraActivity.GALLERY_DIRECTORY_NAME + R.string.directory);
                 return null;
             }
         }

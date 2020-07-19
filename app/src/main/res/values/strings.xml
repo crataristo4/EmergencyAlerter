@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Emergency Alerter</string>
+    <string name="app_name">Dalilu</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_alerts">Alerts</string>
@@ -14,4 +14,14 @@
     <string name="preview_description">Image and Video preview will appear here</string>
     <string name="btn_take_picture">Take Picture</string>
     <string name="btn_record_video">Record Video</string>
+    <string name="oops">Oops! Failed create </string>
+    <string name="directory"> directory</string>
+    <string name="captureCanceled">Capturing image cancelled</string>
+    <string name="failedToCapture">Sorry! Failed to capture image</string>
+    <string name="uploadingPleaseWait">uploading image please wait…</string>
+    <string name="perRequired">Permissions required!</string>
+    <string name="camPerm">Camera needs few permissions to work properly. Grant them in settings.</string>
+    <string name="goToSettings">GOTO SETTINGS</string>
+    <string name="cancel">Cancel</string>
+    <string name="comments">Comments</string>
 </resources>

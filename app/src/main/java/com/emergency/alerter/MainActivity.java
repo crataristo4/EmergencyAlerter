@@ -3,14 +3,11 @@ package com.emergency.alerter;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -37,9 +34,7 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -181,17 +176,11 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showPermissionsAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Permissions required!")
-                .setMessage("Camera needs few permissions to work properly. Grant them in settings.")
-                .setPositiveButton("GOTO SETTINGS", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        CameraUtils.openSettings(MainActivity.this);
-                    }
-                })
-                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+        builder.setTitle(R.string.perRequired)
+                .setMessage(R.string.camPerm)
+                .setPositiveButton(R.string.goToSettings, (dialog, which) -> CameraUtils.openSettings(MainActivity.this))
+                .setNegativeButton(R.string.cancel, (dialog, which) -> {
 
-                    }
                 }).show();
     }
 
@@ -219,12 +208,12 @@ public class MainActivity extends AppCompatActivity {
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // user cancelled Image capture
                 Toast.makeText(MainActivity.this,
-                        "Capturing image cancelled", Toast.LENGTH_SHORT)
+                        R.string.captureCanceled, Toast.LENGTH_SHORT)
                         .show();
             } else {
                 // failed to capture image
                 Toast.makeText(MainActivity.this,
-                        "Sorry! Failed to capture image", Toast.LENGTH_SHORT)
+                        R.string.failedToCapture, Toast.LENGTH_SHORT)
                         .show();
             }
         } else if (requestCode == AppConstants.CAMERA_CAPTURE_VIDEO_REQUEST_CODE) {
@@ -251,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void uploadImageToServer(Uri imageUri) {
         //display loading
-        pd = DisplayViewUI.displayProgress(MainActivity.this, "uploading image please wait...");
+        pd = DisplayViewUI.displayProgress(MainActivity.this, getString(R.string.uploadingPleaseWait));
         pd.show();
 
         //upload photo to server

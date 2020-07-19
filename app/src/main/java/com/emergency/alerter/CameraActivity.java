@@ -1,8 +1,5 @@
 package com.emergency.alerter;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.emergency.alerter.utils.CameraUtils;
 import com.karumi.dexter.Dexter;
@@ -43,7 +43,7 @@ public class CameraActivity extends AppCompatActivity {
     public static final int BITMAP_SAMPLE_SIZE = 8;
 
     // Gallery directory name to store the images or videos
-    public static final String GALLERY_DIRECTORY_NAME = "Emergency Alert";
+    public static final String GALLERY_DIRECTORY_NAME = "Dalilu";
 
     // Image and Video file extensions
     public static final String IMAGE_EXTENSION = "jpg";
