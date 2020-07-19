@@ -8,10 +8,22 @@
     <string name="recordAudio">Enregistrer l\'audio</string>
     <string name="recordVideo">Enregistrer la video</string>
     <string name="helpText">Trouvez-vous quelque chose suspecte?</string>
-    <string name="cancel">Annueler</string>
+    <string name="cancel">Annulez</string>
     <string name="add">Ajouter</string>
     <string name="action_settings">Parametres</string>
     <string name="preview_description">Les images et videos vues apparaitront ici</string>
     <string name="btn_take_picture">Prendre un photo</string>
     <string name="btn_record_video">Enregistrer un video</string>
+    <string name="oops">Houp-la!</string>
+    <string name="directory">repertoire</string>
+    <string name="captureCanceled">Capture d\'ecran annullee</string>
+    <string name="failedToCapture">Desole! Echec de la capture d\'image</string>
+    <string name="uploadingPleaseWait">Attendez,transfert en cours...</string>
+    <string name="perRequired">Autorisation requise!</string>
+    <string name="camPerm">La camera a besoin de certaines autorisations pour fonctionner correctement. Accordez lui les dans les parametres</string>
+    <string name="goToSettings">Allez dans les parametres</string>
+    <string name="comments">Commentaires</string>
+    <string name="vidRecCanceled">Enregistrement de la video annullee</string>
+    <string name="sorryVidFailed">Desole! Echec d\'enregistrer la video</string>
+    <string name="title_activity_maps">Carte</string>
 </resources>
