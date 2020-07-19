@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Emergency Alerter</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_alerts">Alerts</string>
+    <string name="app_name">Alerte d\'Urgence</string>
+    <string name="title_home">Accueil</string>
+    <string name="title_dashboard">Tableau de Bord</string>
+    <string name="title_alerts">Alertes</string>
     <string name="title_contacts">Contacts</string>
 </resources>
