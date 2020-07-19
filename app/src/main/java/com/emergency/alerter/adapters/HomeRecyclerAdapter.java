@@ -3,7 +3,6 @@ package com.emergency.alerter.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,9 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.emergency.alerter.CommentsActivity;
+import com.emergency.alerter.Dalilu;
 import com.emergency.alerter.R;
 import com.emergency.alerter.databinding.ImageTypeBinding;
 import com.emergency.alerter.databinding.ItemLoadingBinding;
@@ -104,7 +105,11 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(((VideoTypeViewHolder) holder).videoTypeBinding.imgUserPhoto);
 
-                    ((VideoTypeViewHolder) holder).videoView.setVideoURI(Uri.parse(object.getVideoUrl()));
+                    HttpProxyCacheServer proxy = Dalilu.getProxy(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getContext());
+                    String proxyUrl = proxy.getProxyUrl(object.getVideoUrl());
+
+
+                    ((VideoTypeViewHolder) holder).videoView.setVideoPath(proxyUrl);
                     ((VideoTypeViewHolder) holder).videoView.requestFocusFromTouch();
 
                    /* MediaController mediaController = new MediaController(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getContext());

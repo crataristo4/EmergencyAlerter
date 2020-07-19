@@ -28,4 +28,25 @@
     <string name="sorryVidFailed">Sorry! Failed to record video</string>
     <string name="title_activity_maps">Map</string>
     <string name="play_and_pause_button">Play and pause button</string>
+    <string name="delete">Delete</string>
+    <string name="done">Done</string>
+    <string name="reset">Reset</string>
+    <string name="cancel">Cancel</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
+    <string name="log_in">Log In</string>
+    <string name="phoneNumber">Phone Number</string>
+    <string name="confirmCode">Confirm code</string>
+    <string name="verify">Verify</string>
+    <string name="phoneRequired">phone number might be required for follow up</string>
+    <string name="selectLanguage">Please select language</string>
+    <string name="plsWait">verifying please wait</string>
+    <string name="noInternet">No internet.Internet connection is needed to continue.If problem still exist contact your service provider</string>
+    <string name="resend_code">Resend code</string>
+
+    <string-array name="selectLanguage">
+        <item>Please select language</item>
+        <item>English</item>
+        <item>French</item>
+    </string-array>
 </resources>
