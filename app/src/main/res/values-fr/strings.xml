@@ -26,4 +26,23 @@
     <string name="vidRecCanceled">Enregistrement de la video annullee</string>
     <string name="sorryVidFailed">Desole! Echec d\'enregistrer la video</string>
     <string name="title_activity_maps">Carte</string>
+    <string name="reportSuccess">Information transmis avec succes</string>
+    <string name="play_and_pause_button">Bouton Jouer and Pause</string>
+    <string name="delete">Supprimer</string>
+    <string name="done">Termine</string>
+    <string name="reset">Reinitialiser</string>
+    <string name="next">Suivant</string>
+    <string name="back">Arriere</string>
+    <string name="log_in">Ouvrir la session</string>
+    <string name="phoneNumber">Numero de Telephone</string>
+    <string name="confirmCode">Confirmer le code</string>
+    <string name="verify">Verifier</string>
+    <string name="phoneRequired">Le numero de telephone est demande pour continuer</string>
+    <string name="selectLanguage">Choisissez la langue s\'il vous plait</string>
+    <string name="plsWait">Verification en cours. Attendez s\'il vous plait</string>
+    <string name="noInternet">Aucune connexion internet n\'est necessaire. Contactez votre fournisseur de service si le probleme persiste</string>
+    <string name="resend_code">Renvoyez le code</string>
+    <string name="codeShort">Code trop court.</string>
+    <string name="phoneReq">Numero de telephone obligatoire</string>
+    <string name="verCode">Verifiez. Le code est envoye par sms!!!!!</string>
 </resources>

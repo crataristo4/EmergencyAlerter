@@ -40,7 +40,7 @@
     <string name="phoneRequired">phone number might be required for follow up</string>
     <string name="selectLanguage">Please select language</string>
     <string name="plsWait">verifying please wait</string>
-    <string name="noInternet">No internet.Internet connection is needed to continue.If problem still exist contact your service provider</string>
+    <string name="noInternet">No internet connection is needed to continue.If problem still exist contact your service provider</string>
     <string name="resend_code">Resend code</string>
     <string name="codeShort">code too short</string>
     <string name="phoneReq">phone number is required</string>
