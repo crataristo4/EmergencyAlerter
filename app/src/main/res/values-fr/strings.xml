@@ -41,7 +41,7 @@
     <string name="selectLanguage">Choisissez la langue s\'il vous plait</string>
     <string name="plsWait">Verification en cours. Attendez s\'il vous plait</string>
     <string name="noInternet">Aucune connexion internet n\'est necessaire. Contactez votre fournisseur de service si le probleme persiste</string>
-    <string name="resend_code">Renvoyez le code</string>
+    <string name="resend_code">Renvoyez le !!code!!</string>
     <string name="codeShort">Code trop court.</string>
     <string name="phoneReq">Numero de telephone obligatoire</string>
     <string name="verCode">Verifiez. Le code est envoye par sms!!!!!</string>
