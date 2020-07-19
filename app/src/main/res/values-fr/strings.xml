@@ -4,4 +4,14 @@
     <string name="title_dashboard">Tableau de Bord</string>
     <string name="title_alerts">Alertes</string>
     <string name="title_contacts">Contacts</string>
+    <string name="capture">Capture</string>
+    <string name="recordAudio">Enregistrer l\'audio</string>
+    <string name="recordVideo">Enregistrer la video</string>
+    <string name="helpText">Trouvez-vous quelque chose suspecte?</string>
+    <string name="cancel">Annueler</string>
+    <string name="add">Ajouter</string>
+    <string name="action_settings">Parametres</string>
+    <string name="preview_description">Les images et videos vues apparaitront ici</string>
+    <string name="btn_take_picture">Prendre un photo</string>
+    <string name="btn_record_video">Enregistrer un video</string>
 </resources>
