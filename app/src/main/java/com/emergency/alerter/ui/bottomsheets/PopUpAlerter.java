@@ -47,13 +47,11 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class PopUpAlerter extends BottomSheetDialogFragment {
+    private static String imageStoragePath;
     PopUpAlerterBottomSheetBinding popUpAlerterBottomSheetBinding;
     private Uri imageUri = null;
     private StorageReference imageStorageRef;
     private DatabaseReference dbRef;
-    private static String imageStoragePath;
-
-
 
     /**
      * Capturing Camera Image will launch camera app requested image capture
@@ -174,7 +172,6 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         initViews();
 
 
-
     }
 
     private void initViews() {
@@ -242,7 +239,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                     break;
 
                 case 2:
-                    DisplayViewUI.displayToast(getActivity(),"recording audio");
+                    DisplayViewUI.displayToast(getActivity(), "recording audio");
                     dismiss();
 
                     break;
@@ -263,11 +260,11 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         requireActivity();
-        if (requestCode == AppConstants.CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        if (requestCode == AppConstants.CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
 
             imageUri = data != null ? data.getData() : null;
 
-          ProgressDialog pd =  DisplayViewUI.displayProgress(requireActivity(),"uploading");
+            ProgressDialog pd = DisplayViewUI.displayProgress(requireActivity(), "uploading");
             pd.show();
             StorageReference filePath = imageStorageRef.child("alertImages").child(Objects.requireNonNull(imageUri.getLastPathSegment()));
 
@@ -275,7 +272,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                 if (!task.isSuccessful()) {
                     pd.dismiss();
 
-dismiss();
+                    dismiss();
                 }
                 return filePath.getDownloadUrl();
 
@@ -284,11 +281,10 @@ dismiss();
 
                     Uri downLoadUri = task.getResult();
                     assert downLoadUri != null;
-               String     getImageUploadUri = downLoadUri.toString();
-                    Log.i( "Url: ", getImageUploadUri + " image path " + imageUri.getLastPathSegment());
+                    String getImageUploadUri = downLoadUri.toString();
+                    Log.i("Url: ", getImageUploadUri + " image path " + imageUri.getLastPathSegment());
 
                     String documentId = UUID.randomUUID().toString();
-
 
 
                     //fire store cloud store

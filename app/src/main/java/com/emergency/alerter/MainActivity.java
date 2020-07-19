@@ -41,10 +41,10 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding activityMainBinding;
-    private StorageReference imageStorageRef,filePath;
-    private DatabaseReference dbRef;
     private static String imageStoragePath;
+    private ActivityMainBinding activityMainBinding;
+    private StorageReference imageStorageRef, filePath;
+    private DatabaseReference dbRef;
     private ProgressDialog pd;
 
     @Override
@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == AppConstants.CAMERA_CAPTURE_IMAGE_REQUEST_CODE ) {
+        if (requestCode == AppConstants.CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
 
 
@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
                 // Refreshing the gallery
                 CameraUtils.refreshGallery(MainActivity.this, imageStoragePath);
 
-                 filePath = imageStorageRef.child(UUID.randomUUID().toString());
+                filePath = imageStorageRef.child(UUID.randomUUID().toString());
 
                 Uri imageUri = CameraUtils.getOutputMediaFileUri(MainActivity.this, new File(imageStoragePath));
 
@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
                 Uri downLoadUri = task.getResult();
                 assert downLoadUri != null;
                 String getImageUploadUri = downLoadUri.toString();
-                Log.i("Url: ", getImageUploadUri );
+                Log.i("Url: ", getImageUploadUri);
 
                 String documentId = UUID.randomUUID().toString();
 

@@ -23,12 +23,13 @@ public class LanguageManager {
 
 
     /**
-     *  SharedPreferences Key
+     * SharedPreferences Key
      */
     private static final String LANGUAGE_KEY = "language_key";
 
     /**
      * set current pref locale
+     *
      * @param mContext
      * @return
      */
@@ -38,6 +39,7 @@ public class LanguageManager {
 
     /**
      * Set new Locale with context
+     *
      * @param mContext
      * @param mLocaleKey
      * @return
@@ -49,6 +51,7 @@ public class LanguageManager {
 
     /**
      * Get saved Locale from SharedPreferences
+     *
      * @param mContext current context
      * @return current locale key by default return english locale
      */
@@ -59,8 +62,9 @@ public class LanguageManager {
     }
 
     /**
-     *  set pref key
-      * @param mContext
+     * set pref key
+     *
+     * @param mContext
      * @param localeKey
      */
     private static void setLanguagePref(Context mContext, String localeKey) {
@@ -70,6 +74,7 @@ public class LanguageManager {
 
     /**
      * update resource
+     *
      * @param context
      * @param language
      * @return
@@ -86,6 +91,7 @@ public class LanguageManager {
 
     /**
      * get current locale
+     *
      * @param res
      * @return
      */

@@ -3,10 +3,12 @@ package com.emergency.alerter.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -102,6 +104,16 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             .error(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getResources().getDrawable(R.drawable.photo))
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(((VideoTypeViewHolder) holder).videoTypeBinding.imgUserPhoto);
+
+                    ((VideoTypeViewHolder) holder).videoView.setVideoURI(Uri.parse(object.getVideoUrl()));
+
+                    ((VideoTypeViewHolder) holder).videoView.setOnPreparedListener(mp -> {
+
+                        MediaController mediaController = new MediaController(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getContext());
+                        mediaController.setAnchorView(((VideoTypeViewHolder) holder).videoView);
+                        ((VideoTypeViewHolder) holder).videoView.setMediaController(mediaController);
+
+                    });
 
 
                     break;
