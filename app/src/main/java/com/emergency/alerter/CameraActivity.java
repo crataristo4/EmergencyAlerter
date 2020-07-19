@@ -1,8 +1,5 @@
 package com.emergency.alerter;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.emergency.alerter.utils.CameraUtils;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -29,26 +29,20 @@ import java.io.File;
 import java.util.List;
 
 public class CameraActivity extends AppCompatActivity {
-    // Activity request codes
-    private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
-
     // key to store image path in savedInstance state
     public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
-
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
-
     // Bitmap sampling size
     public static final int BITMAP_SAMPLE_SIZE = 8;
-
     // Gallery directory name to store the images or videos
-    public static final String GALLERY_DIRECTORY_NAME = "Emergency Alert";
-
+    public static final String GALLERY_DIRECTORY_NAME = "Dalilu";
     // Image and Video file extensions
     public static final String IMAGE_EXTENSION = "jpg";
     public static final String VIDEO_EXTENSION = "mp4";
-
+    // Activity request codes
+    private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
+    private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
     private static String imageStoragePath;
 
     private TextView txtDescription;

@@ -1,7 +1,6 @@
 package com.emergency.alerter.ui.dashboard;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +12,6 @@ import androidx.fragment.app.Fragment;
 
 import com.emergency.alerter.R;
 import com.emergency.alerter.databinding.FragmentAlertsBinding;
-import com.otaliastudios.cameraview.CameraListener;
-import com.otaliastudios.cameraview.CameraView;
-import com.otaliastudios.cameraview.PictureResult;
-import com.otaliastudios.cameraview.VideoResult;
 
 public class AlertsFragment extends Fragment {
 
@@ -24,7 +19,7 @@ public class AlertsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        fragmentAlertsBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_alerts, container, false);
+        fragmentAlertsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_alerts, container, false);
 
         return fragmentAlertsBinding.getRoot();
     }

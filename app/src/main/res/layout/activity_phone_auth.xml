@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.auth.PhoneAuthActivity">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ProgressBar
+                android:id="@+id/progressBarVerify"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:indeterminate="true"
+                android:indeterminateDuration="@android:integer/config_shortAnimTime"
+                android:indeterminateOnly="false"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constrainLayoutConfrimNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/progressBarVerify">
+
+                <Button
+                    android:id="@+id/btnRegisterPhoneNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/curvedbuttonstyle"
+                    android:text="@string/done"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="normal"
+
+                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPhone"
+                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutPhone"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhone" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayoutPhone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/eightDp"
+                    android:textColorHint="@color/black"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusBottomEnd="@dimen/twentyFourDp"
+                    app:boxCornerRadiusBottomStart="@dimen/twentyFourDp"
+                    app:boxCornerRadiusTopEnd="@dimen/twentyFourDp"
+                    app:boxCornerRadiusTopStart="@dimen/twentyFourDp"
+                    app:boxStrokeColor="@color/purple"
+                    app:helperText="@string/phoneRequired"
+                    app:helperTextTextColor="@color/black"
+                    app:layout_constraintEnd_toEndOf="@+id/ccp"
+                    app:layout_constraintStart_toStartOf="@+id/ccp"
+                    app:layout_constraintTop_toBottomOf="@+id/ccp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:hint="@string/phoneNumber"
+                        android:inputType="phone"
+                        android:maxLength="11"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true" />
+
+                    <requestFocus />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.hbb20.CountryCodePicker
+                    android:id="@+id/ccp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    app:ccpDialog_showFlag="true"
+                    app:ccp_defaultLanguage="ENGLISH"
+                    app:ccp_defaultNameCode="GH"
+                    app:ccp_showFlag="true"
+                    app:ccp_showFullName="true"
+                    app:ccp_showNameCode="true"
+                    app:ccp_textGravity="CENTER"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:entries="@array/selectLanguage"
+                    android:gravity="center"
+                    android:padding="@dimen/eightDp"
+                    android:textAlignment="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnRegisterPhoneNumber" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constrainLayoutVerifyPhone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constrainLayoutConfrimNumber"
+                app:layout_constraintVertical_bias="0.0">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayoutConfirmCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/eightDp"
+                    android:layout_marginTop="8dp"
+                    android:textColorHint="#7B1FA2"
+                    android:visibility="visible"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusBottomEnd="@dimen/twentyFourDp"
+                    app:boxCornerRadiusBottomStart="@dimen/twentyFourDp"
+                    app:boxCornerRadiusTopEnd="@dimen/twentyFourDp"
+                    app:boxCornerRadiusTopStart="@dimen/twentyFourDp"
+                    app:boxStrokeColor="@color/purple"
+                    app:helperText="@string/verCode"
+                    app:helperTextTextColor="@color/purple"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:hint="@string/confirmCode"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        tools:layout_editor_absoluteX="9dp"
+                        tools:layout_editor_absoluteY="203dp" />
+
+                    <requestFocus />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <TextView
+                    android:id="@+id/btnVerify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/verify"
+                    android:textColor="@color/purple"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutConfirmCode"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/txtResendCode"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutConfirmCode" />
+
+                <TextView
+                    android:id="@+id/txtResendCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/resend_code"
+                    android:textColor="@color/colorRed"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnVerify"
+                    app:layout_constraintEnd_toStartOf="@+id/btnVerify"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutConfirmCode"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutConfirmCode"
+                    app:layout_constraintVertical_bias="1.0" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </ScrollView>
+</layout>
+
+

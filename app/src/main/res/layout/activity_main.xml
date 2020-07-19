@@ -4,113 +4,112 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:background="?android:attr/windowBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
-
-    <fragment
-        android:id="@+id/nav_host_fragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@id/nav_view"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/mobile_navigation" />
+        android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_anchorGravity="end|bottom"
-        app:layout_constraintBottom_toTopOf="@+id/nav_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <jahirfiquitiva.libs.fabsmenu.FABsMenuLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
             android:layout_marginEnd="0dp"
-            app:fabs_menu_clickableOverlay="true"
-            app:fabs_menu_overlayColor="#4d000000"
-            tools:layout_behavior="@string/fabs_menu_layout_behavior">
+            android:background="?android:attr/windowBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:menu="@menu/bottom_nav_menu" />
 
-            <jahirfiquitiva.libs.fabsmenu.FABsMenu
-                android:id="@+id/fabs_menu"
+        <fragment
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:defaultNavHost="true"
+            app:layout_constraintBottom_toTopOf="@+id/nav_view"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navGraph="@navigation/mobile_navigation" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_anchorGravity="end|bottom"
+            app:layout_constraintBottom_toTopOf="@+id/nav_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <jahirfiquitiva.libs.fabsmenu.FABsMenuLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_gravity="bottom|end"
-                app:fab_expandDirection="up"
-                app:fab_labelsPosition="left"
-                app:fab_menuMargins="16dp"
-                app:fab_moreButtonBackgroundColor="@color/fb"
-                app:fab_moreButtonPlusIcon="@drawable/ic_baseline_announcement_24"
-                app:fab_moreButtonRippleColor="@color/pink"
-                app:fab_moreButtonSize="normal">
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                app:fabs_menu_clickableOverlay="true"
+                app:fabs_menu_overlayColor="#4d000000"
+                tools:layout_behavior="@string/fabs_menu_layout_behavior">
 
-                <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                    android:id="@+id/capture"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:backgroundTint="@color/white"
-                    app:fabSize="mini"
-                    app:fab_enableTitleClick="true"
-                    app:fab_title="@string/capture"
-                    app:fab_title_backgroundColor="@color/colorRed"
-                    app:fab_title_textColor="@android:color/white"
-                    app:srcCompat="@drawable/ic_photo_camera" />
+                <jahirfiquitiva.libs.fabsmenu.FABsMenu
+                    android:id="@+id/fabs_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom|end"
+                    app:fab_expandDirection="up"
+                    app:fab_labelsPosition="left"
+                    app:fab_menuMargins="16dp"
+                    app:fab_moreButtonBackgroundColor="@color/fb"
+                    app:fab_moreButtonPlusIcon="@drawable/ic_baseline_announcement_24"
+                    app:fab_moreButtonRippleColor="@color/pink"
+                    app:fab_moreButtonSize="normal">
 
-                <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                    android:id="@+id/recordVideo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:backgroundTint="@color/white"
-                    app:fabSize="mini"
-                    app:fab_enableTitleClick="true"
-                    app:fab_title="@string/recordVideo"
-                    app:fab_title_backgroundColor="@color/amber"
-                    app:fab_title_textColor="@color/white"
-                    app:srcCompat="@drawable/ic_baseline_videocam_24" />
+                    <jahirfiquitiva.libs.fabsmenu.TitleFAB
+                        android:id="@+id/capture"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:backgroundTint="@color/white"
+                        app:fabSize="mini"
+                        app:fab_enableTitleClick="true"
+                        app:fab_title="@string/capture"
+                        app:fab_title_backgroundColor="@color/colorRed"
+                        app:fab_title_textColor="@android:color/white"
+                        app:srcCompat="@drawable/ic_photo_camera" />
 
-                <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                    android:id="@+id/recordAudio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:backgroundTint="@color/white"
-                    app:fabSize="mini"
-                    app:fab_enableTitleClick="true"
-                    app:fab_title="@string/recordAudio"
-                    app:fab_title_backgroundColor="@color/colorGreen"
-                    app:fab_title_textColor="@color/white"
-                    app:srcCompat="@drawable/ic_baseline_record_voice_over_24" />
+                    <jahirfiquitiva.libs.fabsmenu.TitleFAB
+                        android:id="@+id/recordVideo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:backgroundTint="@color/white"
+                        app:fabSize="mini"
+                        app:fab_enableTitleClick="true"
+                        app:fab_title="@string/recordVideo"
+                        app:fab_title_backgroundColor="@color/amber"
+                        app:fab_title_textColor="@color/white"
+                        app:srcCompat="@drawable/ic_baseline_videocam_24" />
 
+                    <!--   <jahirfiquitiva.libs.fabsmenu.TitleFAB
+                           android:id="@+id/recordAudio"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           app:backgroundTint="@color/white"
+                           app:fabSize="mini"
+                           app:fab_enableTitleClick="true"
+                           app:fab_title="@string/recordAudio"
+                           app:fab_title_backgroundColor="@color/colorGreen"
+                           app:fab_title_textColor="@color/white"
+                           app:srcCompat="@drawable/ic_baseline_record_voice_over_24" />
+   -->
 
-            </jahirfiquitiva.libs.fabsmenu.FABsMenu>
+                </jahirfiquitiva.libs.fabsmenu.FABsMenu>
 
-        </jahirfiquitiva.libs.fabsmenu.FABsMenuLayout>
+            </jahirfiquitiva.libs.fabsmenu.FABsMenuLayout>
 
-    </RelativeLayout>
+        </RelativeLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

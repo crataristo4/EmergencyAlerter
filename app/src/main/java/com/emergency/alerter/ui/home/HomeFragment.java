@@ -1,79 +1,57 @@
 package com.emergency.alerter.ui.home;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.camerakit.CameraKitView;
-import com.emergency.alerter.MainActivity;
 import com.emergency.alerter.R;
+import com.emergency.alerter.adapters.HomeRecyclerAdapter;
 import com.emergency.alerter.databinding.FragmentHomeBinding;
+import com.emergency.alerter.model.AlertItems;
 import com.emergency.alerter.utils.AppConstants;
-import com.emergency.alerter.utils.DisplayViewUI;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Objects;
-import java.util.UUID;
-
-import static android.os.Environment.*;
+import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
-    String currentPhotoPath;
+    private static final String KEY = "key";
+    private static final String TAG = "HomeFragment";
+    private static final int INITIAL_LOAD = 15;
+    private Bundle mBundleState;
     private FragmentHomeBinding fragmentHomeBinding;
-    private Bitmap bitmap ;
-    private StorageReference imageStorageRef;
-    private DatabaseReference dbRef;
-    static final int REQUEST_TAKE_PHOTO = 1;
-    ImageView imageView;
+    private RecyclerView recyclerView;
+    private HomeRecyclerAdapter adapter;
+    private ArrayList<AlertItems> arrayList = new ArrayList<>();
+    private LinearLayoutManager layoutManager;
+    private Parcelable mState;
+    private ListenerRegistration registration;
+    private DocumentSnapshot mLastResult;
+    private boolean isScrolling = false;
+    private boolean isLastItemReached = false;
+    private CollectionReference collectionReference = FirebaseFirestore
+            .getInstance()
+            .collection("Alerts");
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = requireActivity().getExternalFilesDir(DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        fragmentHomeBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_home, container, false);
+        fragmentHomeBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
         return fragmentHomeBinding.getRoot();
     }
 
@@ -81,214 +59,250 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        imageStorageRef = FirebaseStorage.getInstance().getReference().child("alerts");
-        dbRef = FirebaseDatabase.getInstance().getReference().child("alerts");
-        imageView = fragmentHomeBinding.imageView;
+        loadActivityData();
+        requireActivity().runOnUiThread(this::fetchData);
+
+    }
 
 
+    private void loadActivityData() {
+        recyclerView = fragmentHomeBinding.recyclerViewHome;
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(layoutManager);
 
-        fragmentHomeBinding.textHome.setOnClickListener(v -> dispatchTakePictureIntent());
+        adapter = new HomeRecyclerAdapter(arrayList, getContext());
+        recyclerView.setAdapter(adapter);
+
+    }
+
+
+    private void fetchData() {
+
+        // Create a query against the collection.
+        Query query = collectionReference.orderBy("timeStamp", Query.Direction.DESCENDING).limit(INITIAL_LOAD);
+
+        registration = query.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e);
+                return;
+            }
+            // arrayList.clear();
+            assert queryDocumentSnapshots != null;
+            for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
+
+                AlertItems alertItems = ds.toObject(AlertItems.class);
+                //get data from model
+                String userName = alertItems.getUserName();
+                String userPhoto = alertItems.getUserPhotoUrl();
+                String reportDescription = alertItems.getReportDescription();
+                String alertItemVideoUrl = alertItems.getVideoUrl();
+                String alertItemAudioUrl = alertItems.getAudioUrl();
+                String alertImageUrl = alertItems.getImageUrl();
+                long timeStamp = alertItems.getTimeStamp();
+                double lat = alertItems.getLatitude();
+                double lng = alertItems.getLongitude();
+                String id = ds.getId();
+//group data by images
+                if (ds.getData().containsKey("imageUrl")) {
+
+                    arrayList.add(new AlertItems(AppConstants.IMAGE_TYPE,
+                            userName, alertImageUrl, userPhoto, timeStamp, lat, lng, reportDescription));
+
+                }
+                //group data by Videos
+                else if (ds.getData().containsKey("videoUrl")) {
+                    arrayList.add(new AlertItems(AppConstants.VIDEO_TYPE,
+                            userName,
+                            alertItemVideoUrl,
+                            userPhoto,
+                            timeStamp,
+                            lat,
+                            lng
+                    ));
+                }
+
+                //group data by audios
+               /* else if (ds.getData().containsKey("audios")) {
+                    arrayList.add(new AlertItems(AppConstants.VIDEO_TYPE,
+                            itemImage,
+                            itemDescription,
+                            userName,
+                            userPhoto,
+                            timeStamp,
+                            id
+                    ));
+                }*/
+            }
+
+            adapter.notifyDataSetChanged();
+
+            //get the last visible item
+//            mLastResult = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
+
+
+          /*  //load more
+            RecyclerView.OnScrollListener  listener = new RecyclerView.OnScrollListener() {
+
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                        isScrolling = true;
+                    }
+
+                }
+
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+
+                    int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+                    int visibleCount = layoutManager.getChildCount();
+                    int totalItemCount = layoutManager.getItemCount();
+
+                    if (isScrolling && (firstVisibleItem + visibleCount == totalItemCount) && !isLastItemReached){
+
+                        isScrolling = false;
+                        Query queryNext =collectionReference.orderBy("timeStamp", Query.Direction.DESCENDING)
+                                .startAfter(mLastResult).limit(INITIAL_LOAD);
+
+                        registration =    queryNext.addSnapshotListener((queryDocumentSnapshots1, e1) -> {
+
+                            if (e1 != null) {
+                                Log.w(TAG, "Listen failed.", e1);
+                                return;
+                            }
+                              arrayList.clear();
+                            assert queryDocumentSnapshots1 != null;
+                            for (QueryDocumentSnapshot ds : queryDocumentSnapshots1) {
+
+
+                                ActivityItemModel itemModel = ds.toObject(ActivityItemModel.class);
+                                //get data from model
+                                String userName = itemModel.getUserName();
+                                String userPhoto = itemModel.getUserPhoto();
+                                String itemDescription = itemModel.getItemDescription();
+                                String status = itemModel.getStatus();
+                                String itemImage = itemModel.getItemImage();
+                                long timeStamp = itemModel.getTimeStamp();
+                                String id = ds.getId();
+//group data by status
+                                if (ds.getData().containsKey("status")) {
+                                    Log.i(TAG, "status: " + ds.getData().get("status"));
+
+                                    arrayList.add(new ActivityItemModel(ActivityItemModel.TEXT_TYPE,
+                                            status,
+                                            userName,
+                                            userPhoto,
+                                            timeStamp,
+                                            id));
+
+                                }
+                                //group data by item description
+                                else if (ds.getData().containsKey("itemDescription")) {
+                                    arrayList.add(new ActivityItemModel(ActivityItemModel.IMAGE_TYPE,
+                                            itemImage,
+                                            itemDescription,
+                                            userName,
+                                            userPhoto,
+                                            timeStamp,
+                                            id
+                                    ));
+                                }
+                            }
+
+
+                            adapter.notifyDataSetChanged();
+                            //get the last visible item
+                            mLastResult = queryDocumentSnapshots1.getDocuments().get(queryDocumentSnapshots1.size() -1);
+
+                            if (queryDocumentSnapshots1.getDocuments().size() < INITIAL_LOAD){
+
+                                isLastItemReached = true;
+                            }
+
+                        });
+
+
+                    }
+
+                }
+            };
+
+            recyclerView.addOnScrollListener(listener);
+
+*/
+        });
+
+       /* //get all items from fire store
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot ds : Objects.requireNonNull(task.getResult())) {
+                    Log.i(TAG, "onComplete: " + ds.getId() + " " + ds.getData());
+
+                    ActivityItemModel itemModel = ds.toObject(ActivityItemModel.class);
+
+                    //group data by status
+                    if (ds.getData().containsKey("status")) {
+                        Log.i(TAG, "status: " + ds.getData().get("status"));
+
+                        arrayList.add(new ActivityItemModel(ActivityItemModel.TEXT_TYPE,
+                                itemModel.getStatus(),
+                                itemModel.getUserName(),
+                                itemModel.getUserPhoto(),
+                                itemModel.getTimeStamp()));
+
+                    }
+                    //group data by item description
+                    else if (ds.getData().containsKey("itemDescription")) {
+                        Log.i(TAG, "itemDescription: " + ds.getData().get("itemDescription"));
+
+                        arrayList.add(new ActivityItemModel(ActivityItemModel.IMAGE_TYPE,
+                                itemModel.getItemImage(),
+                                itemModel.getItemDescription(),
+                                itemModel.getUserName(),
+                                itemModel.getUserPhoto(),
+                                itemModel.getTimeStamp()));
+                    }
+
+                }
+
+                adapter.notifyDataSetChanged();
+
+            }
+
+        });*/
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == AppConstants.CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK){
-
-            if (data != null) {
-                bitmap = (Bitmap) Objects.requireNonNull(data.getExtras()).get("data") ;
-                imageView.setImageBitmap(bitmap);
-               // uploadData();
-                setPic();
-
-
-
-
-        }
-
-        }
+    public void onStop() {
+        super.onStop();
+        //activityItemAdapter.stopListening();
+        registration.remove();
     }
 
-    private void setPic() {
-        // Get the dimensions of the View
-        int targetW = imageView.getWidth();
-        int targetH = imageView.getHeight();
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
-
-
-        imageView.setImageBitmap(bitmap);
-
-        ProgressDialog pd =  DisplayViewUI.displayProgress(requireActivity(),"uploading");
-        pd.show();
-
-        ByteArrayOutputStream boas = new ByteArrayOutputStream();
-        byte [] bytes = boas.toByteArray();
-       bitmap.compress(Bitmap.CompressFormat.JPEG,100,boas);
-
-        Log.i( "width and height : ", photoW + "... " + photoH);
-
-
-        StorageReference filePath = imageStorageRef.child("test");
-
-        filePath.putBytes(bytes).continueWithTask(task -> {
-            if (!task.isSuccessful()) {
-                pd.dismiss();
-
-            }
-            return filePath.getDownloadUrl();
-
-        }).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                pd.dismiss();
-
-                Uri downLoadUri = task.getResult();
-                assert downLoadUri != null;
-                String     getImageUploadUri = downLoadUri.toString();
-                Log.i( "Url: ", getImageUploadUri );
-
-                //fire store cloud store
-                   /* dbReference.add(itemsMap).addOnCompleteListener(task2 -> {
-
-                        if (task2.isSuccessful()) {
-                            serviceTypeDbRef.child(uid).child(randomUID).setValue(itemsMap);
-
-                            progressDialog.dismiss();
-                            DisplayViewUI.displayToast(this, "Successful");
-
-                            startActivity(new Intent(AddDesignOrStyleActivity.this, MainActivity.class)
-                                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
-                            finish();
-
-
-                        } else {
-                            pd.dismiss();
-                            DisplayViewUI.displayToast(this, Objects.requireNonNull(task2.getException()).getMessage());
-
-                        }
-
-                    });
-*/
-            } else {
-                pd.dismiss();
-                DisplayViewUI.displayToast(requireContext(), Objects.requireNonNull(task.getException()).getMessage());
-
-            }
-
-        });
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        mBundleState = new Bundle();
+        mState = layoutManager.onSaveInstanceState();
+        mBundleState.putParcelable(KEY, mState);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mBundleState != null) {
 
+            new Handler().postDelayed(() -> {
 
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(requireContext(),
-                        "com.emergency.alerter.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
+                mState = mBundleState.getParcelable(KEY);
+                layoutManager.onRestoreInstanceState(mState);
+            }, 50);
         }
-    }
 
-    private void uploadData() {
-
-
-        ProgressDialog pd =  DisplayViewUI.displayProgress(requireActivity(),"uploading");
-        pd.show();
-
-        ByteArrayOutputStream boas = new ByteArrayOutputStream();
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        byte [] bytes = boas.toByteArray();
-        //bitmap.compress(Bitmap.CompressFormat.JPEG,100,boas);
-
-        Log.i( "width and height : ", width + "... " + height);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-
-
-
-        BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-        Log.i( "Data: ", "width" +  options.outWidth + " height " + options.outHeight);
-
-
-        StorageReference filePath = imageStorageRef.child("test");
-
-        filePath.putBytes(bytes).continueWithTask(task -> {
-            if (!task.isSuccessful()) {
-                pd.dismiss();
-
-            }
-            return filePath.getDownloadUrl();
-
-        }).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                pd.dismiss();
-
-                Uri downLoadUri = task.getResult();
-                assert downLoadUri != null;
-                String     getImageUploadUri = downLoadUri.toString();
-                Log.i( "Url: ", getImageUploadUri );
-
-                //fire store cloud store
-                   /* dbReference.add(itemsMap).addOnCompleteListener(task2 -> {
-
-                        if (task2.isSuccessful()) {
-                            serviceTypeDbRef.child(uid).child(randomUID).setValue(itemsMap);
-
-                            progressDialog.dismiss();
-                            DisplayViewUI.displayToast(this, "Successful");
-
-                            startActivity(new Intent(AddDesignOrStyleActivity.this, MainActivity.class)
-                                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
-                            finish();
-
-
-                        } else {
-                            pd.dismiss();
-                            DisplayViewUI.displayToast(this, Objects.requireNonNull(task2.getException()).getMessage());
-
-                        }
-
-                    });
-*/
-            } else {
-                pd.dismiss();
-                DisplayViewUI.displayToast(requireContext(), Objects.requireNonNull(task.getException()).getMessage());
-
-            }
-
-        });
-
+        recyclerView.setLayoutManager(layoutManager);
     }
 
 

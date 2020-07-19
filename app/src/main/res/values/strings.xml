@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Emergency Alerter</string>
+    <string name="app_name">Dalilu</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_alerts">Alerts</string>
@@ -8,10 +8,47 @@
     <string name="recordAudio">Record audio</string>
     <string name="recordVideo">Record video</string>
     <string name="helpText">Do you find something suspicious , a crime , emergency or do you need help?</string>
-    <string name="cancel">Cancel</string>
     <string name="add">Add</string>
     <string name="action_settings">Settings</string>
     <string name="preview_description">Image and Video preview will appear here</string>
     <string name="btn_take_picture">Take Picture</string>
     <string name="btn_record_video">Record Video</string>
+    <string name="oops">Oops! Failed create </string>
+    <string name="directory"> directory</string>
+    <string name="captureCanceled">Capturing image cancelled</string>
+    <string name="failedToCapture">Sorry! Failed to capture image</string>
+    <string name="uploadingPleaseWait">uploading please wait…</string>
+    <string name="perRequired">Permissions required!</string>
+    <string name="camPerm">Camera needs few permissions to work properly. Grant them in settings.</string>
+    <string name="goToSettings">GOTO SETTINGS</string>
+    <string name="cancel">Cancel</string>
+    <string name="comments">Comments</string>
+    <string name="reportSuccess">report successful</string>
+    <string name="vidRecCanceled">video recording cancelled</string>
+    <string name="sorryVidFailed">Sorry! Failed to record video</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="play_and_pause_button">Play and pause button</string>
+    <string name="delete">Delete</string>
+    <string name="done">Done</string>
+    <string name="reset">Reset</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
+    <string name="log_in">Log In</string>
+    <string name="phoneNumber">Phone Number</string>
+    <string name="confirmCode">Confirm code</string>
+    <string name="verify">Verify</string>
+    <string name="phoneRequired">phone number might be required for follow up</string>
+    <string name="selectLanguage">Please select language</string>
+    <string name="plsWait">verifying please wait</string>
+    <string name="noInternet">No internet.Internet connection is needed to continue.If problem still exist contact your service provider</string>
+    <string name="resend_code">Resend code</string>
+    <string name="codeShort">code too short</string>
+    <string name="phoneReq">phone number is required</string>
+    <string name="verCode">verify code sent through sms</string>
+
+    <string-array name="selectLanguage">
+        <item>Please select language</item>
+        <item>English</item>
+        <item>French</item>
+    </string-array>
 </resources>
