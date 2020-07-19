@@ -13,12 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:layout_marginBottom="@dimen/eightDp"
         card_view:cardCornerRadius="8dp"
         card_view:cardElevation="3dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@drawable/bottomsheetbg">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -73,12 +74,11 @@
                 android:id="@+id/card"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="8dp"
                 card_view:cardCornerRadius="@dimen/eightDp"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toBottomOf="@+id/imgUserPhoto"
-                card_view:layout_constraintVertical_bias="0.0">
+                card_view:layout_constraintTop_toBottomOf="@+id/imgUserPhoto">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -87,8 +87,7 @@
                     <ImageView
                         android:id="@+id/imgContentPhoto"
                         android:layout_width="0dp"
-                        android:layout_height="300dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="200dp"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/app_name"
                         card_view:layout_constraintBottom_toBottomOf="parent"
@@ -120,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:drawableStart="@drawable/ic_messagewhite"
                 android:drawablePadding="@dimen/eightDp"
                 android:text="@string/comments"
@@ -129,7 +128,7 @@
                 card_view:layout_constraintHorizontal_bias="0.0"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/card"
-                card_view:layout_constraintVertical_bias="0.51" />
+                card_view:layout_constraintVertical_bias="0.52" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

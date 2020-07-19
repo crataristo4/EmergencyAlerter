@@ -15,6 +15,8 @@ public class AlertItems extends BaseObservable {
     public String reportDescription;
     public int type, audioLength;
 
+    public AlertItems() {
+    }
 
     //Image type constructor
     public AlertItems(int type, String userName, String imageUrl, String userPhotoUrl, Object timeStamp,

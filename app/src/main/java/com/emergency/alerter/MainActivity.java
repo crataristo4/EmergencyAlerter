@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private static String imageStoragePath;
     private ActivityMainBinding activityMainBinding;
     private StorageReference imageStorageRef, filePath;
+    private Uri uri = null;
     private DatabaseReference dbRef;
     private ProgressDialog pd;
 
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         imageStorageRef = FirebaseStorage.getInstance().getReference().child("alerts");
         dbRef = FirebaseDatabase.getInstance().getReference().child("alerts");
-
+        filePath = imageStorageRef.child(UUID.randomUUID().toString());
 
         activityMainBinding.capture.setOnClickListener(v -> {
             if (CameraUtils.checkPermissions(v.getContext())) {
@@ -86,10 +87,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 requestCameraPermission(AppConstants.MEDIA_TYPE_IMAGE);
             }
-        });
-
-        activityMainBinding.recordAudio.setOnClickListener(v -> {
-
         });
 
     }
@@ -189,20 +186,17 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+
         if (requestCode == AppConstants.CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-
 
 //todo change the name of the images uploaded to the server
 
                 // Refreshing the gallery
                 CameraUtils.refreshGallery(MainActivity.this, imageStoragePath);
 
-                filePath = imageStorageRef.child(UUID.randomUUID().toString());
-
-                Uri imageUri = CameraUtils.getOutputMediaFileUri(MainActivity.this, new File(imageStoragePath));
-
-                uploadImageToServer(imageUri);
+                uri = CameraUtils.getOutputMediaFileUri(MainActivity.this, new File(imageStoragePath));
+                uploadToServer(uri);
 
 
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -220,25 +214,26 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 // Refreshing the gallery
                 CameraUtils.refreshGallery(MainActivity.this, imageStoragePath);
+                uri = CameraUtils.getOutputMediaFileUri(MainActivity.this, new File(imageStoragePath));
 
-                // video successfully recorded
-                // preview the recorded video
-                //previewVideo();
+                uploadToServer(uri);
+
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // user cancelled recording
                 Toast.makeText(MainActivity.this,
-                        " video recording cancelled", Toast.LENGTH_SHORT)
+                        R.string.vidRecCanceled, Toast.LENGTH_SHORT)
                         .show();
             } else {
                 // failed to record video
                 Toast.makeText(MainActivity.this,
-                        "Sorry! Failed to record video", Toast.LENGTH_SHORT)
+                        R.string.sorryVidFailed, Toast.LENGTH_SHORT)
                         .show();
             }
         }
     }
 
-    private void uploadImageToServer(Uri imageUri) {
+
+    private void uploadToServer(Uri imageUri) {
         //display loading
         pd = DisplayViewUI.displayProgress(MainActivity.this, getString(R.string.uploadingPleaseWait));
         pd.show();
@@ -254,12 +249,12 @@ public class MainActivity extends AppCompatActivity {
         }).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 pd.dismiss();
-                DisplayViewUI.displayToast(MainActivity.this, "success");
+                DisplayViewUI.displayToast(MainActivity.this, getString(R.string.reportSuccess));
 
                 Uri downLoadUri = task.getResult();
                 assert downLoadUri != null;
-                String getImageUploadUri = downLoadUri.toString();
-                Log.i("Url: ", getImageUploadUri);
+                String url = downLoadUri.toString();
+                Log.i("Url: ", url);
 
                 String documentId = UUID.randomUUID().toString();
 

@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -106,15 +105,11 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             .into(((VideoTypeViewHolder) holder).videoTypeBinding.imgUserPhoto);
 
                     ((VideoTypeViewHolder) holder).videoView.setVideoURI(Uri.parse(object.getVideoUrl()));
+                    ((VideoTypeViewHolder) holder).videoView.requestFocusFromTouch();
 
-                    ((VideoTypeViewHolder) holder).videoView.setOnPreparedListener(mp -> {
-
-                        MediaController mediaController = new MediaController(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getContext());
-                        mediaController.setAnchorView(((VideoTypeViewHolder) holder).videoView);
-                        ((VideoTypeViewHolder) holder).videoView.setMediaController(mediaController);
-
-                    });
-
+                   /* MediaController mediaController = new MediaController(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getContext());
+                    mediaController.setAnchorView(((VideoTypeViewHolder) holder).videoView);
+                    ((VideoTypeViewHolder) holder).videoView.setMediaController(mediaController);*/
 
                     break;
                 case AppConstants.IMAGE_TYPE:
@@ -210,8 +205,10 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     //view holder for videos
     static class VideoTypeViewHolder extends RecyclerView.ViewHolder {
         VideoTypeBinding videoTypeBinding;
-        TextView txtComments;
+        TextView txtComments, txtCurrentTime, txtDuration;
         VideoView videoView;
+        ImageView imgPlayOrPause;
+        ProgressBar vidProgress, bufferProgress;
 
 
         VideoTypeViewHolder(@NonNull VideoTypeBinding videoTypeBinding) {
@@ -219,6 +216,12 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             this.videoTypeBinding = videoTypeBinding;
             txtComments = videoTypeBinding.txtComments;
             videoView = videoTypeBinding.videoContentPreview;
+            txtCurrentTime = videoTypeBinding.txtCurrentTimer;
+            txtDuration = videoTypeBinding.txtDurationTimer;
+            imgPlayOrPause = videoTypeBinding.imgPlayBtn;
+            vidProgress = videoTypeBinding.videoProgress;
+            bufferProgress = videoTypeBinding.progressBar;
+
 
         }
 

@@ -44,7 +44,9 @@ public class HomeFragment extends Fragment {
     private DocumentSnapshot mLastResult;
     private boolean isScrolling = false;
     private boolean isLastItemReached = false;
-    private CollectionReference collectionReference = FirebaseFirestore.getInstance().collection("Alerts");
+    private CollectionReference collectionReference = FirebaseFirestore
+            .getInstance()
+            .collection("Alerts");
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -89,7 +91,6 @@ public class HomeFragment extends Fragment {
             assert queryDocumentSnapshots != null;
             for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
 
-
                 AlertItems alertItems = ds.toObject(AlertItems.class);
                 //get data from model
                 String userName = alertItems.getUserName();
@@ -103,14 +104,14 @@ public class HomeFragment extends Fragment {
                 double lng = alertItems.getLongitude();
                 String id = ds.getId();
 //group data by images
-                if (ds.getData().containsKey("images")) {
+                if (ds.getData().containsKey("imageUrl")) {
 
                     arrayList.add(new AlertItems(AppConstants.IMAGE_TYPE,
                             userName, alertImageUrl, userPhoto, timeStamp, lat, lng, reportDescription));
 
                 }
                 //group data by Videos
-                else if (ds.getData().containsKey("videos")) {
+                else if (ds.getData().containsKey("videoUrl")) {
                     arrayList.add(new AlertItems(AppConstants.VIDEO_TYPE,
                             userName,
                             alertItemVideoUrl,

@@ -24,10 +24,10 @@
         <fragment
             android:id="@+id/nav_host_fragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             app:defaultNavHost="true"
-            app:layout_constraintBottom_toTopOf="@id/nav_view"
+            app:layout_constraintBottom_toTopOf="@+id/nav_view"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -58,7 +58,7 @@
                 <jahirfiquitiva.libs.fabsmenu.FABsMenu
                     android:id="@+id/fabs_menu"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="match_parent"
                     android:layout_gravity="bottom|end"
                     app:fab_expandDirection="up"
                     app:fab_labelsPosition="left"
@@ -92,18 +92,18 @@
                         app:fab_title_textColor="@color/white"
                         app:srcCompat="@drawable/ic_baseline_videocam_24" />
 
-                    <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                        android:id="@+id/recordAudio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:backgroundTint="@color/white"
-                        app:fabSize="mini"
-                        app:fab_enableTitleClick="true"
-                        app:fab_title="@string/recordAudio"
-                        app:fab_title_backgroundColor="@color/colorGreen"
-                        app:fab_title_textColor="@color/white"
-                        app:srcCompat="@drawable/ic_baseline_record_voice_over_24" />
-
+                    <!--   <jahirfiquitiva.libs.fabsmenu.TitleFAB
+                           android:id="@+id/recordAudio"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           app:backgroundTint="@color/white"
+                           app:fabSize="mini"
+                           app:fab_enableTitleClick="true"
+                           app:fab_title="@string/recordAudio"
+                           app:fab_title_backgroundColor="@color/colorGreen"
+                           app:fab_title_textColor="@color/white"
+                           app:srcCompat="@drawable/ic_baseline_record_voice_over_24" />
+   -->
 
                 </jahirfiquitiva.libs.fabsmenu.FABsMenu>
 
