@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import com.emergency.alerter.MainActivity;
 import com.emergency.alerter.R;
@@ -31,11 +33,18 @@ import java.util.concurrent.TimeUnit;
 
 public class PhoneAuthActivity extends AppCompatActivity {
     ActivityPhoneAuthBinding activityPhoneAuthBinding;
-    String phoneNumber = "+16505554570"; //sammy
+    String phoneNumber = "+16505554570";
     String smsCode = "123456";
     Button btnDone, btnVerify;
     private String mVerificationCode;
     private PhoneAuthProvider.ForceResendingToken mToken;
+    private CountryCodePicker countryCodePicker;
+    private ProgressBar loading;
+    private TextInputLayout txtPhoneNumber, txtVerifyCode;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser user;
+    private String uid;
+    private String getPhone, getPhoneNumber;
     private final PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
         public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
@@ -83,55 +92,63 @@ public class PhoneAuthActivity extends AppCompatActivity {
             activityPhoneAuthBinding.txtResendCode.setVisibility(View.VISIBLE);
         }
     };
-    private CountryCodePicker countryCodePicker;
-    private ProgressBar loading;
-    private TextInputLayout txtPhoneNumber, txtVerifyCode;
-    private FirebaseAuth firebaseAuth;
-    private FirebaseUser user;
-    private String uid;
-    private String getPhone, getPhoneNumber;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_phone_auth);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuthSettings firebaseAuthSettings = firebaseAuth.getFirebaseAuthSettings();
+
+
+        if (firebaseAuth.getCurrentUser() != null) {
+            finish();
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+
+        }
+
+        activityPhoneAuthBinding = DataBindingUtil.setContentView(this, R.layout.activity_phone_auth);
         btnDone = activityPhoneAuthBinding.btnRegisterPhoneNumber;
+        countryCodePicker = activityPhoneAuthBinding.ccp;
+        loading = activityPhoneAuthBinding.progressBarVerify;
+        txtPhoneNumber = activityPhoneAuthBinding.textInputLayoutPhone;
+        txtVerifyCode = activityPhoneAuthBinding.textInputLayoutConfirmCode;
 
+        countryCodePicker.registerCarrierNumberEditText(txtPhoneNumber.getEditText());
+        countryCodePicker.setNumberAutoFormattingEnabled(true);
 
-        activityPhoneAuthBinding.spinner.setOnItemClickListener((parent, view, position, id) -> {
-            if (position == 0) {
-                DisplayViewUI.displayToast(view.getContext(), getString(R.string.selectLanguage));
-                btnDone.setEnabled(false);
-            } else if (position == 1) {//english is selected
-                btnDone.setEnabled(true);
-
-                LanguageManager.setNewLocale(view.getContext(), LanguageManager.LANGUAGE_KEY_ENGLISH);
-
-
-            } else if (position == 2) {//french is selected
-                btnDone.setEnabled(true);
-
-                LanguageManager.setNewLocale(view.getContext(), LanguageManager.LANGUAGE_KEY_FRENCH);
-
-
-            }
-        });
-
-
-        btnDone.setOnClickListener(new View.OnClickListener() {
+        activityPhoneAuthBinding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                if (btnDone.isEnabled()) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    DisplayViewUI.displayToast(PhoneAuthActivity.this, getString(R.string.selectLanguage));
+                    btnDone.setEnabled(false);
+
+
+                } else if (position == 1) {//english is selected
+                    btnDone.setEnabled(true);
+
+                    LanguageManager.setNewLocale(PhoneAuthActivity.this, LanguageManager.LANGUAGE_KEY_ENGLISH);
+
+
+                } else if (position == 2) {//french is selected
+                    btnDone.setEnabled(true);
+
+                    LanguageManager.setNewLocale(PhoneAuthActivity.this, LanguageManager.LANGUAGE_KEY_FRENCH);
+
 
                 }
             }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
 
-        firebaseAuth = FirebaseAuth.getInstance();
 
-
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseAuthSettings firebaseAuthSettings = firebaseAuth.getFirebaseAuthSettings();
 
 // Configure faking the auto-retrieval with the whitelisted numbers.
         firebaseAuthSettings.setAutoRetrievedSmsCodeForPhoneNumber(phoneNumber, smsCode);
@@ -141,7 +158,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
                 phoneNumber,
                 60L,
                 TimeUnit.SECONDS,
-                this, /* activity */
+                this, //activity *//*
                 new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     @Override
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
@@ -177,47 +194,41 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
                 });
 
-        countryCodePicker = activityPhoneAuthBinding.ccp;
-        loading = activityPhoneAuthBinding.progressBarVerify;
-        txtPhoneNumber = activityPhoneAuthBinding.textInputLayoutPhone;
-        txtVerifyCode = activityPhoneAuthBinding.textInputLayoutConfirmCode;
 
-        countryCodePicker.registerCarrierNumberEditText(txtPhoneNumber.getEditText());
-        countryCodePicker.setNumberAutoFormattingEnabled(true);
+        btnDone.setOnClickListener(v -> {
+            if (btnDone.isEnabled()) {
 
-        activityPhoneAuthBinding.btnRegisterPhoneNumber.setOnClickListener(v -> {
+                getPhoneNumber = Objects.requireNonNull(txtPhoneNumber.getEditText()).getText().toString();
+                if (!getPhoneNumber.trim().isEmpty()) {
 
-            getPhoneNumber = Objects.requireNonNull(txtPhoneNumber.getEditText()).getText().toString();
-            if (!getPhoneNumber.trim().isEmpty()) {
-
-                if (DisplayViewUI.isNetworkConnected(PhoneAuthActivity.this)) {
-                    getPhone = countryCodePicker.getFormattedFullNumber();
-                    //  sendVerificationCode(phoneNumber);
-                    // TODO: 19-Jul-20
-                    showHideLayout();
+                    if (DisplayViewUI.isNetworkConnected(PhoneAuthActivity.this)) {
+                        getPhone = countryCodePicker.getFormattedFullNumber();
+                        sendVerificationCode(phoneNumber);
+                        // TODO: 19-Jul-20
+                        showHideLayout();
+                    } else {
+                        DisplayViewUI.displayAlertDialogMsg(PhoneAuthActivity.this, getResources().getString(R.string.noInternet), "ok",
+                                (dialog, which) -> dialog.dismiss());
+                    }
+                } else if (getPhoneNumber.trim().isEmpty()) {
+                    txtPhoneNumber.setErrorEnabled(true);
+                    txtPhoneNumber.setError(getString(R.string.phoneReq));
                 } else {
-                    DisplayViewUI.displayAlertDialogMsg(PhoneAuthActivity.this, getResources().getString(R.string.noInternet), "ok",
-                            (dialog, which) -> dialog.dismiss());
+                    txtPhoneNumber.setErrorEnabled(false);
                 }
-            } else if (getPhoneNumber.trim().isEmpty()) {
-                txtPhoneNumber.setErrorEnabled(true);
-                txtPhoneNumber.setError("number required");
-            } else {
-                txtPhoneNumber.setErrorEnabled(false);
             }
-
         });
 
         activityPhoneAuthBinding.btnVerify.setOnClickListener(v -> {
             String getCodeFromUser = Objects.requireNonNull(txtVerifyCode.getEditText()).getText().toString();
             if (!getCodeFromUser.trim().isEmpty() && getCodeFromUser.length() == 6) {
-                // verifyCode(smsCode); // TODO: 22-Apr-20  change args to input
+                verifyCode(smsCode); // TODO: 22-Apr-20  change args to input
 
             }
 
             if (getCodeFromUser.length() < 6) {
                 txtVerifyCode.setErrorEnabled(true);
-                txtVerifyCode.setError("code too short");
+                txtVerifyCode.setError(getString(R.string.codeShort));
             }
 
 
@@ -285,4 +296,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+    }
 }

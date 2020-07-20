@@ -3,6 +3,7 @@ package com.emergency.alerter;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import com.emergency.alerter.utils.AppConstants;
 import com.emergency.alerter.utils.CameraUtils;
 import com.emergency.alerter.utils.DisplayViewUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -40,19 +43,28 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static FirebaseUser firebaseUser;
     private static String imageStoragePath;
     private ActivityMainBinding activityMainBinding;
     private StorageReference imageStorageRef, filePath;
     private Uri uri = null;
     private DatabaseReference dbRef;
     private ProgressDialog pd;
+    public static FirebaseAuth mAuth;
+    private static Object mContext;
+    private String uid;
+
+    public static Context getAppContext() {
+        return (Context) mContext;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
+        mContext = getApplicationContext();
+        mAuth = FirebaseAuth.getInstance();
+        firebaseUser = mAuth.getCurrentUser();
         initViews();
 
     }
@@ -289,6 +301,34 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void SendUserToLoginActivity() {
+        Intent Login = new Intent(MainActivity.this, SplashScreenActivity.class);
+        startActivity(Login);
+        finish();
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        try {
+            assert firebaseUser != null;
+
+            if (mAuth.getCurrentUser() == null) {
+                SendUserToLoginActivity();
+            } else {
+                uid = firebaseUser.getUid();
+                //checkDisplayAlertDialog();
+                //retrieveServiceType();
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

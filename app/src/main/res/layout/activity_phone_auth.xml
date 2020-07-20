@@ -150,7 +150,7 @@
                     app:boxCornerRadiusTopEnd="@dimen/twentyFourDp"
                     app:boxCornerRadiusTopStart="@dimen/twentyFourDp"
                     app:boxStrokeColor="@color/purple"
-                    app:helperText="verify code sent through sms"
+                    app:helperText="@string/verCode"
                     app:helperTextTextColor="@color/purple"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

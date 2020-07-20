@@ -31,7 +31,6 @@
     <string name="delete">Delete</string>
     <string name="done">Done</string>
     <string name="reset">Reset</string>
-    <string name="cancel">Cancel</string>
     <string name="next">Next</string>
     <string name="back">Back</string>
     <string name="log_in">Log In</string>
@@ -43,6 +42,9 @@
     <string name="plsWait">verifying please wait</string>
     <string name="noInternet">No internet.Internet connection is needed to continue.If problem still exist contact your service provider</string>
     <string name="resend_code">Resend code</string>
+    <string name="codeShort">code too short</string>
+    <string name="phoneReq">phone number is required</string>
+    <string name="verCode">verify code sent through sms</string>
 
     <string-array name="selectLanguage">
         <item>Please select language</item>
