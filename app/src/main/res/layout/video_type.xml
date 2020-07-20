@@ -123,7 +123,6 @@
                 android:text="@string/comments"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintHorizontal_bias="1.0"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 

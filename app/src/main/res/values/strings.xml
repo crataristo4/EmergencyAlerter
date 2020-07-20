@@ -20,7 +20,7 @@
     <string name="uploadingPleaseWait">uploading please wait…</string>
     <string name="perRequired">Permissions required!</string>
     <string name="camPerm">Camera needs few permissions to work properly. Grant them in settings.</string>
-    <string name="goToSettings">GOTO SETTINGS</string>
+    <string name="goToSettings">Go to Settings</string>
     <string name="cancel">Cancel</string>
     <string name="comments">Comments</string>
     <string name="reportSuccess">report successful</string>

@@ -6,7 +6,6 @@ import android.content.Context;
 import androidx.multidex.MultiDex;
 
 import com.danikula.videocache.HttpProxyCacheServer;
-import com.emergency.alerter.utils.LanguageManager;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
@@ -36,7 +35,7 @@ public class Dalilu extends Application {
 
     @Override
     protected void attachBaseContext(Context base) {
-        super.attachBaseContext(LanguageManager.setLocale(base));
+        super.attachBaseContext(base);
         MultiDex.install(this);
 
     }

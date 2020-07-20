@@ -17,23 +17,19 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        overridePendingTransition(R.anim.fadein, R.anim.explode);
+        //overridePendingTransition(R.anim.fadein, R.anim.explode);
         super.onCreate(savedInstanceState);
+
         activitySplashScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash_screen);
-
         activitySplashScreenBinding.txtAppName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.from_top));
-        activitySplashScreenBinding.txtAppName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.explode));
+        // activitySplashScreenBinding.txtAppName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.explode));
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //Opens the Welcome Screen Activity once the time elapses
-                startActivity(new Intent(SplashScreenActivity.this, PhoneAuthActivity.class));
-                finish();
-            }
-        }, 3000);
+        new Handler().postDelayed(() -> {
+            //Opens the Welcome Screen Activity once the time elapses
+            startActivity(new Intent(SplashScreenActivity.this, PhoneAuthActivity.class));
+            finish();
+        }, 5000);
 
     }
 }

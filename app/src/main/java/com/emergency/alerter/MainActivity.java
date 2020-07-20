@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -42,7 +41,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     public static FirebaseUser firebaseUser;
     private static String imageStoragePath;
     private ActivityMainBinding activityMainBinding;
@@ -80,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        navView.setOnNavigationItemReselectedListener(item -> {
+
+        });
 
         imageStorageRef = FirebaseStorage.getInstance().getReference().child("alerts");
         dbRef = FirebaseDatabase.getInstance().getReference().child("alerts");
@@ -103,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     /**
      * Capturing Camera Image will launch camera app requested image capture
      */
@@ -122,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
         // start the image capture Intent
         startActivityForResult(intent, AppConstants.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
     }
-
 
     /**
      * Launching camera app to record video
@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
                 }).check();
     }
 
-
     /**
      * Alert dialog to navigate to app settings
      * to enable necessary permissions
@@ -192,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
 
                 }).show();
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -243,7 +241,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private void uploadToServer(Uri imageUri) {
         //display loading
@@ -303,18 +300,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void SendUserToLoginActivity() {
-        Intent Login = new Intent(MainActivity.this, SplashScreenActivity.class);
-        startActivity(Login);
-        finish();
-    }
-
-
     @Override
     protected void onStart() {
         super.onStart();
 
-        try {
+       /* try {
             assert firebaseUser != null;
 
             if (mAuth.getCurrentUser() == null) {
@@ -328,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 }

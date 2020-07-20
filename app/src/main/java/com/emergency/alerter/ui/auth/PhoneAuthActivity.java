@@ -9,9 +9,9 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import com.emergency.alerter.BaseActivity;
 import com.emergency.alerter.MainActivity;
 import com.emergency.alerter.R;
 import com.emergency.alerter.databinding.ActivityPhoneAuthBinding;
@@ -31,7 +31,7 @@ import com.hbb20.CountryCodePicker;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public class PhoneAuthActivity extends AppCompatActivity {
+public class PhoneAuthActivity extends BaseActivity {
     ActivityPhoneAuthBinding activityPhoneAuthBinding;
     String phoneNumber = "+16505554570";
     String smsCode = "123456";
@@ -99,15 +99,10 @@ public class PhoneAuthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseAuthSettings firebaseAuthSettings = firebaseAuth.getFirebaseAuthSettings();
+
+        new Handler().postDelayed(this::configureFakenUMBER, 5000);
 
 
-        if (firebaseAuth.getCurrentUser() != null) {
-            finish();
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-
-        }
 
         activityPhoneAuthBinding = DataBindingUtil.setContentView(this, R.layout.activity_phone_auth);
         btnDone = activityPhoneAuthBinding.btnRegisterPhoneNumber;
@@ -115,7 +110,6 @@ public class PhoneAuthActivity extends AppCompatActivity {
         loading = activityPhoneAuthBinding.progressBarVerify;
         txtPhoneNumber = activityPhoneAuthBinding.textInputLayoutPhone;
         txtVerifyCode = activityPhoneAuthBinding.textInputLayoutConfirmCode;
-
         countryCodePicker.registerCarrierNumberEditText(txtPhoneNumber.getEditText());
         countryCodePicker.setNumberAutoFormattingEnabled(true);
 
@@ -126,18 +120,15 @@ public class PhoneAuthActivity extends AppCompatActivity {
                     DisplayViewUI.displayToast(PhoneAuthActivity.this, getString(R.string.selectLanguage));
                     btnDone.setEnabled(false);
 
-
                 } else if (position == 1) {//english is selected
                     btnDone.setEnabled(true);
-
                     LanguageManager.setNewLocale(PhoneAuthActivity.this, LanguageManager.LANGUAGE_KEY_ENGLISH);
-
+                    recreate();
 
                 } else if (position == 2) {//french is selected
                     btnDone.setEnabled(true);
-
                     LanguageManager.setNewLocale(PhoneAuthActivity.this, LanguageManager.LANGUAGE_KEY_FRENCH);
-
+                    recreate();
 
                 }
             }
@@ -147,52 +138,6 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-// Configure faking the auto-retrieval with the whitelisted numbers.
-        firebaseAuthSettings.setAutoRetrievedSmsCodeForPhoneNumber(phoneNumber, smsCode);
-
-        PhoneAuthProvider phoneAuthProvider = PhoneAuthProvider.getInstance();
-        phoneAuthProvider.verifyPhoneNumber(
-                phoneNumber,
-                60L,
-                TimeUnit.SECONDS,
-                this, //activity *//*
-                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                    @Override
-                    public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
-                        // Instant verification is applied and a credential is directly returned.
-                        // ...
-                        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                loading.setVisibility(View.GONE);
-
-                                user = firebaseAuth.getCurrentUser();
-                                uid = firebaseAuth.getUid();
-
-                                Intent intent = new Intent(PhoneAuthActivity.this, MainActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish();
-
-
-                            } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                loading.setVisibility(View.GONE);
-                                activityPhoneAuthBinding.txtResendCode.setVisibility(View.VISIBLE);
-                                DisplayViewUI.displayToast(PhoneAuthActivity.this, task.getException().getMessage());
-                            }
-
-                        });
-
-                    }
-
-                    @Override
-                    public void onVerificationFailed(@NonNull FirebaseException e) {
-
-                    }
-
-                });
 
 
         btnDone.setOnClickListener(v -> {
@@ -238,6 +183,55 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
     }
 
+    private void configureFakenUMBER() {
+        // Configure faking the auto-retrieval with the whitelisted numbers.
+        FirebaseAuthSettings firebaseAuthSettings = firebaseAuth.getFirebaseAuthSettings();
+
+        firebaseAuthSettings.setAutoRetrievedSmsCodeForPhoneNumber(phoneNumber, smsCode);
+
+        PhoneAuthProvider phoneAuthProvider = PhoneAuthProvider.getInstance();
+        phoneAuthProvider.verifyPhoneNumber(
+                phoneNumber,
+                60L,
+                TimeUnit.SECONDS,
+                this, //activity *//*
+                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                    @Override
+                    public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
+                        // Instant verification is applied and a credential is directly returned.
+                        // ...
+                        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                loading.setVisibility(View.GONE);
+
+                                user = firebaseAuth.getCurrentUser();
+                                uid = firebaseAuth.getUid();
+
+                                Intent intent = new Intent(PhoneAuthActivity.this, MainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+
+
+                            } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                loading.setVisibility(View.GONE);
+                                activityPhoneAuthBinding.txtResendCode.setVisibility(View.VISIBLE);
+                                DisplayViewUI.displayToast(PhoneAuthActivity.this, task.getException().getMessage());
+                            }
+
+                        });
+
+                    }
+
+                    @Override
+                    public void onVerificationFailed(@NonNull FirebaseException e) {
+
+                    }
+
+                });
+
+    }
+
     private void showHideLayout() {
         loading.setVisibility(View.VISIBLE);
         new Handler().postDelayed(() -> {
@@ -246,7 +240,6 @@ public class PhoneAuthActivity extends AppCompatActivity {
             activityPhoneAuthBinding.constrainLayoutVerifyPhone.setVisibility(View.VISIBLE);
         }, 10000);
     }
-
 
     private void sendVerificationCode(String number) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
@@ -298,5 +291,15 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (firebaseAuth.getCurrentUser() != null) {
+            finish();
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+
+        }
     }
 }
