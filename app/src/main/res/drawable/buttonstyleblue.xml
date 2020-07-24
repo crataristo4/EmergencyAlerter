@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <corners android:radius="32dp" />
-
-    <solid android:color="#3b5999" />
-</shape>
+<component name="libraryTable">
+    <library name="Gradle: com.google.firebase:firebase-installations-interop:16.0.0@aar">
+        <CLASSES>
+            <root url="jar://$USER_HOME$/.gradle/caches/tran

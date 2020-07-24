@@ -8,17 +8,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:742528769890:android:9aea14a180287d1ffed63b",
+        "mobilesdk_app_id": "1:742528769890:android:ae3b8ee2737e9949fed63b",
         "android_client_info": {
-          "package_name": "com.emergency.alerter"
+          "package_name": "com.dalilu"
         }
       },
       "oauth_client": [
         {
-          "client_id": "742528769890-rb766d6ibkjuo8uhl4sve0qda9aa0hdg.apps.googleusercontent.com",
+          "client_id": "742528769890-q3rsuhusal571i0hsum2p9ivejc0oq5k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.emergency.alerter",
+            "package_name": "com.dalilu",
             "certificate_hash": "121eaab94eddbfa943e99be4569dcefbe1f75093"
           }
         },

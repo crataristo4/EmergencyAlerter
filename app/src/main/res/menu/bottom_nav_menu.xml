@@ -1,19 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_home" />
-
-    <item
-        android:id="@+id/navigation_alerts"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_alerts" />
-
-    <item
-        android:id="@+id/navigation_contacts"
-        android:icon="@drawable/ic_baseline_emoji_people_24"
-        android:title="@string/title_contacts" />
-
-</menu>
+<component name="libraryTable">
+    <library name="Gradle: com.google.android.gms:play-services-tasks:17.1.0@aar">
+        <CLASSES>
+            <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6d6b8efeb88702658e78f6a02f1a919e/jetified-play-services-tasks-17.1.0/jars/classes.jar!/" />
+            <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6d6b8efeb88702658e78f6a02f1a919e/jetified-play-services-tasks-17.1.0/res" />
+        </CLASSES>
+        <JAVADOC>
+            <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-tasks/17.1

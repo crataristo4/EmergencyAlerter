@@ -45,6 +45,11 @@
     <string name="codeShort">code too short</string>
     <string name="phoneReq">phone number is required</string>
     <string name="verCode">verify code sent through sms</string>
+    <string name="title_activity_create_poi">CreatePOIActivity</string>
+    <string name="poi_name_hint">Name</string>
+    <string name="poi_button_text">Create</string>
+    <string name="take_photo_text">Launch Camera</string>
+    <string name="title_activity_point_of_interest_details">PointOfInterestDetailsActivity</string>
 
     <string-array name="selectLanguage">
         <item>Please select language</item>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.emergency.alerter">
+    package="com.dalilu">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -36,11 +36,7 @@
             android:name=".SplashScreenActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.auth.PhoneAuthActivity"
@@ -59,7 +55,17 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
         <activity android:name=".CommentsActivity" />
         <activity android:name=".CameraActivity" />
         <activity
@@ -81,6 +87,26 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <service
+            android:name=".services.LocationService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <service
+            android:name=".services.PointOfInterestService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".CreatePOIActivity"
+            android:label="@string/title_activity_create_poi"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".PointOfInterestDetailsActivity"
+            android:label="@string/title_activity_point_of_interest_details"
+            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>

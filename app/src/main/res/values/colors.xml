@@ -29,6 +29,6 @@
     <color name="acceptGreen">#388e3c</color>
     <color name="deepPurple">#673AB7</color>
     <color name="lightBlue">#039be5</color>
-
+    <color name="translucent_yellow">#30ffc200</color>
 
 </resources>
