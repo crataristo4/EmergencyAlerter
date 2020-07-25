@@ -15,13 +15,10 @@ import com.google.android.gms.maps.model.LatLng;
 public class LocationAsyncTask extends AsyncTask<LocationManager, Void, Void>
         implements LocationListener {
 
-    private static final int POLL_TIME = 2048;
-    //Location Provider
-    private String locationProvider = LocationManager.GPS_PROVIDER;
+    private static final int POLL_TIME = 500;
     //Reference to the service that launched the async task. Used so that `placeMarker()` can be called.
     @SuppressLint("StaticFieldLeak")
     private LocationService activity;
-    private LatLng lastKnownPosition;
 
     private boolean runAsyncTask = true;
     private boolean fetchForUpdate = true;
@@ -33,18 +30,22 @@ public class LocationAsyncTask extends AsyncTask<LocationManager, Void, Void>
 
     @Override
     protected Void doInBackground(LocationManager... locationManagers) {
-        Looper.myLooper().prepare();
+        Looper.myLooper();
+        Looper.prepare();
         LocationManager mLocationManager = locationManagers[0];
 
         LocationListener locationListener = this;
 
         try {
+            //Location Provider
+            String locationProvider = LocationManager.NETWORK_PROVIDER;
             mLocationManager.requestLocationUpdates(locationProvider, POLL_TIME, 0, locationListener, Looper.myLooper());
         } catch (SecurityException e) {
             e.printStackTrace();
         }
 
-        Looper.myLooper().loop();
+        Looper.myLooper();
+        Looper.loop();
 
         return null;
     }
@@ -70,7 +71,7 @@ public class LocationAsyncTask extends AsyncTask<LocationManager, Void, Void>
                 + location.getLatitude() + " lng: " + location.getLongitude());
 
         //Update lastKnownLocation based on the LocationManager
-        lastKnownPosition = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng lastKnownPosition = new LatLng(location.getLatitude(), location.getLongitude());
 
         activity.placeMarker(lastKnownPosition);
         Log.d("onLocationChanged", Looper.myLooper().toString());

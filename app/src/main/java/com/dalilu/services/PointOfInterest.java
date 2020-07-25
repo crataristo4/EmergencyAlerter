@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -59,7 +61,7 @@ public class PointOfInterest implements Parcelable {
     this.name = name;
     this.latitude = latitude;
     this.longitude = longitude;
-    this.user = FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0];
+    this.user = FirebaseAuth.getInstance().getUid();
   }
 
   public String getName() {
@@ -123,7 +125,7 @@ public class PointOfInterest implements Parcelable {
     //Query the image from firbase
     FirebaseManager.getInstance().getImageRef().child(getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
       @Override
-      public void onDataChange(DataSnapshot dataSnapshot) {
+      public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
         String image = dataSnapshot.getValue(String.class);
         setEncodedImage(image);
         poiInteface.onImageUpdate();
@@ -131,7 +133,7 @@ public class PointOfInterest implements Parcelable {
       }
 
       @Override
-      public void onCancelled(DatabaseError databaseError) {
+      public void onCancelled(@NonNull DatabaseError databaseError) {
         Log.d("queryImage", "Cancelled");
       }
     });

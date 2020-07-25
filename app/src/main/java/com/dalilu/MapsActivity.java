@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,7 +24,9 @@ import com.dalilu.services.FirebaseManager;
 import com.dalilu.services.LocationService;
 import com.dalilu.services.PointOfInterest;
 import com.dalilu.services.PointOfInterestService;
+import com.dalilu.ui.PointOfInterestActivity;
 import com.dalilu.ui.fragments.DetailsFragment;
+import com.dalilu.utils.DisplayViewUI;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -189,30 +190,26 @@ public class MapsActivity extends FragmentActivity
         Bitmap resizedMarker = Bitmap.createScaledBitmap(userMarkerStyle, 32, 32, false);
         mUserMarkerGraphic = BitmapDescriptorFactory.fromBitmap(resizedMarker);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (userLocation == null) {
-                    return;
-                }
-                //Intent to create a new point of interest
-                Intent newPoiIntent = new Intent(view.getContext(), CreatePOIActivity.class);
-                newPoiIntent.putExtra("location", userLocation);
-                startActivity(newPoiIntent);
+        FloatingActionButton fab = findViewById(R.id.captureFab);
+        fab.setOnClickListener(view -> {
+            if (userLocation == null) {
+                DisplayViewUI.displayToast(view.getContext(), "unavailable");
+                return;
             }
+            DisplayViewUI.displayToast(view.getContext(), "hello");
+            //Intent to create a new point of interest
+            Intent newPoiIntent = new Intent(view.getContext(), PointOfInterestActivity.class);
+            newPoiIntent.putExtra("location", userLocation);
+            startActivity(newPoiIntent);
         });
 
         FloatingActionButton recenterPosition = findViewById(R.id.recenter_fab);
-        recenterPosition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (userLocation == null) {
-                    return;
-                }
-                //Recenter the camera on the user
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
+        recenterPosition.setOnClickListener(view -> {
+            if (userLocation == null) {
+                return;
             }
+            //Recenter the camera on the user
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
         });
 
 
@@ -241,49 +238,43 @@ public class MapsActivity extends FragmentActivity
 
         //Enable the compass on the top left (resets rotation of the camera)
         mMap.getUiSettings().setCompassEnabled(true);
-        mMap.setOnInfoWindowLongClickListener(new GoogleMap.OnInfoWindowLongClickListener() {
-            @Override
-            public void onInfoWindowLongClick(Marker marker) {
-                if (marker.equals(userMarker)) {
-                    return;
-                }
-                if (mMarkerMap.get(marker) != null && mMarkerMap.get(marker).getUser().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0])) {
-                    FirebaseManager.getInstance().deletePOI(mMarkerMap.get(marker));
-                } else {
-                    Toast.makeText(cont, "Cannot delete other user's markers", Toast.LENGTH_SHORT).show();
-                }
+        mMap.setOnInfoWindowLongClickListener(marker -> {
+            if (marker.equals(userMarker)) {
+                return;
+            }
+            if (mMarkerMap.get(marker) != null && mMarkerMap.get(marker).getUser().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0])) {
+                FirebaseManager.getInstance().deletePOI(mMarkerMap.get(marker));
+            } else {
+                Toast.makeText(cont, "Cannot delete other user's markers", Toast.LENGTH_SHORT).show();
             }
         });
 
 
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
+        mMap.setOnInfoWindowClickListener(marker -> {
 
-                if (marker.equals(userMarker)) {
-                    return;
-                }
-                //Else get the corresponding POI from the hashmap
-                PointOfInterest poi = mMarkerMap.get(marker);
+            if (marker.equals(userMarker)) {
+                return;
+            }
+            //Else get the corresponding POI from the hashmap
+            PointOfInterest poi = mMarkerMap.get(marker);
 
-                //Save the POI in a bundle and pass it to a new fragment
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("poi", poi);
-                Fragment fragment = new DetailsFragment();
-                fragment.setArguments(bundle);
+            //Save the POI in a bundle and pass it to a new fragment
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("poi", poi);
+            Fragment fragment = new DetailsFragment();
+            fragment.setArguments(bundle);
 
-                //If the orientation is landscape
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    //replace the empty/temporary fragment with the one that has the POI
-                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.details_fragment, fragment);
-                    fragmentTransaction.commit();
-                } else {
-                    //If we are in portrait launch a new activity with the POI
-                    Intent detailsIntent = new Intent(MapsActivity.this, PointOfInterestDetailsActivity.class);
-                    detailsIntent.putExtra("poi", poi);
-                    startActivity(detailsIntent);
-                }
+            //If the orientation is landscape
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                //replace the empty/temporary fragment with the one that has the POI
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.details_fragment, fragment);
+                fragmentTransaction.commit();
+            } else {
+                //If we are in portrait launch a new activity with the POI
+                Intent detailsIntent = new Intent(MapsActivity.this, PointOfInterestDetailsActivity.class);
+                detailsIntent.putExtra("poi", poi);
+                startActivity(detailsIntent);
             }
         });
         //Set the click listener for the markers

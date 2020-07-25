@@ -11,9 +11,9 @@ import com.google.android.gms.maps.model.LatLng;
 public class LocationService extends Service {
 
     //Broadcast string for broadcasting the location back to `MapActivity`
-    public static final String BROADCAST = "com.alex.service";
+    public static final String BROADCAST = "com.dalilu.service";
     //Minimum time for `LocationManager` to fetch an updated location
-    private static final int POLL_TIME = 2024;
+    private static final int POLL_TIME = 500;
     //LocationManager, fetches the user's location
     private LocationManager locationManager;
 
