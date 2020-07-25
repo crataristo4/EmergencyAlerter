@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:baselineAligned="false"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MapsActivity"
     tools:showIn="@layout/activity_maps">
 
-    <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
+    <androidx.fragment.app.FragmentContainerView xmlns:map="http://schemas.android.com/apk/res-auto"
         android:id="@+id/map_fragment"
         android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"

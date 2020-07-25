@@ -1,7 +1,11 @@
-<component name="libraryTable">
-    <library name="Gradle: com.google.guava:guava:28.1-android@jar">
-        <CLASSES>
-            <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/28.1-android/c2526f8fad32a65a6d7032dd8e9524eb276b108b/guava-28.1-android.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-            <root url="jar://$USER_HOME$/.gradle/caches/modules-2/
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="10dp"
+    android:shape="rectangle">
+    <!-- you can use any color you want I used here gray color-->
+    <solid android:color="#FFF" />
+    <stroke
+        android:width="1dp"
+        android:color="#363f45" />
+    <corners android:radius="4dp" />
+</shape>

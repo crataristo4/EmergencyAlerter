@@ -38,13 +38,6 @@ public class PhoneAuthActivity extends BaseActivity {
     Button btnDone, btnVerify;
     private String mVerificationCode;
     private PhoneAuthProvider.ForceResendingToken mToken;
-    private CountryCodePicker countryCodePicker;
-    private ProgressBar loading;
-    private TextInputLayout txtPhoneNumber, txtVerifyCode;
-    private FirebaseAuth firebaseAuth;
-    private FirebaseUser user;
-    private String uid;
-    private String getPhone, getPhoneNumber;
     private final PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
         public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
@@ -92,7 +85,13 @@ public class PhoneAuthActivity extends BaseActivity {
             activityPhoneAuthBinding.txtResendCode.setVisibility(View.VISIBLE);
         }
     };
-
+    private CountryCodePicker countryCodePicker;
+    private ProgressBar loading;
+    private TextInputLayout txtPhoneNumber, txtVerifyCode;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser user;
+    private String uid;
+    private String getPhone, getPhoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +100,6 @@ public class PhoneAuthActivity extends BaseActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
         new Handler().postDelayed(this::configureFakenUMBER, 5000);
-
 
 
         activityPhoneAuthBinding = DataBindingUtil.setContentView(this, R.layout.activity_phone_auth);
