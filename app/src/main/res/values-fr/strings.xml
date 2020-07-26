@@ -45,4 +45,5 @@
     <string name="codeShort">Code trop court.</string>
     <string name="phoneReq">Numero de telephone obligatoire</string>
     <string name="verCode">Verifiez. Le code est envoye par sms!!!!!</string>
+    <string name="poi_name_hint">Nom</string>
 </resources>
