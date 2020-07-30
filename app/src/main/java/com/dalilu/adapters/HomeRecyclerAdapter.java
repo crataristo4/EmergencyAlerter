@@ -24,7 +24,6 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import com.dalilu.CommentsActivity;
 import com.dalilu.Dalilu;
 import com.dalilu.R;
 import com.dalilu.databinding.ImageTypeBinding;
