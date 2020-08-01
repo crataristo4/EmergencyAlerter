@@ -24,6 +24,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.dalilu.CommentsActivity;
 import com.dalilu.Dalilu;
 import com.dalilu.R;
 import com.dalilu.databinding.ImageTypeBinding;
@@ -130,7 +131,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                     //load images
                     Glide.with(((ImageTypeViewHolder) holder).imageTypeBinding.getRoot().getContext())
-                            .load(object.getImageUrl())
+                            .load(object.getAlertPhotoUrl())
                             .thumbnail(0.5f)
                             .apply(requestOptions)
                             .listener(new RequestListener<Drawable>() {
@@ -161,9 +162,10 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     ((ImageTypeViewHolder) holder).txtComments.setOnClickListener(view -> {
 
                         Intent commentsIntent = new Intent(view.getContext(), CommentsActivity.class);
-                       /* commentsIntent.putExtra("postId", object.getId());
-                        commentsIntent.putExtra("itemImage", object.getItemImage());
-                        commentsIntent.putExtra("itemDescription", object.getItemDescription());*/
+                        commentsIntent.putExtra("alertItemId", object.getId());
+                        commentsIntent.putExtra("alertPhotoUrl", object.getAlertPhotoUrl());
+                        commentsIntent.putExtra("address", object.address);
+                        commentsIntent.putExtra("datePosted", object.getDateReported());
 
                         view.getContext().startActivity(commentsIntent);
 

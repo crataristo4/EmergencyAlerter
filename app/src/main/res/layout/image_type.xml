@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@{imageType.userName}"
+                android:text="@{imageType.fullName}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/black"
                 android:textStyle="bold"
@@ -58,11 +58,11 @@
                 card_view:layout_constraintTop_toTopOf="@+id/txtUserName" />
 
             <TextView
-                android:id="@+id/txtInformation"
+                android:id="@+id/txtAddress"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
-                android:text="@{imageType.reportDescription}"
+                android:text="@{imageType.address}"
                 android:textStyle="bold"
                 card_view:layout_constraintBottom_toBottomOf="@+id/imgUserPhoto"
                 card_view:layout_constraintEnd_toEndOf="parent"
@@ -87,7 +87,7 @@
                     <ImageView
                         android:id="@+id/imgContentPhoto"
                         android:layout_width="0dp"
-                        android:layout_height="200dp"
+                        android:layout_height="300dp"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/app_name"
                         card_view:layout_constraintBottom_toBottomOf="parent"

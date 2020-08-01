@@ -57,11 +57,11 @@
                 card_view:layout_constraintTop_toTopOf="@+id/txtUserName" />
 
             <TextView
-                android:id="@+id/txtInformation"
+                android:id="@+id/txtAddress"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
-                android:text="@{videoType.reportDescription}"
+                android:text="@{videoType.address}"
                 android:textStyle="bold"
                 card_view:layout_constraintBottom_toBottomOf="@+id/imgUserPhoto"
                 card_view:layout_constraintEnd_toEndOf="parent"

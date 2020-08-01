@@ -93,21 +93,22 @@ public class HomeFragment extends Fragment {
 
                 AlertItems alertItems = ds.toObject(AlertItems.class);
                 //get data from model
-                String userName = alertItems.getUserName();
-                String userPhoto = alertItems.getUserPhotoUrl();
-                String reportDescription = alertItems.getReportDescription();
+
+                String address = alertItems.getAddress();
+                String alertPhotoUrl = alertItems.getAlertPhotoUrl();
+                String userName = alertItems.getFullName();
+                String phoneNumber = alertItems.getPhoneNumber();
+                long timeStamp = alertItems.getTimeStamp();
+                String userPhotoUrl = alertItems.getUserPhotoUrl();
                 String alertItemVideoUrl = alertItems.getVideoUrl();
                 String alertItemAudioUrl = alertItems.getAudioUrl();
-                String alertImageUrl = alertItems.getImageUrl();
-                long timeStamp = alertItems.getTimeStamp();
-                double lat = alertItems.getLatitude();
-                double lng = alertItems.getLongitude();
                 String id = ds.getId();
+                String dateReported = alertItems.getDateReported();
 //group data by images
-                if (ds.getData().containsKey("imageUrl")) {
+                if (ds.getData().containsKey("image")) {
 
                     arrayList.add(new AlertItems(AppConstants.IMAGE_TYPE,
-                            userName, alertImageUrl, userPhoto, timeStamp, lat, lng, reportDescription));
+                            userName, userPhotoUrl, alertPhotoUrl, timeStamp, address, id, dateReported));
 
                 }
                 //group data by Videos
@@ -115,10 +116,8 @@ public class HomeFragment extends Fragment {
                     arrayList.add(new AlertItems(AppConstants.VIDEO_TYPE,
                             userName,
                             alertItemVideoUrl,
-                            userPhoto,
-                            timeStamp,
-                            lat,
-                            lng
+                            userPhotoUrl,
+                            timeStamp
                     ));
                 }
 

@@ -12,9 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 
 import com.dalilu.BaseActivity;
-import com.dalilu.MainActivity;
+import com.dalilu.FinishAccountSetupActivity;
 import com.dalilu.R;
 import com.dalilu.databinding.ActivityPhoneAuthBinding;
+import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.dalilu.utils.LanguageManager;
 import com.google.android.material.textfield.TextInputLayout;
@@ -32,8 +33,9 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class PhoneAuthActivity extends BaseActivity {
+
     ActivityPhoneAuthBinding activityPhoneAuthBinding;
-    String phoneNumber = "+16505554570";
+    String phoneNumber = "+16505554572";
     String smsCode = "123456";
     Button btnDone, btnVerify;
     private String mVerificationCode;
@@ -121,12 +123,13 @@ public class PhoneAuthActivity extends BaseActivity {
                 } else if (position == 1) {//english is selected
                     btnDone.setEnabled(true);
                     LanguageManager.setNewLocale(PhoneAuthActivity.this, LanguageManager.LANGUAGE_KEY_ENGLISH);
-                    recreate();
+                    // TODO: 7/31/2020  fix app language
+                    // recreate();
 
                 } else if (position == 2) {//french is selected
                     btnDone.setEnabled(true);
                     LanguageManager.setNewLocale(PhoneAuthActivity.this, LanguageManager.LANGUAGE_KEY_FRENCH);
-                    recreate();
+                    // recreate();
 
                 }
             }
@@ -203,9 +206,12 @@ public class PhoneAuthActivity extends BaseActivity {
                                 loading.setVisibility(View.GONE);
 
                                 user = firebaseAuth.getCurrentUser();
-                                uid = firebaseAuth.getUid();
+                                assert user != null;
+                                uid = user.getUid();
 
-                                Intent intent = new Intent(PhoneAuthActivity.this, MainActivity.class);
+                                Intent intent = new Intent(PhoneAuthActivity.this, FinishAccountSetupActivity.class);
+                                intent.putExtra(AppConstants.UID, uid);
+                                intent.putExtra(AppConstants.PHONE_NUMBER, user.getPhoneNumber());
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                                 finish();
@@ -244,7 +250,7 @@ public class PhoneAuthActivity extends BaseActivity {
                 number,   // Phone number to verify
                 60,                 // Timeout duration
                 TimeUnit.SECONDS,   // Unit of timeout
-                Objects.requireNonNull(this),               // Activity (for callback binding)
+                this,               // Activity (for callback binding)
                 mCallbacks);
     }
 
@@ -271,7 +277,7 @@ public class PhoneAuthActivity extends BaseActivity {
                 user = firebaseAuth.getCurrentUser();
                 uid = firebaseAuth.getUid();
 
-                Intent intent = new Intent(PhoneAuthActivity.this, MainActivity.class);
+                Intent intent = new Intent(PhoneAuthActivity.this, FinishAccountSetupActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
@@ -291,8 +297,5 @@ public class PhoneAuthActivity extends BaseActivity {
     public void onBackPressed() {
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
+
 }

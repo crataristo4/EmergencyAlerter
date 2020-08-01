@@ -92,18 +92,30 @@
                         app:fab_title_textColor="@color/white"
                         app:srcCompat="@drawable/ic_baseline_videocam_24" />
 
-                    <!--   <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                           android:id="@+id/recordAudio"
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           app:backgroundTint="@color/white"
-                           app:fabSize="mini"
-                           app:fab_enableTitleClick="true"
-                           app:fab_title="@string/recordAudio"
-                           app:fab_title_backgroundColor="@color/colorGreen"
-                           app:fab_title_textColor="@color/white"
-                           app:srcCompat="@drawable/ic_baseline_record_voice_over_24" />
-   -->
+                    <jahirfiquitiva.libs.fabsmenu.TitleFAB
+                        android:id="@+id/shareLocation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:backgroundTint="@color/white"
+                        app:fabSize="mini"
+                        app:fab_enableTitleClick="true"
+                        app:fab_title="@string/shareLocation"
+                        app:fab_title_backgroundColor="@color/colorGreen"
+                        app:fab_title_textColor="@color/white"
+                        app:srcCompat="@drawable/ic_baseline_near_me_24" />
+
+                    <jahirfiquitiva.libs.fabsmenu.TitleFAB
+                        android:id="@+id/logOut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:backgroundTint="@color/white"
+                        app:fabSize="mini"
+                        app:fab_enableTitleClick="true"
+                        app:fab_title="@string/logOut"
+                        app:fab_title_backgroundColor="@color/white"
+                        app:fab_title_textColor="@color/black"
+                        app:srcCompat="@drawable/ic_baseline_log_out" />
+
 
                 </jahirfiquitiva.libs.fabsmenu.FABsMenu>
 

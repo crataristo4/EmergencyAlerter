@@ -45,12 +45,31 @@
     <string name="codeShort">code too short</string>
     <string name="phoneReq">phone number is required</string>
     <string name="verCode">verify code sent through sms</string>
-    <string name="title_activity_create_poi">CreatePOIActivity</string>
+    <string name="title_activity_create_poi">Create POI Activity</string>
     <string name="poi_name_hint">Name</string>
     <string name="poi_button_text">Create</string>
     <string name="take_photo_text">Launch Camera</string>
-    <string name="title_activity_point_of_interest_details">PointOfInterestDetailsActivity</string>
+    <string name="title_activity_point_of_interest_details">Point Of Interest Details Activity</string>
 
+    <string name="welcome">Welcome to Dalilu App</string>
+    <string name="completeProfile">Complete profile</string>
+    <string name="welcomeNote">
+        <![CDATA[
+
+        Thank you creating an account with <b>Dalilu. </b>
+        Help us fight crime by reporting suspicious activities<br>
+<br>
+         <b>Please <b>TAKE NOTE</b> of the following</b>
+         <ol>
+        <li><b>When you feel unsafe send your location to at least three of your contacts list</b></li>
+        <li><b>Always capture a crime , accident and upload it</b></li>
+        <li><b>To enable a fast crime scene investigation please follow up on comments</b> </li>
+        <li><b>Report any suspicious / fraudulent account </b></li>
+        <li><b>Do not be rude, act professional<b></li>
+        </ol>
+        <br>
+        ]]>
+    </string>
     <!--location-->
     <string name="latitude_label">Latitude</string>
     <string name="longitude_label">Longitude</string>
@@ -62,14 +81,37 @@
     <string name="location_settings_inadequate_warning">The location settings on the device are not
         adequate to run this sample. Fix in Settings.</string>
 
-    <string name="permission_denied_explanation">Permission was denied, but is needed for core
-        functionality.</string>
+    <string name="permission_denied_explanation">Permission was denied, but is needed for app to
+        function well.</string>
 
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
+    <string name="permission_rationale">Location permissions are required to locate activities on map
     </string>
 
     <string name="settings">Settings</string>
+    <string name="accountSetUp">Account set up</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="nameRequired">name required</string>
+    <string name="enterName">Please enter name</string>
+    <string name="save">Save</string>
+    <string name="firstName">Enter first name</string>
+    <string name="lastName">Enter last name</string>
+    <string name="about">Briefly tell us about you</string>
+    <string name="aboutYou">About</string>
+    <string name="saveDetails">saving details please wait…</string>
+    <string name="abtReq">about field required</string>
+    <string name="fNameReq">first name is required</string>
+    <string name="lNameReq">last name is required</string>
+    <string name="successFull">Successful</string>
+    <string name="continueSetUp">Continue</string>
+    <string name="grantPerm">Grant permission</string>
+    <string name="ok">OK</string>
+    <string name="shareLocation">Share location</string>
+    <string name="errMsg">Location settings are inadequate, and cannot be </string>
+    <string name="fixIn">fixed here. Fix in Settings.</string>
+    <string name="logOut">Log out</string>
+    <string name="loc">Location: \n</string>
+    <string name="dt">Date reported: \n</string>
+    <string name="type_your_comments_here">Type your comments here</string>
     <string-array name="selectLanguage">
         <item>Please select language</item>
         <item>English</item>

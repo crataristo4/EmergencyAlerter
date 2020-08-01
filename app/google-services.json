@@ -1,42 +1,85 @@
 {
   "project_info": {
-    "project_number": "742528769890",
-    "firebase_url": "https://emergerncy-alerter.firebaseio.com",
-    "project_id": "emergerncy-alerter",
-    "storage_bucket": "emergerncy-alerter.appspot.com"
+    "project_number": "974479079573",
+    "firebase_url": "https://dalilu-app.firebaseio.com",
+    "project_id": "dalilu-app",
+    "storage_bucket": "dalilu-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:742528769890:android:ae3b8ee2737e9949fed63b",
+        "mobilesdk_app_id": "1:974479079573:android:d0e9e0056071e88d8a039c",
         "android_client_info": {
           "package_name": "com.dalilu"
         }
       },
       "oauth_client": [
         {
-          "client_id": "742528769890-q3rsuhusal571i0hsum2p9ivejc0oq5k.apps.googleusercontent.com",
+          "client_id": "974479079573-kkmcb7vmqtgdckmantl3uivf13s88n1s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.dalilu",
-            "certificate_hash": "121eaab94eddbfa943e99be4569dcefbe1f75093"
+            "certificate_hash": "da7561b20f26adaa23112ff0f75e340ff9f217a1"
           }
         },
         {
-          "client_id": "742528769890-v9i6e0g2c0nfvtaqidafuqabvkiopbln.apps.googleusercontent.com",
+          "client_id": "974479079573-8cde7p2js081s887qelgt675eaqjaseg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDKQFnTpAZUm3lYgS88yGzfePKQ6UNT5e0"
+          "current_key": "AIzaSyCP95iTxOgEBu0LUIZKH6W0Ka0Sidie-rU"
+        },
+        {
+          "current_key": "AIzaSyCGpjB9VD94943d9kuQiZWzi4bCB35PBb0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "742528769890-v9i6e0g2c0nfvtaqidafuqabvkiopbln.apps.googleusercontent.com",
+              "client_id": "974479079573-8cde7p2js081s887qelgt675eaqjaseg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:974479079573:android:830275247494ff418a039c",
+        "android_client_info": {
+          "package_name": "com.dalilu.police"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "974479079573-8t8afhhcpve7pk8lpruvafajice7is0a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dalilu.police",
+            "certificate_hash": "391c446debad8e0268a66c30ed06ebf08df6b30c"
+          }
+        },
+        {
+          "client_id": "974479079573-8cde7p2js081s887qelgt675eaqjaseg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP95iTxOgEBu0LUIZKH6W0Ka0Sidie-rU"
+        },
+        {
+          "current_key": "AIzaSyCGpjB9VD94943d9kuQiZWzi4bCB35PBb0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "974479079573-8cde7p2js081s887qelgt675eaqjaseg.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
