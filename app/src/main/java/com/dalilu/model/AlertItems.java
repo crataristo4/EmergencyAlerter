@@ -37,13 +37,14 @@ public class AlertItems extends BaseObservable {
     }
 
     //Video type constructor
-    public AlertItems(int type, String userName, String url, String userPhotoUrl, Object timeStamp) {
+    public AlertItems(int type, String userName, String url, String userPhotoUrl, Object timeStamp, String address) {
 
         this.type = type;
         this.userName = userName;
         this.url = url;
         this.userPhotoUrl = userPhotoUrl;
         this.timeStamp = timeStamp;
+        this.address = address;
 
 
     }

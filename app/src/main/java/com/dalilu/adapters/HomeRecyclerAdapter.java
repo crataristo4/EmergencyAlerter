@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -112,9 +113,9 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     ((VideoTypeViewHolder) holder).videoView.setVideoPath(proxyUrl);
                     ((VideoTypeViewHolder) holder).videoView.requestFocusFromTouch();
 
-                   /* MediaController mediaController = new MediaController(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getContext());
+                    MediaController mediaController = new MediaController(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getContext());
                     mediaController.setAnchorView(((VideoTypeViewHolder) holder).videoView);
-                    ((VideoTypeViewHolder) holder).videoView.setMediaController(mediaController);*/
+                    ((VideoTypeViewHolder) holder).videoView.setMediaController(mediaController);
 
                     break;
                 case AppConstants.IMAGE_TYPE:
@@ -211,10 +212,8 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     //view holder for videos
     static class VideoTypeViewHolder extends RecyclerView.ViewHolder {
         VideoTypeBinding videoTypeBinding;
-        TextView txtComments, txtCurrentTime, txtDuration;
+        TextView txtComments;
         VideoView videoView;
-        ImageView imgPlayOrPause;
-        ProgressBar vidProgress, bufferProgress;
 
 
         VideoTypeViewHolder(@NonNull VideoTypeBinding videoTypeBinding) {
@@ -222,11 +221,6 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             this.videoTypeBinding = videoTypeBinding;
             txtComments = videoTypeBinding.txtComments;
             videoView = videoTypeBinding.videoContentPreview;
-            txtCurrentTime = videoTypeBinding.txtCurrentTimer;
-            txtDuration = videoTypeBinding.txtDurationTimer;
-            imgPlayOrPause = videoTypeBinding.imgPlayBtn;
-            vidProgress = videoTypeBinding.videoProgress;
-            bufferProgress = videoTypeBinding.progressBar;
 
 
         }

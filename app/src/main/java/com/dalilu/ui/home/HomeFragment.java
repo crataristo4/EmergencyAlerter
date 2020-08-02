@@ -119,7 +119,8 @@ public class HomeFragment extends Fragment {
                             userName,
                             url,
                             userPhotoUrl,
-                            timeStamp
+                            timeStamp,
+                            address
                     ));
                 }
 
