@@ -106,7 +106,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             .into(((VideoTypeViewHolder) holder).videoTypeBinding.imgUserPhoto);
 
                     HttpProxyCacheServer proxy = Dalilu.getProxy(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getContext());
-                    String proxyUrl = proxy.getProxyUrl(object.getVideoUrl());
+                    String proxyUrl = proxy.getProxyUrl(object.getUrl());
 
 
                     ((VideoTypeViewHolder) holder).videoView.setVideoPath(proxyUrl);
@@ -131,7 +131,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                     //load images
                     Glide.with(((ImageTypeViewHolder) holder).imageTypeBinding.getRoot().getContext())
-                            .load(object.getAlertPhotoUrl())
+                            .load(object.getUrl())
                             .thumbnail(0.5f)
                             .apply(requestOptions)
                             .listener(new RequestListener<Drawable>() {
@@ -163,7 +163,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                         Intent commentsIntent = new Intent(view.getContext(), CommentsActivity.class);
                         commentsIntent.putExtra("alertItemId", object.getId());
-                        commentsIntent.putExtra("alertPhotoUrl", object.getAlertPhotoUrl());
+                        commentsIntent.putExtra("alertPhotoUrl", object.getUrl());
                         commentsIntent.putExtra("address", object.address);
                         commentsIntent.putExtra("datePosted", object.getDateReported());
 

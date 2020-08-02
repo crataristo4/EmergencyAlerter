@@ -140,13 +140,13 @@ public class CommentsActivity extends AppCompatActivity {
         String postComment = emojiconEditText.getText().toString();
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM HH:mm", Locale.ENGLISH);
-        String name = MainActivity.fullName;
+        String name = MainActivity.userName;
 
         String dateTime = simpleDateFormat.format(calendar.getTime());
         if (!postComment.trim().isEmpty()) {
             HashMap<String, Object> comments = new HashMap<>();
             comments.put("message", postComment);
-            comments.put("senderName", name);
+            comments.put("userName", name);
             comments.put("messageDateTime", dateTime);
 
             String randomId = databaseReference.push().getKey();

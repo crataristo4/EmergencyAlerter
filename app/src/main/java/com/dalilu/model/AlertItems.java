@@ -5,8 +5,7 @@ import androidx.databinding.Bindable;
 
 public class AlertItems extends BaseObservable {
     public String userName;
-    public String alertPhotoUrl;
-    public String videoUrl;
+    public String url;
     public String audioUrl;
     public String userPhotoUrl;
     public Object timeStamp;
@@ -14,7 +13,6 @@ public class AlertItems extends BaseObservable {
     public double longitude;
     public String dateReported;
     public String address;
-    public String fullName;
     public String phoneNumber;
     public String status;
     public String id;
@@ -24,13 +22,13 @@ public class AlertItems extends BaseObservable {
     }
 
     //Image type constructor
-    public AlertItems(int type, String fullName, String userPhotoUrl, String alertPhotoUrl, Object timeStamp,
+    public AlertItems(int type, String userName, String userPhotoUrl, String url, Object timeStamp,
                       String address, String id, String dateReported) {
 
         this.type = type;
-        this.fullName = fullName;
+        this.userName = userName;
         this.userPhotoUrl = userPhotoUrl;
-        this.alertPhotoUrl = alertPhotoUrl;
+        this.url = url;
         this.timeStamp = timeStamp;
         this.address = address;
         this.id = id;
@@ -39,11 +37,11 @@ public class AlertItems extends BaseObservable {
     }
 
     //Video type constructor
-    public AlertItems(int type, String userName, String videoUrl, String userPhotoUrl, Object timeStamp) {
+    public AlertItems(int type, String userName, String url, String userPhotoUrl, Object timeStamp) {
 
         this.type = type;
         this.userName = userName;
-        this.videoUrl = videoUrl;
+        this.url = url;
         this.userPhotoUrl = userPhotoUrl;
         this.timeStamp = timeStamp;
 
@@ -82,20 +80,13 @@ public class AlertItems extends BaseObservable {
         this.userName = userName;
     }
 
-    public String getAlertPhotoUrl() {
-        return alertPhotoUrl;
+
+    public String getUrl() {
+        return url;
     }
 
-    public void setAlertPhotoUrl(String alertPhotoUrl) {
-        this.alertPhotoUrl = alertPhotoUrl;
-    }
-
-    public String getVideoUrl() {
-        return videoUrl;
-    }
-
-    public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getAudioUrl() {
@@ -154,15 +145,6 @@ public class AlertItems extends BaseObservable {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    @Bindable
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
     }
 
     @Bindable

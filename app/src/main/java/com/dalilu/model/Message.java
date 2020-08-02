@@ -21,7 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Message extends BaseObservable {
     public static final int ITEM_TYPE_SENT = 0;
     public static final int ITEM_TYPE_RECEIVED = 1;
-    public String senderName, receiverName;
+    public String userName, receiverName;
     public String messageDateTime;
     private String senderId, receiverId;
     private String senderPhoto, receiverPhoto;
@@ -72,12 +72,12 @@ public class Message extends BaseObservable {
     }
 
     @Bindable
-    public String getSenderName() {
-        return senderName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     @Bindable

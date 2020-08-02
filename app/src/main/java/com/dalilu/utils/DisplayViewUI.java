@@ -18,10 +18,41 @@ import com.dalilu.R;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.security.SecureRandom;
 import java.util.Objects;
 import java.util.Random;
 
 public class DisplayViewUI {
+
+
+    public static String getAlphaNumericString(int n) {
+
+        // lower limit for LowerCase Letters
+        int lowerLimit = 97;
+
+        // lower limit for LowerCase Letters
+        int upperLimit = 122;
+
+
+        SecureRandom random = new SecureRandom();
+
+        // Create a StringBuffer to store the result
+        StringBuilder r = new StringBuilder(n);
+
+        for (int i = 0; i < n; i++) {
+
+            // take a random value between 97 and 122
+            int nextRandomChar = lowerLimit
+                    + (int) (random.nextFloat()
+                    * (upperLimit - lowerLimit + 1));
+
+            // append a character at the end of bs
+            r.append((char) nextRandomChar);
+        }
+
+        // return the resultant string
+        return r.toString();
+    }
 
 
     private static ColorDrawable[] vibrantLightColorList =

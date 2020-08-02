@@ -21,6 +21,8 @@ import com.dalilu.utils.DisplayViewUI;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -36,9 +38,10 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
     private CircleImageView imgUserPhoto;
     private StorageReference mStorageReference;
     private DatabaseReference usersDbRef;
+    private CollectionReference usersCollection;
     private String uid, getImageUri, phoneNumber;
     private Uri uri;
-    private TextInputLayout txtFirstName, txtLastName, txtAbout;
+    private TextInputLayout txtUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +49,8 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
         activityFinishAccountSetupBinding = DataBindingUtil.setContentView(this, R.layout.activity_finish_account_setup);
 
         imgUserPhoto = activityFinishAccountSetupBinding.imgUploadPhoto;
-        txtFirstName = activityFinishAccountSetupBinding.txtFirstName;
-        txtLastName = activityFinishAccountSetupBinding.txtLastName;
-        txtAbout = activityFinishAccountSetupBinding.txtAbout;
+        txtUserName = activityFinishAccountSetupBinding.txtUserName;
+
         Intent getUserData = getIntent();
         if (getUserData != null) {
             uid = getUserData.getStringExtra(AppConstants.UID);
@@ -63,6 +65,7 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
 
 //database reference
         usersDbRef = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+        usersCollection = FirebaseFirestore.getInstance().collection("Users");
         //storage reference
         mStorageReference = FirebaseStorage.getInstance().getReference("user photos");
 
@@ -97,38 +100,21 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
 
 
     private void uploadFile() {
-        String fName = Objects.requireNonNull(txtFirstName.getEditText()).getText().toString();
-        String lName = Objects.requireNonNull(txtLastName.getEditText()).getText().toString();
-        String about = Objects.requireNonNull(txtAbout.getEditText()).getText().toString();
+        String userName = Objects.requireNonNull(txtUserName.getEditText()).getText().toString();
 
 
-        //validations for about
-        if (about.trim().isEmpty()) {
-            txtAbout.setErrorEnabled(true);
-            txtAbout.setError(getString(R.string.abtReq));
-        } else {
-            txtAbout.setErrorEnabled(false);
-        }
+        //validations for user name
+        if (userName.trim().isEmpty()) {
+            int numberOfLetters = 6;
+            userName = DisplayViewUI.getAlphaNumericString(numberOfLetters);
 
-        //validations for first name
-        if (fName.trim().isEmpty()) {
-            txtFirstName.setErrorEnabled(true);
-            txtFirstName.setError(getString(R.string.fNameReq));
-        } else {
-            txtFirstName.setErrorEnabled(false);
-        }
+            txtUserName.getEditText().setText(userName);
 
-        //validations for last name
-        if (lName.trim().isEmpty()) {
-            txtLastName.setErrorEnabled(true);
-            txtLastName.setError(getString(R.string.lNameReq));
-        } else {
-            txtLastName.setErrorEnabled(false);
         }
 
 
         //push to db
-        if (uri != null && !fName.trim().isEmpty() && !lName.trim().isEmpty() && !about.trim().isEmpty()) {
+        if (uri != null) {
 
             ProgressDialog progressDialog = DisplayViewUI.displayProgress(this, getString(R.string.saveDetails));
             progressDialog.show();
@@ -136,6 +122,7 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
             //  file path for the itemImage
             final StorageReference fileReference = mStorageReference.child(uid + "." + uri.getLastPathSegment());
 
+            String finalUserName = userName;
             fileReference.putFile(uri).continueWithTask(task -> {
                 if (!task.isSuccessful()) {
                     progressDialog.dismiss();
@@ -153,11 +140,30 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
 
                     Map<String, Object> accountInfo = new HashMap<>();
                     accountInfo.put("userPhotoUrl", getImageUri);
-                    accountInfo.put("firstName", fName);
-                    accountInfo.put("lastName", lName);
-                    accountInfo.put("about", about);
+                    accountInfo.put("userName", finalUserName);
                     accountInfo.put("phoneNumber", phoneNumber);
+                    accountInfo.put("userId", uid);
 
+
+                    usersCollection.document(uid).set(accountInfo).addOnCompleteListener(task1 -> {
+
+                        if (task1.isSuccessful()) {
+                            progressDialog.dismiss();
+                            DisplayViewUI.displayToast(FinishAccountSetupActivity.this, getString(R.string.successFull));
+                            Intent intent = new Intent(FinishAccountSetupActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            FinishAccountSetupActivity.this.finishAffinity();
+
+                        } else {
+                            progressDialog.dismiss();
+                            DisplayViewUI.displayToast(FinishAccountSetupActivity.this, Objects.requireNonNull(task1.getException()).getMessage());
+
+                        }
+
+                    });
+
+/*
                     usersDbRef.setValue(accountInfo).addOnCompleteListener(task12 -> {
                         if (task12.isSuccessful()) {
                             progressDialog.dismiss();
@@ -174,6 +180,7 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
 
                         }
                     });
+*/
 
 
                 } else {
@@ -183,6 +190,8 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
                 }
 
             });
+        } else {
+            DisplayViewUI.displayToast(FinishAccountSetupActivity.this, getString(R.string.plsSlct));
         }
     }
 

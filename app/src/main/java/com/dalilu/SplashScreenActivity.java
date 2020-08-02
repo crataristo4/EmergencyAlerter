@@ -7,27 +7,30 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.dalilu.databinding.ActivitySplashScreenBinding;
 import com.dalilu.ui.auth.PhoneAuthActivity;
 import com.dalilu.utils.AppConstants;
+import com.dalilu.utils.DisplayViewUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Objects;
 
 
 public class SplashScreenActivity extends AppCompatActivity {
     Intent intent;
     private ActivitySplashScreenBinding activitySplashScreenBinding;
     private DatabaseReference usersDbRef, usersDetails;
-    private String uid, phoneNumber, firstName, lastName, userPhotoUrl;
+    private CollectionReference usersCollectionRef;
+    private String uid, phoneNumber, userName, userPhotoUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +62,65 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                 Log.i("Id: ", uid);
 
-                usersDbRef = FirebaseDatabase.getInstance().getReference().child("Users");
+                // usersDbRef = FirebaseDatabase.getInstance().getReference().child("Users");
+                usersCollectionRef = FirebaseFirestore.getInstance().collection("Users");
 
-                usersDbRef.addValueEventListener(new ValueEventListener() {
+                usersCollectionRef.get().addOnCompleteListener(task -> {
+
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().getDocuments().isEmpty()) {
+                            DocumentReference usersDocDbRef = usersCollectionRef.document(uid);
+
+                            usersDocDbRef.get().addOnCompleteListener(task1 -> {
+
+                                if (task1.isSuccessful()) {
+                                    DocumentSnapshot document = task1.getResult();
+                                    if (document != null && document.exists()) {
+                                        //Log.d("userName", Objects.requireNonNull(document.getString("userName")));
+                                        //Log.d("phone", Objects.requireNonNull(document.getString("phoneNumber")));
+                                        //Log.d("photo", Objects.requireNonNull(document.getString("userPhotoUrl")));
+
+                                        userPhotoUrl = Objects.requireNonNull(document.getString("userPhotoUrl"));
+                                        userName = Objects.requireNonNull(document.getString("userName"));
+                                        phoneNumber = Objects.requireNonNull(document.getString("phoneNumber"));
+
+                                        intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                                        intent.putExtra(AppConstants.UID, uid);
+                                        intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
+                                        intent.putExtra(AppConstants.USER_NAME, userName);
+                                        intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
+
+                                    } else {
+
+                                        intent = new Intent(SplashScreenActivity.this, FinishAccountSetupActivity.class);
+                                        intent.putExtra(AppConstants.UID, uid);
+                                        intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+
+                                    }
+
+                                    startActivity(intent);
+                                    SplashScreenActivity.this.finishAffinity();
+
+                                } else {
+
+                                    DisplayViewUI.displayToast(SplashScreenActivity.this, task1.getException().getMessage());
+
+
+                                }
+
+                            });
+
+
+                        }
+                    }
+
+                });
+
+
+
+            /*   usersDbRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -73,15 +132,13 @@ public class SplashScreenActivity extends AppCompatActivity {
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                                     userPhotoUrl = (String) snapshot.child("userPhotoUrl").getValue();
-                                    firstName = (String) snapshot.child("firstName").getValue();
-                                    lastName = (String) snapshot.child("lastName").getValue();
+                                    userName = (String) snapshot.child("userName").getValue();
 
 
                                     intent = new Intent(SplashScreenActivity.this, MainActivity.class);
                                     intent.putExtra(AppConstants.UID, uid);
                                     intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
-                                    intent.putExtra(AppConstants.FIRST_NAME, firstName);
-                                    intent.putExtra(AppConstants.LAST_NAME, lastName);
+                                    intent.putExtra(AppConstants.USER_NAME, userName);
                                     intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
@@ -113,7 +170,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                     }
                 });
-
+*/
 
             } else {
                 //Opens the Phone Auth Activity once the time elapses

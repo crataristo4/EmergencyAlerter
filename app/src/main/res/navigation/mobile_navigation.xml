@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_contacts"
-        android:name="com.dalilu.ui.notifications.ContactsFragment"
+        android:name="com.dalilu.ui.contacts.ContactsFragment"
         android:label="@string/title_contacts"
         tools:layout="@layout/fragment_contacts" />
 </navigation>

@@ -32,12 +32,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity
+            android:name=".EditProfileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SearchContactActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ReportActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FinishAccountSetupActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".ui.PointOfInterestActivity" />
         <activity
             android:name=".SplashScreenActivity"
@@ -68,13 +79,10 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".CommentsActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".CameraActivity" />
         <activity
             android:name=".MainActivity"

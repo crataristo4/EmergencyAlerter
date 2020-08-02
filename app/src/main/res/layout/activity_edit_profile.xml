@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".FinishAccountSetupActivity">
+        tools:context=".EditProfileActivity">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolBarCompleteProfile"
@@ -18,7 +18,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:title="@string/accountSetUp" />
+            app:title="@string/editProfile" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
@@ -82,11 +82,40 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/eightDp"
-                            android:textColorHint="@color/black"
                             android:background="@drawable/textinputbackground"
-                            app:counterEnabled="true"
+                            android:textColorHint="@color/black"
                             app:boxBackgroundMode="outline"
+                            app:boxCornerRadiusBottomEnd="@dimen/twentyFourDp"
+                            app:boxCornerRadiusBottomStart="@dimen/twentyFourDp"
+                            app:boxCornerRadiusTopEnd="@dimen/twentyFourDp"
+                            app:boxCornerRadiusTopStart="@dimen/twentyFourDp"
+                            app:boxStrokeColor="@color/purple"
+                            app:counterEnabled="true"
                             app:counterMaxLength="10"
+                            app:helperTextTextColor="@color/white">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/enterName"
+                                android:inputType="textCapWords"
+                                android:maxLength="10"
+                                android:selectAllOnFocus="true"
+                                android:singleLine="true"
+                                android:textColor="@color/black" />
+
+                            <requestFocus />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/txtPhone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/eightDp"
+                            android:background="@drawable/textinputbackground"
+                            android:textColorHint="@color/black"
+                            app:boxBackgroundMode="outline"
                             app:boxCornerRadiusBottomEnd="@dimen/twentyFourDp"
                             app:boxCornerRadiusBottomStart="@dimen/twentyFourDp"
                             app:boxCornerRadiusTopEnd="@dimen/twentyFourDp"
@@ -97,26 +126,17 @@
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/enterUserName"
-                                android:textColor="@color/black"
-                                android:inputType="textCapWords"
-                                android:maxLength="10"
+                                android:enabled="false"
+                                android:hint="@string/phoneNumber"
+                                android:inputType="phone"
                                 android:selectAllOnFocus="true"
-                                android:singleLine="true" />
+                                android:singleLine="true"
+                                android:textColor="@color/black" />
 
                             <requestFocus />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <TextView
-                            android:id="@+id/textView2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/eightDp"
-                            android:padding="@dimen/eightDp"
-                            android:text="@string/if_you_choose_not_to_provide_a_name_a_random_name_will_be_generated_for_you_as_a_user_name"
-                            android:textColor="@color/colorRed"
-                            android:textSize="18sp" />
 
                         <Button
                             android:id="@+id/btnSave"

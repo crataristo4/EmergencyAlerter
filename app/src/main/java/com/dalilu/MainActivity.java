@@ -1,9 +1,6 @@
 package com.dalilu;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -11,17 +8,11 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.navigation.NavController;
@@ -31,9 +22,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.dalilu.databinding.ActivityMainBinding;
 import com.dalilu.utils.AppConstants;
-import com.dalilu.utils.CameraUtils;
 import com.dalilu.utils.DisplayViewUI;
-import com.dalilu.utils.GetTimeAgo;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -46,35 +35,15 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
-import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
 
 public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
-    public static String fullName, firstName, lastName, userPhotoUrl, about, uid;
+    public static String userName, userPhotoUrl;
     /**
      * Provides access to the Fused Location Provider API.
      */
@@ -105,20 +74,18 @@ public class MainActivity extends BaseActivity {
      * Start Updates and Stop Updates buttons.
      */
     private Boolean mRequestingLocationUpdates;
-    private static String imageStoragePath;
+
     private static Object mContext;
     private ActivityMainBinding activityMainBinding;
-    private StorageReference imageStorageRef, filePath;
-    private Uri uri = null;
-    private DatabaseReference dbRef;
-    private ProgressDialog pd;
+
     /**
      * Time when the location was updated represented as a String.
      */
-    private String mLastUpdateTime, knownName, state, country, phoneNumber, userId;
+    public static String mLastUpdateTime, knownName, state, country, phoneNumber, userId;
+    public static double latitude, longitude;
     private Geocoder geocoder;
     private List<Address> addressList;
-    private CollectionReference alertCollectionReference;
+
 
     public static Context getAppContext() {
         return (Context) mContext;
@@ -131,16 +98,14 @@ public class MainActivity extends BaseActivity {
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mContext = getApplicationContext();
 
+        Log.i(TAG, "Random name" + DisplayViewUI.getAlphaNumericString(6));
+
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
 
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
 
-
-        imageStorageRef = FirebaseStorage.getInstance().getReference().child("alerts");
-        dbRef = FirebaseDatabase.getInstance().getReference().child("alerts");
-        alertCollectionReference = FirebaseFirestore.getInstance().collection("Alerts");
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mSettingsClient = LocationServices.getSettingsClient(this);
@@ -244,8 +209,8 @@ public class MainActivity extends BaseActivity {
             Log.i(TAG, String.format(Locale.ENGLISH, "%s: %s",
                     "last update", mLastUpdateTime));
 
-            double latitude = mCurrentLocation.getLatitude();
-            double longitude = mCurrentLocation.getLongitude();
+            latitude = mCurrentLocation.getLatitude();
+            longitude = mCurrentLocation.getLongitude();
 
 
             try {
@@ -257,7 +222,7 @@ public class MainActivity extends BaseActivity {
                     country = addressList.get(0).getCountryName();
                     knownName = addressList.get(0).getFeatureName();
 
-                    Log.i(TAG, "name" + fullName + " State " + state + ", Country " + country + " ,known name" + knownName);
+                    Log.i(TAG, "name" + userName + " State " + state + ", Country " + country + " ,known name" + knownName);
 
                 }
 
@@ -296,24 +261,7 @@ public class MainActivity extends BaseActivity {
 
         });
 
-
-        filePath = imageStorageRef.child(UUID.randomUUID().toString());
-
-        activityMainBinding.capture.setOnClickListener(v -> {
-            if (CameraUtils.checkPermissions(v.getContext())) {
-                captureImage();
-            } else {
-                requestCameraPermission(AppConstants.MEDIA_TYPE_IMAGE);
-            }
-        });
-
-        activityMainBinding.recordVideo.setOnClickListener(v -> {
-            if (CameraUtils.checkPermissions(v.getContext())) {
-                captureVideo();
-            } else {
-                requestCameraPermission(AppConstants.MEDIA_TYPE_IMAGE);
-            }
-        });
+        activityMainBinding.searchContact.setOnClickListener(view -> startActivity(new Intent(view.getContext(), SearchContactActivity.class)));
 
         activityMainBinding.logOut.setOnClickListener(view -> {
 
@@ -323,250 +271,37 @@ public class MainActivity extends BaseActivity {
 
         });
 
+        activityMainBinding.editProfile.setOnClickListener(view -> startActivity(new Intent(view.getContext(), EditProfileActivity.class)));
+
         Intent getUserDetailsIntent = getIntent();
         if (getUserDetailsIntent != null) {
 
-            firstName = getUserDetailsIntent.getStringExtra(AppConstants.FIRST_NAME);
-            lastName = getUserDetailsIntent.getStringExtra(AppConstants.LAST_NAME);
+            userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
             userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
             userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
             phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
-            fullName = firstName + " " + lastName;
 
-            Log.i(TAG, "initViews: " + fullName);
 
         }
 
+        // TODO: 8/1/2020  check internet before opening page
 
-    }
+        activityMainBinding.report.setOnClickListener(v -> {
+            Intent reportIntent = new Intent(v.getContext(), ReportActivity.class);
+            reportIntent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
+            reportIntent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
+            reportIntent.putExtra(AppConstants.USER_NAME, userName);
+            reportIntent.putExtra(AppConstants.STATE, state);
+            reportIntent.putExtra(AppConstants.COUNTRY, country);
+            reportIntent.putExtra(AppConstants.KNOWN_LOCATION, knownName);
 
-    /**
-     * Capturing Camera Image will launch camera app requested image capture
-     */
-    private void captureImage() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        File file = CameraUtils.getOutputMediaFile(AppConstants.MEDIA_TYPE_IMAGE);
-        if (file != null) {
-            imageStoragePath = file.getAbsolutePath();
-        }
-
-        Uri fileUri = CameraUtils.getOutputMediaFileUri(MainActivity.this, file);
-
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-
-        // start the image capture Intent
-        startActivityForResult(intent, AppConstants.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
-    }
-
-    /**
-     * Launching camera app to record video
-     */
-    private void captureVideo() {
-        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-
-        File file = CameraUtils.getOutputMediaFile(AppConstants.MEDIA_TYPE_VIDEO);
-        if (file != null) {
-            imageStoragePath = file.getAbsolutePath();
-        }
-
-        Uri fileUri = CameraUtils.getOutputMediaFileUri(MainActivity.this, file);
-
-        // set video quality
-        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 20);
-        intent.putExtra(String.valueOf(MediaRecorder.VideoEncoder.MPEG_4_SP), 1);
-
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file
-
-        // start the video capture Intent
-        startActivityForResult(intent, AppConstants.CAMERA_CAPTURE_VIDEO_REQUEST_CODE);
-    }
-
-    /**
-     * Requesting permissions using Dexter library
-     */
-    private void requestCameraPermission(final int type) {
-
-        Dexter.withContext(MainActivity.this)
-                .withPermissions(Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.RECORD_AUDIO)
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        if (report.areAllPermissionsGranted()) {
-
-                            if (type == AppConstants.MEDIA_TYPE_IMAGE) {
-                                // capture picture
-                                captureImage();
-                            } else {
-                                captureVideo();
-                            }
-
-                        } else if (report.isAnyPermissionPermanentlyDenied()) {
-                            showPermissionsAlert();
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                }).check();
-    }
-
-    /**
-     * Alert dialog to navigate to app settings
-     * to enable necessary permissions
-     */
-    private void showPermissionsAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle(R.string.perRequired)
-                .setMessage(R.string.camPerm)
-                .setPositiveButton(R.string.goToSettings, (dialog, which) -> CameraUtils.openSettings(MainActivity.this))
-                .setNegativeButton(R.string.cancel, (dialog, which) -> {
-
-                }).show();
-    }
-
-    private void uploadToServer(Uri imageUri, String type) {
-        //display loading
-        pd = DisplayViewUI.displayProgress(MainActivity.this, getString(R.string.uploadingPleaseWait));
-        pd.show();
-
-        double latitude = mCurrentLocation.getLatitude();
-        double longitude = mCurrentLocation.getLongitude();
-
-        StringBuilder address = new StringBuilder();
-        address.append(knownName).append(",").append(state).append(",").append(country);
-        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:MM a");
-        String dateReported = dateFormat.format(Calendar.getInstance().getTime());
-
-
-        //upload photo to server
-        filePath.putFile(imageUri).continueWithTask(task -> {
-            if (!task.isSuccessful()) {
-                pd.dismiss();
-
-            }
-            return filePath.getDownloadUrl();
-
-        }).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-
-                Uri downLoadUri = task.getResult();
-                assert downLoadUri != null;
-                String url = downLoadUri.toString();
-
-                Map<String, Object> alertItems = new HashMap<>();
-                alertItems.put("fullName", fullName);
-                alertItems.put("firstName", firstName);
-                alertItems.put("lastName", lastName);
-                alertItems.put("userPhotoUrl", userPhotoUrl);
-                alertItems.put("alertPhotoUrl", url);
-                alertItems.put(type, type);
-                alertItems.put("coordinates", new GeoPoint(latitude, longitude));
-                alertItems.put("address", address.toString());
-                alertItems.put("userId", userId);
-                alertItems.put("phoneNumber", phoneNumber);
-                alertItems.put("timeStamp", GetTimeAgo.getTimeInMillis());
-                alertItems.put("dateReported", dateReported);
-
-
-                //fire store cloud store
-                alertCollectionReference.add(alertItems).addOnCompleteListener(task2 -> {
-
-                    if (task2.isSuccessful()) {
-
-                        pd.dismiss();
-                        DisplayViewUI.displayToast(MainActivity.this, getString(R.string.reportSuccess));
-
-
-                    } else {
-                        pd.dismiss();
-                        DisplayViewUI.displayToast(this, Objects.requireNonNull(task2.getException()).getMessage());
-
-                    }
-
-                });
-
-            } else {
-                pd.dismiss();
-                DisplayViewUI.displayToast(MainActivity.this, Objects.requireNonNull(task.getException()).getMessage());
-
-            }
+            startActivity(reportIntent);
 
         });
 
 
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Check for the integer request code originally supplied to startResolutionForResult().
-        if (requestCode == AppConstants.REQUEST_CHECK_SETTINGS) {
-            switch (resultCode) {
-                case Activity.RESULT_OK:
-                    Log.i(TAG, "User agreed to make required location settings changes.");
-                    // Nothing to do. startLocation updates() gets called in onResume again.
-                    break;
-                case Activity.RESULT_CANCELED:
-                    Log.i(TAG, "User chose not to make required location settings changes.");
-                    mRequestingLocationUpdates = false;
-                    // updateUI();
-                    break;
-            }
-        }
-
-
-        if (requestCode == AppConstants.CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-
-//todo change the name of the images uploaded to the server
-
-                // Refreshing the gallery
-                CameraUtils.refreshGallery(MainActivity.this, imageStoragePath);
-                //CameraUtils.optimizeBitmap(10,imageStoragePath);
-                uri = CameraUtils.getOutputMediaFileUri(MainActivity.this, new File(imageStoragePath));
-                uploadToServer(uri, "image");
-
-
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                // user cancelled Image capture
-                Toast.makeText(MainActivity.this,
-                        R.string.captureCanceled, Toast.LENGTH_SHORT)
-                        .show();
-            } else {
-                // failed to capture image
-                Toast.makeText(MainActivity.this,
-                        R.string.failedToCapture, Toast.LENGTH_SHORT)
-                        .show();
-            }
-        } else if (requestCode == AppConstants.CAMERA_CAPTURE_VIDEO_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                // Refreshing the gallery
-                CameraUtils.refreshGallery(MainActivity.this, imageStoragePath);
-
-                uri = CameraUtils.getOutputMediaFileUri(MainActivity.this, new File(imageStoragePath));
-
-                uploadToServer(uri, "video");
-
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                // user cancelled recording
-                Toast.makeText(MainActivity.this,
-                        R.string.vidRecCanceled, Toast.LENGTH_SHORT)
-                        .show();
-            } else {
-                // failed to record video
-                Toast.makeText(MainActivity.this,
-                        R.string.sorryVidFailed, Toast.LENGTH_SHORT)
-                        .show();
-            }
-        }
-    }
 
     /**
      * Callback received when a permissions request has been completed.

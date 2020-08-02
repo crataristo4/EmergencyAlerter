@@ -95,27 +95,29 @@ public class HomeFragment extends Fragment {
                 //get data from model
 
                 String address = alertItems.getAddress();
-                String alertPhotoUrl = alertItems.getAlertPhotoUrl();
-                String userName = alertItems.getFullName();
+                String userName = alertItems.getUserName();
                 String phoneNumber = alertItems.getPhoneNumber();
                 long timeStamp = alertItems.getTimeStamp();
                 String userPhotoUrl = alertItems.getUserPhotoUrl();
-                String alertItemVideoUrl = alertItems.getVideoUrl();
-                String alertItemAudioUrl = alertItems.getAudioUrl();
+                String url = alertItems.getUrl();
+
                 String id = ds.getId();
                 String dateReported = alertItems.getDateReported();
 //group data by images
                 if (ds.getData().containsKey("image")) {
 
+
                     arrayList.add(new AlertItems(AppConstants.IMAGE_TYPE,
-                            userName, userPhotoUrl, alertPhotoUrl, timeStamp, address, id, dateReported));
+                            userName, userPhotoUrl, url, timeStamp, address, id, dateReported));
 
                 }
                 //group data by Videos
-                else if (ds.getData().containsKey("videoUrl")) {
+                else if (ds.getData().containsKey("video")) {
+
+
                     arrayList.add(new AlertItems(AppConstants.VIDEO_TYPE,
                             userName,
-                            alertItemVideoUrl,
+                            url,
                             userPhotoUrl,
                             timeStamp
                     ));

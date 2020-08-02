@@ -62,6 +62,7 @@
                     android:layout_margin="@dimen/eightDp"
                     android:textColorHint="@color/black"
                     app:boxBackgroundMode="outline"
+                    android:background="@drawable/textinputbackground"
                     app:boxCornerRadiusBottomEnd="@dimen/twentyFourDp"
                     app:boxCornerRadiusBottomStart="@dimen/twentyFourDp"
                     app:boxCornerRadiusTopEnd="@dimen/twentyFourDp"
