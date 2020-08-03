@@ -15,7 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/eightDp"
-        android:padding="@dimen/eightDp"
         app:cardCornerRadius="@dimen/eightDp">
 
 
@@ -24,31 +23,29 @@
             android:layout_height="wrap_content">
 
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/imgContactPhoto"
-            userPhotoUrl="@{users.userPhotoUrl}"
-            android:layout_width="@dimen/eightyDp"
-            android:layout_height="@dimen/eightyDp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/applogo"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgContactPhoto"
+                userPhotoUrl="@{users.userPhotoUrl}"
+                android:layout_width="@dimen/user_icon_width"
+                android:layout_height="@dimen/user_icon_height"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/applogo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/txtFullName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="@{String.valueOf(users.userName)}"
-                app:layout_constraintEnd_toStartOf="@+id/btnAddContact"
+                app:layout_constraintEnd_toStartOf="@+id/checkBox"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/imgContactPhoto"
-                app:layout_constraintTop_toTopOf="@+id/imgContactPhoto" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/txtPhoneNumber"
@@ -57,33 +54,55 @@
                 android:layout_marginTop="8dp"
                 android:text="@{users.phoneNumber}"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/txtFullName"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/txtFullName"
-                app:layout_constraintTop_toBottomOf="@+id/txtFullName"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toBottomOf="@+id/txtFullName" />
 
             <Button
                 android:id="@+id/btnAddContact"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/buttonstyleblue"
-                android:text="@string/add"
-                android:textColor="@color/white"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bottomsheetbg"
+                android:drawableEnd="@drawable/ic_gps"
+                android:drawablePadding="@dimen/eightDp"
+                android:padding="@dimen/eightDp"
+                android:text="@string/sendLocation"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtPhoneNumber" />
 
             <CheckBox
                 android:id="@+id/checkBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnAddContact" />
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/progressLoadImage"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/imgContactPhoto"
+                app:layout_constraintEnd_toEndOf="@+id/imgContactPhoto"
+                app:layout_constraintStart_toStartOf="@+id/imgContactPhoto"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </androidx.cardview.widget.CardView>
 </layout>

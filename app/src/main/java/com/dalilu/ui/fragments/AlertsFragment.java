@@ -1,4 +1,4 @@
-package com.dalilu.ui.dashboard;
+package com.dalilu.ui.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

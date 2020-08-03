@@ -24,7 +24,7 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgContactPhoto"
-                userPhotoUrl="@{users.receiverPhoto}"
+                userPhotoUrl="@{users.senderPhoto}"
                 android:layout_width="@dimen/margin_huge"
                 android:layout_height="@dimen/margin_huge"
                 android:layout_marginStart="8dp"
@@ -43,7 +43,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="@{String.valueOf(users.receiverName)}"
+                android:text="@{String.valueOf(users.senderName)}"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/btnAddContact"
                 app:layout_constraintHorizontal_bias="0.0"

@@ -18,7 +18,7 @@
     <string name="directory">repertoire</string>
     <string name="captureCanceled">Capture d\'ecran annullee</string>
     <string name="failedToCapture">Desole! Echec de la capture d\'image</string>
-    <string name="uploadingPleaseWait">Attendez,transfert en cours...</string>
+    <string name="uploadingPleaseWait">Attendez,transfert en cours…</string>
     <string name="perRequired">Autorisation requise!</string>
     <string name="camPerm">La camera a besoin de certaines autorisations pour fonctionner correctement. Accordez lui les dans les parametres</string>
     <string name="goToSettings">Allez dans les parametres</string>
@@ -59,7 +59,7 @@
     <string name="start_updates">Commencer la mise a jour</string>
     <string name="stop_updates">Arreter la mise a jour</string>
     <string name="location_settings_inadequate_warning">Les parametres de localisation sur l\'appareil ne sont pas corrects</string>
-    <string name="permission_denied_explanation">Autorisation etait refuse mais elle est necessaire pour l\'application ...</string>
+    <string name="permission_denied_explanation">Autorisation etait refuse mais elle est necessaire pour l\'application …</string>
     <string name="permission_rationale">Autorisation de localisation est obligatoire pour reperer l\'activite sur la carte</string>
     <string name="settings">Parametres</string>
     <string name="accountSetUp">Parametre de compte</string>
@@ -80,10 +80,10 @@
     <string name="grantPerm">Autorisation accordee</string>
     <string name="ok">OK</string>
     <string name="shareLocation">Partager votre localisation</string>
-    <string name="errMsg">Les parametres de localisation sont inexacts et ne peuvent pas...</string>
+    <string name="errMsg">Les parametres de localisation sont inexacts et ne peuvent pas…</string>
     <string name="fixIn">"Ils sont corriges ici. Dans les parametres. "</string>
     <string name="logOut">Se deconnecter</string>
-    <string name="loc">Localisation: [...]</string>
-    <string name="dt">Date renseignee: [...]</string>
+    <string name="loc">Localisation: \n</string>
+    <string name="dt">Date renseignee: \n</string>
     <string name="type_your_comments_here">Tapez vos commentaires ici.</string>
 </resources>

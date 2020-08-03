@@ -1,4 +1,4 @@
-package com.dalilu.ui.home;
+package com.dalilu.ui.fragments;
 
 import android.os.Bundle;
 import android.os.Handler;

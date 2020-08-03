@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.dalilu.ui.home.HomeFragment"
+        android:name="com.dalilu.ui.fragments.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_alerts"
-        android:name="com.dalilu.ui.dashboard.AlertsFragment"
-        android:label="@string/title_dashboard"
+        android:name="com.dalilu.ui.fragments.AlertsFragment"
+        android:label="@string/title_alerts"
         tools:layout="@layout/fragment_alerts" />
 
     <fragment
         android:id="@+id/navigation_contacts"
-        android:name="com.dalilu.ui.contacts.ContactsFragment"
+        android:name="com.dalilu.ui.fragments.ContactsFragment"
         android:label="@string/title_contacts"
         tools:layout="@layout/fragment_contacts" />
 </navigation>

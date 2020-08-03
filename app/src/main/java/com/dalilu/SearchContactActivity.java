@@ -2,8 +2,8 @@ package com.dalilu;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.SearchView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,12 +23,18 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SearchContactActivity extends AppCompatActivity {
     private ActivitySearchContactBinding activitySearchContactBinding;
     private CollectionReference usersDbReF;
     private ContactsAdapter adapter;
+    Button btnAdd;
+    DatabaseReference requestDbRef;
+    String receiverName;
+    String receiverPhotoUrl;
+    String receiverId;
 
 
     @Override
@@ -36,9 +42,11 @@ public class SearchContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         activitySearchContactBinding = DataBindingUtil.setContentView(this, R.layout.activity_search_contact);
 
+
         RecyclerView rv = activitySearchContactBinding.recyclerViewContacts;
         rv.setHasFixedSize(true);
         usersDbReF = FirebaseFirestore.getInstance().collection("Users");
+        requestDbRef = FirebaseDatabase.getInstance().getReference("Friends");
 
         activitySearchContactBinding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -68,31 +76,43 @@ public class SearchContactActivity extends AppCompatActivity {
 
                 adapter.setOnItemClickListener((v, position) -> {
 
-                    DatabaseReference requestDbRef = FirebaseDatabase.getInstance().getReference("Friends");
-                    String requestId = requestDbRef.push().getKey();
-                    assert requestId != null;
 
                     //receiver details
-                    String receiverName = adapter.getItem(position).getUserName();
-                    String receiverPhotoUrl = adapter.getItem(position).getUserPhotoUrl();
-                    String receiverId = adapter.getItem(position).getUserId();
+                    receiverName = adapter.getItem(position).getUserName();
+                    receiverPhotoUrl = adapter.getItem(position).getUserPhotoUrl();
+                    receiverId = adapter.getItem(position).getUserId();
+
+                    DatabaseReference requestDbRef = FirebaseDatabase.getInstance().getReference("Friends");//.getReference("Friends");
+                    String requestId = requestDbRef.push().getKey();
+                    assert requestId != null;
 
                     //sender details
                     String senderName = MainActivity.userName;
                     String senderId = MainActivity.userId;
                     String senderPhotoUrl = MainActivity.userPhotoUrl;
-
                     String response = "pending";
 
                     ProgressDialog pd = DisplayViewUI.displayProgress(SearchContactActivity.this, getString(R.string.addingUser));
 
+                    Map<String, Object> friendsMap = new HashMap<>();
+
+
+                  /*  friendsMap.put("Friends/" + senderId + "/" + receiverId + "/receiverName", receiverName);
+                    friendsMap.put("Friends/" + senderId + "/" + receiverId + "/receiverId", receiverId);
+                    friendsMap.put("Friends/" + senderId + "/" + receiverId + "/receiverPhoto", receiverPhotoUrl);
+                    friendsMap.put("Friends/" + senderId + "/" + receiverId + "/response", response);
+                    friendsMap.put("Friends/" + receiverId + "/" + senderId + "/senderName", senderName);
+                    friendsMap.put("Friends/" + receiverId + "/" + senderId + "/senderId", senderId);
+                    friendsMap.put("Friends/" + receiverId + "/" + senderId + "/senderPhoto", senderPhotoUrl);
+                    friendsMap.put("Friends/" + receiverId + "/" + senderId + "/response", response);
+*/
 
                     Log.i("Receiver : ", "name: " + receiverName + " url " + receiverPhotoUrl + " id: " + receiverId);
                     Log.i("Sender : ", "name: " + senderName + " url " + senderPhotoUrl + " id: " + senderId);
 
                     RequestModel sendRequest = new RequestModel(senderId, receiverId, response, senderPhotoUrl, senderName, receiverName, receiverPhotoUrl);
                     // child(receiverId).child(senderId)
-                    requestDbRef.child(receiverId).child(senderId).setValue(sendRequest).addOnCompleteListener(task -> {
+                    /*requestDbRef.child(receiverId).child(senderId).setValue(sendRequest).addOnCompleteListener(task -> {
                         pd.show();
                         new Handler().postDelayed(() -> {
                             if (task.isSuccessful()) {
@@ -108,6 +128,7 @@ public class SearchContactActivity extends AppCompatActivity {
                         }, 3000);
 
                     });
+*/
 
                 });
 
@@ -117,6 +138,7 @@ public class SearchContactActivity extends AppCompatActivity {
 
 
     }
+
 
     @Override
     public void onStart() {
