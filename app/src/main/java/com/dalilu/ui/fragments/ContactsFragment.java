@@ -106,21 +106,26 @@ public class ContactsFragment extends Fragment {
                                     //get users location
                                     String yourLocation = MainActivity.knownName;
 
+                                    String sharedLocation = name + " " + getString(R.string.shLoc) + " : " + yourLocation + getString(R.string.withU) + dateSent;
+                                    String locationReceived = getString(R.string.urLoc) + yourLocation + getString(R.string.isShared) + getUserName + getString(R.string.on) + dateSent;
+
                                     //..location received from another user ..//
                                     Map<String, Object> fromUser = new HashMap<>();
-                                    fromUser.put("locationName", yourLocation);
+                                    /*fromUser.put("locationName", yourLocation);
                                     fromUser.put("date", dateSent);
                                     fromUser.put("from", name);
                                     fromUser.put("to", getUserName);
-                                    fromUser.put("userPhoto", photo);
+                                    fromUser.put("userPhoto", photo);*/
+                                    fromUser.put("location", sharedLocation);
 
                                     //..location sent to ..(user who sent  will view this) //
                                     Map<String, Object> toReceiver = new HashMap<>();
-                                    toReceiver.put("locationName", yourLocation);
+                                    /*toReceiver.put("locationName", yourLocation);
                                     toReceiver.put("date", dateSent);
                                     toReceiver.put("to", getUserName);
                                     toReceiver.put("from", name);
-                                    toReceiver.put("userPhoto", photo);
+                                    toReceiver.put("userPhoto", photo);*/
+                                    toReceiver.put("location", locationReceived);
 
 
                                     String locationDbId = locationDbRef.push().getKey();

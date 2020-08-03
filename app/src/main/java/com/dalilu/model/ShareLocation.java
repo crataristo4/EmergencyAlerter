@@ -1,46 +1,29 @@
 package com.dalilu.model;
 
-public class ShareLocation {
-    String date;
-    String to, from, userPhoto, locationName;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
 
-    public String getDate() {
-        return date;
+public class ShareLocation extends BaseObservable {
+    public String location;
+    public String photoUrl;
+
+    public ShareLocation() {
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    @Bindable
+    public String getLocation() {
+        return location;
     }
 
-    public String getTo() {
-        return to;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public void setTo(String to) {
-        this.to = to;
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
-    public String getUserPhoto() {
-        return userPhoto;
-    }
-
-    public void setUserPhoto(String userPhoto) {
-        this.userPhoto = userPhoto;
-    }
-
-    public String getLocationName() {
-        return locationName;
-    }
-
-    public void setLocationName(String locationName) {
-        this.locationName = locationName;
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }
