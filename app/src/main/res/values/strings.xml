@@ -132,8 +132,6 @@
         <item>English</item>
         <item>French</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_requests">Requests</string>
     <string name="XCC">Sending location details</string>
     <string name="sndloc">Send your location</string>
@@ -141,8 +139,8 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="shLoc"> shared location </string>
-    <string name="withU"> with you on </string>
+    <string name="withU"> : with you on : </string>
     <string name="urLoc"> Your location : </string>
-    <string name="isShared">\" is shared with \"</string>
-    <string name="on">\" on \"</string>
+    <string name="isShared"> is shared with : </string>
+    <string name="on"> : on </string>
 </resources>
