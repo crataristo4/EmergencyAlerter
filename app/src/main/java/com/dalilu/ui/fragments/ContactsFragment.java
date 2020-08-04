@@ -24,6 +24,7 @@ import com.dalilu.adapters.ContactsAdapter;
 import com.dalilu.databinding.FragmentContactsBinding;
 import com.dalilu.model.Users;
 import com.dalilu.utils.DisplayViewUI;
+import com.dalilu.utils.GetTimeAgo;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -37,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class ContactsFragment extends Fragment {
@@ -64,6 +66,7 @@ public class ContactsFragment extends Fragment {
         String senderId = MainActivity.userId;
         String name = MainActivity.userName;
         String photo = MainActivity.userPhotoUrl;
+        String yourLocation = MainActivity.knownName;
 
 
         progressBar = fragmentContactsBinding.progressLoading;
@@ -101,13 +104,13 @@ public class ContactsFragment extends Fragment {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 if (i == -1) {
                                     progressBar.show();
+                                    String sharedLocation = name + " " + getString(R.string.shLoc) + " " + getString(R.string.withU);
+                                    String locationReceived = getString(R.string.urLoc) + " " + getString(R.string.isShared) + " " + getUserName;
 
-
-                                    //get users location
-                                    String yourLocation = MainActivity.knownName;
-
-                                    String sharedLocation = name + " " + getString(R.string.shLoc) + " : " + yourLocation + getString(R.string.withU) + dateSent;
-                                    String locationReceived = getString(R.string.urLoc) + yourLocation + getString(R.string.isShared) + getUserName + getString(R.string.on) + dateSent;
+                                    //get location coordinates
+                                    String latitude = Double.toString(MainActivity.latitude);
+                                    String longitude = Double.toString(MainActivity.longitude);
+                                    String url = "http://maps.google.com/maps?q=loc:" + latitude + "," + longitude + "&z=15";
 
                                     //..location received from another user ..//
                                     Map<String, Object> fromUser = new HashMap<>();
@@ -116,7 +119,13 @@ public class ContactsFragment extends Fragment {
                                     fromUser.put("from", name);
                                     fromUser.put("to", getUserName);
                                     fromUser.put("userPhoto", photo);*/
-                                    fromUser.put("location", sharedLocation);
+                                    fromUser.put("location", locationReceived);
+                                    fromUser.put("knownName", yourLocation);
+                                    fromUser.put("url", url);
+                                    fromUser.put("date", dateSent);
+                                    fromUser.put("userName", name);
+                                    fromUser.put("photo", getUserPhoto);
+                                    fromUser.put("time", GetTimeAgo.getTimeInMillis());
 
                                     //..location sent to ..(user who sent  will view this) //
                                     Map<String, Object> toReceiver = new HashMap<>();
@@ -125,7 +134,13 @@ public class ContactsFragment extends Fragment {
                                     toReceiver.put("to", getUserName);
                                     toReceiver.put("from", name);
                                     toReceiver.put("userPhoto", photo);*/
-                                    toReceiver.put("location", locationReceived);
+                                    toReceiver.put("location", sharedLocation);
+                                    toReceiver.put("knownName", yourLocation);
+                                    toReceiver.put("url", url);
+                                    toReceiver.put("date", dateSent);
+                                    toReceiver.put("userName", getUserName);
+                                    toReceiver.put("time", GetTimeAgo.getTimeInMillis());
+                                    toReceiver.put("photo", photo);
 
 
                                     String locationDbId = locationDbRef.push().getKey();
@@ -134,9 +149,12 @@ public class ContactsFragment extends Fragment {
                                         if (task.isSuccessful()) {
                                             progressBar.dismiss();
                                             DisplayViewUI.displayToast(requireActivity(), getString(R.string.successFull));
-
                                             locationDbRef.child(getUserId).child(locationDbId).setValue(toReceiver);
 
+
+                                        } else {
+                                            progressBar.dismiss();
+                                            DisplayViewUI.displayToast(requireActivity(), Objects.requireNonNull(task.getException()).getMessage());
 
                                         }
                                     });
@@ -163,10 +181,7 @@ public class ContactsFragment extends Fragment {
                 if (!s.isEmpty()) {
                     RecyclerView rv = fragmentContactsBinding.contactsRecyclerView;
                     rv.setHasFixedSize(true);
-
-
                     rv.setLayoutManager(new LinearLayoutManager(requireActivity()));
-
 
                     progressBar.setVisibility(View.VISIBLE);
 

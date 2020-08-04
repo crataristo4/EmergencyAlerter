@@ -87,6 +87,7 @@ public class MainActivity extends BaseActivity {
     private List<Address> addressList;
 
 
+
     public static Context getAppContext() {
         return (Context) mContext;
     }
@@ -97,9 +98,6 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mContext = getApplicationContext();
-
-        Log.i(TAG, "Random name" + DisplayViewUI.getAlphaNumericString(6));
-
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
 
@@ -116,12 +114,68 @@ public class MainActivity extends BaseActivity {
         // LocationSettingsRequest objects.
         createLocationCallback();
         createLocationRequest();
-        buildLocationSettingsRequest();
-
         requestPermissions();
 
 
         initViews();
+
+    }
+
+    private void initViews() {
+
+        BottomNavigationView navView = activityMainBinding.navView;
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_alerts, R.id.navigation_home, R.id.navigation_contacts)
+                .build();
+
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(navView, navController);
+
+        navView.setOnNavigationItemReselectedListener(item -> {
+
+        });
+
+        /* activityMainBinding.searchContact.setOnClickListener(view -> startActivity(new Intent(view.getContext(), SearchContactActivity.class)));
+         */
+        activityMainBinding.logOut.setOnClickListener(view -> {
+
+
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(view.getContext(), SplashScreenActivity.class));
+
+        });
+
+        activityMainBinding.editProfile.setOnClickListener(view -> startActivity(new Intent(view.getContext(), EditProfileActivity.class)));
+
+        Intent getUserDetailsIntent = getIntent();
+        if (getUserDetailsIntent != null) {
+
+            userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
+            userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
+            userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
+            phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
+
+
+        }
+
+        // TODO: 8/1/2020  check internet before opening page
+
+        activityMainBinding.report.setOnClickListener(v -> {
+            Intent reportIntent = new Intent(v.getContext(), ReportActivity.class);
+            reportIntent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
+            reportIntent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
+            reportIntent.putExtra(AppConstants.USER_NAME, userName);
+            reportIntent.putExtra(AppConstants.STATE, state);
+            reportIntent.putExtra(AppConstants.COUNTRY, country);
+            reportIntent.putExtra(AppConstants.KNOWN_LOCATION, knownName);
+
+            startActivity(reportIntent);
+
+        });
+
 
     }
 
@@ -222,7 +276,6 @@ public class MainActivity extends BaseActivity {
                     country = addressList.get(0).getCountryName();
                     knownName = addressList.get(0).getFeatureName();
 
-                    Log.i(TAG, "name" + userName + " State " + state + ", Country " + country + " ,known name" + knownName);
 
                 }
 
@@ -244,64 +297,6 @@ public class MainActivity extends BaseActivity {
         builder.addLocationRequest(mLocationRequest);
         mLocationSettingsRequest = builder.build();
     }
-
-    private void initViews() {
-
-        BottomNavigationView navView = activityMainBinding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_alerts, R.id.navigation_home, R.id.navigation_contacts)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
-
-        navView.setOnNavigationItemReselectedListener(item -> {
-
-        });
-
-        /* activityMainBinding.searchContact.setOnClickListener(view -> startActivity(new Intent(view.getContext(), SearchContactActivity.class)));
-         */
-        activityMainBinding.logOut.setOnClickListener(view -> {
-
-
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(view.getContext(), SplashScreenActivity.class));
-
-        });
-
-        activityMainBinding.editProfile.setOnClickListener(view -> startActivity(new Intent(view.getContext(), EditProfileActivity.class)));
-
-        Intent getUserDetailsIntent = getIntent();
-        if (getUserDetailsIntent != null) {
-
-            userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
-            userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
-            userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
-            phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
-
-
-        }
-
-        // TODO: 8/1/2020  check internet before opening page
-
-        activityMainBinding.report.setOnClickListener(v -> {
-            Intent reportIntent = new Intent(v.getContext(), ReportActivity.class);
-            reportIntent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
-            reportIntent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
-            reportIntent.putExtra(AppConstants.USER_NAME, userName);
-            reportIntent.putExtra(AppConstants.STATE, state);
-            reportIntent.putExtra(AppConstants.COUNTRY, country);
-            reportIntent.putExtra(AppConstants.KNOWN_LOCATION, knownName);
-
-            startActivity(reportIntent);
-
-        });
-
-
-    }
-
 
     /**
      * Callback received when a permissions request has been completed.
@@ -402,13 +397,6 @@ public class MainActivity extends BaseActivity {
 
                     //noinspection MissingPermission
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
                         return;
                     }
                     mFusedLocationClient.requestLocationUpdates(mLocationRequest,
@@ -422,14 +410,17 @@ public class MainActivity extends BaseActivity {
                         case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                             Log.i(TAG, "Location settings are not satisfied. Attempting to upgrade " +
                                     "location settings ");
+
                             try {
                                 // Show the dialog by calling startResolutionForResult(), and check the
                                 // result in onActivityResult().
                                 ResolvableApiException rae = (ResolvableApiException) e;
                                 rae.startResolutionForResult(MainActivity.this, AppConstants.REQUEST_CHECK_SETTINGS);
+
                             } catch (IntentSender.SendIntentException sie) {
                                 Log.i(TAG, "PendingIntent unable to execute request.");
                             }
+
                             break;
                         case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
                             String errorMessage = getString(R.string.errMsg) + getString(R.string.fixIn);
@@ -442,11 +433,11 @@ public class MainActivity extends BaseActivity {
                 });
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         if (checkPermissions()) {
+            buildLocationSettingsRequest();
             startLocationUpdates();
         }
 

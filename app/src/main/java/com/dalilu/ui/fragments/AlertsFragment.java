@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,9 +21,15 @@ import com.dalilu.adapters.LocationSharingAdapter;
 import com.dalilu.databinding.FragmentAlertsBinding;
 import com.dalilu.model.ShareLocation;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.nex3z.notificationbadge.NotificationBadge;
+
+import java.text.MessageFormat;
 
 
 public class AlertsFragment extends Fragment {
@@ -28,6 +37,8 @@ public class AlertsFragment extends Fragment {
     FragmentAlertsBinding fragmentAlertsBinding;
     private DatabaseReference locationDbRef;
     private LocationSharingAdapter adapter;
+    NotificationBadge notificationBadge;
+    RelativeLayout relativeLayout;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -41,11 +52,62 @@ public class AlertsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        TextView txtNotificationCount = fragmentAlertsBinding.txtNotifCount;
+        relativeLayout = fragmentAlertsBinding.badgeLayout;
+        notificationBadge = fragmentAlertsBinding.notifBadge;
+        notificationBadge.setAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.blinking_text));
+
         RecyclerView rv = fragmentAlertsBinding.alertRecyclerView;
         rv.setHasFixedSize(true);
 
         locationDbRef = FirebaseDatabase.getInstance().getReference().child("Locations").child(MainActivity.userId);
-        Query query = locationDbRef.orderByKey();
+        Query query = locationDbRef.orderByChild("timeStamp");
+
+        locationDbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if (snapshot.exists() && snapshot.hasChildren()) {
+
+                    txtNotificationCount.setVisibility(View.VISIBLE);
+                    //notificationBadge.setVisibility(View.VISIBLE);
+
+                    int numberOfItems = (int) snapshot.getChildrenCount();
+
+                    if (numberOfItems == 0) {
+
+                        txtNotificationCount.setVisibility(View.VISIBLE);
+                        txtNotificationCount.setText(MessageFormat.format(getString(R.string.noNotifs), numberOfItems));
+                        // notificationBadge.setText(String.valueOf(0));
+                        // notificationBadge.setAnimation(AnimationUtils.loadAnimation(requireContext(),R.anim.blinking_text));
+
+
+                    } else {
+                        //  badgeLayout.setVisibility(View.VISIBLE);
+                        // notificationBadge.setVisibility(View.VISIBLE);
+                        //  notificationBadge.setAnimation(AnimationUtils.loadAnimation(requireContext(),R.anim.blinking_text));
+
+                        //  txtNotificationCount.setText(MessageFormat.format(getString(R.string.notifs),numberOfItems));
+                        notificationBadge.setText(String.valueOf(numberOfItems));
+                        txtNotificationCount.setVisibility(View.GONE);
+                        relativeLayout.setVisibility(View.VISIBLE);
+
+
+                    }
+
+
+                } else if (!snapshot.exists()) {
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         FirebaseRecyclerOptions<ShareLocation> options =
                 new FirebaseRecyclerOptions.Builder<ShareLocation>().setQuery(query,
