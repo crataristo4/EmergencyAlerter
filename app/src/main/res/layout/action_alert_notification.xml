@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.AppCompat.ActionButton"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/notificationIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_notifications_black_24dp" />
+
+
+    <com.nex3z.notificationbadge.NotificationBadge
+        android:id="@+id/notifBadge"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="-10dp"
+        android:layout_marginTop="-10dp"
+        android:layout_toEndOf="@id/notificationIcon"
+        app:nbMaxTextLength="2" />
+
+</RelativeLayout>

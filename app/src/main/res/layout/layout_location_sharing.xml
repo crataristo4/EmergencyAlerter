@@ -9,23 +9,15 @@
             type="com.dalilu.model.ShareLocation" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cardView2"
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/eightDp">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/eightDp"
+        android:layout_margin="@dimen/eightDp"
+        android:padding="@dimen/eightDp"
         app:cardCornerRadius="@dimen/eightDp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:contentPadding="@dimen/eightDp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -34,47 +26,91 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgPhoto"
-                android:layout_width="@dimen/user_icon_width"
-                android:layout_height="@dimen/user_icon_height"
-                android:layout_marginStart="8dp"
+                android:layout_width="@dimen/imageIconSize"
+                android:layout_height="@dimen/imageIconSize"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/applogo"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:civ_border_color="@color/black"
+                app:civ_border_overlay="true"
+                app:civ_border_width="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/txtLocDetails"
+                android:id="@+id/txtDescription"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
                 android:text="@{location.location}"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/imgPhoto"
-                app:layout_constraintTop_toTopOf="@+id/imgPhoto" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgPhoto" />
 
-            <ProgressBar
-                android:id="@+id/progressLoadImage"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/imgPhoto"
-                app:layout_constraintEnd_toEndOf="@+id/imgPhoto"
-                app:layout_constraintStart_toStartOf="@+id/imgPhoto"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:orientation="vertical"
+                android:padding="@dimen/sixteenDp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtDescription">
+
+                <TextView
+                    android:id="@+id/txtKnownName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="@dimen/eightDp"
+                    android:padding="@dimen/eightDp"
+                    android:text="@{location.knownName}" />
+
+                <TextView
+                    android:id="@+id/txtTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_baseline_access_time_24"
+                    android:drawablePadding="@dimen/eightDp"
+                    android:padding="@dimen/eightDp" />
+
+                <TextView
+                    android:id="@+id/txtUrl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoLink="web|map"
+                    android:autoText="false"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/ic_baseline_map_24"
+                    android:drawablePadding="@dimen/eightDp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:linksClickable="true"
+                    android:longClickable="true"
+                    android:padding="@dimen/eightDp"
+                    android:text="@{location.url}"
+                    android:textColorLink="#9C27B0" />
+
+                <TextView
+                    android:id="@+id/txtDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_date"
+                    android:drawablePadding="@dimen/eightDp"
+                    android:padding="@dimen/eightDp"
+                    android:text="@{location.date}" />
+
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
 </layout>

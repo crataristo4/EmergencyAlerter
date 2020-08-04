@@ -57,7 +57,7 @@
                 android:layout_marginTop="8dp"
                 android:text="@{requests.senderId}"
                 app:layout_constraintStart_toEndOf="@+id/userImage"
-                app:layout_constraintTop_toBottomOf="@+id/txtName" />
+                app:layout_constraintTop_toBottomOf="@+id/txtDescription" />
 
             <Button
                 android:id="@+id/accept"

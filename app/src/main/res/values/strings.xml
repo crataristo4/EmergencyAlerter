@@ -138,9 +138,12 @@
     <string name="qst">Are you sure you want to send your location details to {0}</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="shLoc"> shared location </string>
-    <string name="withU"> : with you on : </string>
-    <string name="urLoc"> Your location : </string>
-    <string name="isShared"> is shared with : </string>
-    <string name="on"> : on </string>
+    <string name="shLoc"> has shared location </string>
+    <string name="withU">  with you  </string>
+    <string name="urLoc"> Your location  </string>
+    <string name="isShared"> is shared with  </string>
+    <string name="on">  on </string>
+    <string name="notifs">{0} Notifications Alerts</string>
+    <string name="noNotifs">{0} No notification alert received</string>
+    <string name="oneNotif">{0}  Notification alerts received</string>
 </resources>

@@ -5,7 +5,12 @@ import androidx.databinding.Bindable;
 
 public class ShareLocation extends BaseObservable {
     public String location;
-    public String photoUrl;
+    public String photo;
+    public String userName;
+    public String url;
+    public String knownName;
+    public String date;
+    public Object time;
 
     public ShareLocation() {
     }
@@ -19,11 +24,57 @@ public class ShareLocation extends BaseObservable {
         this.location = location;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
+
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    @Bindable
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    @Bindable
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    @Bindable
+    public String getKnownName() {
+        return knownName;
+    }
+
+    public void setKnownName(String knownName) {
+        this.knownName = knownName;
+    }
+
+    @Bindable
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    @Bindable
+    public long getTime() {
+        return (long) time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 }
