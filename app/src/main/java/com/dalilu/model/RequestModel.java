@@ -4,55 +4,64 @@ import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
 public class RequestModel extends BaseObservable {
-    private String senderId;
-    private String receiverId;
-    private String response;
+    public String userName, userPhotoUrl, userId;
+    private String id;
+    private String name;
     private String phoneNumber;
-    private String senderPhoto;
-    private String senderName;
-    private String receiverName;
-    private String receiverPhoto;
-    private String dateRequested;
+    private String photo;
+    private String response;
+
 
     public RequestModel() {
     }
 
+    public String getUserName() {
+        return userName;
+    }
 
-    public RequestModel(String senderId, String receiverId, String response, String senderPhoto, String senderName, String receiverName, String receiverPhoto) {
-        this.senderId = senderId;
-        this.receiverId = receiverId;
-        this.response = response;
-        this.senderPhoto = senderPhoto;
-        this.senderName = senderName;
-        this.receiverName = receiverName;
-        this.receiverPhoto = receiverPhoto;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserPhotoUrl() {
+        return userPhotoUrl;
+    }
+
+    public void setUserPhotoUrl(String userPhotoUrl) {
+        this.userPhotoUrl = userPhotoUrl;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Bindable
-    public String getSenderId() {
-        return senderId;
+    public String getName() {
+        return name;
     }
 
-    public void setSenderId(String senderId) {
-        this.senderId = senderId;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    @Bindable
-    public String getReceiverId() {
-        return receiverId;
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setReceiverId(String receiverId) {
-        this.receiverId = receiverId;
-    }
-
-    @Bindable
-    public String getResponse() {
-        return response;
-    }
-
-    public void setResponse(String response) {
-        this.response = response;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     @Bindable
@@ -64,46 +73,12 @@ public class RequestModel extends BaseObservable {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getSenderPhoto() {
-        return senderPhoto;
-    }
-
-    public void setSenderPhoto(String senderPhoto) {
-        this.senderPhoto = senderPhoto;
-    }
-
     @Bindable
-    public String getSenderName() {
-        return senderName;
+    public String getResponse() {
+        return response;
     }
 
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
-    }
-
-    @Bindable
-    public String getReceiverName() {
-        return receiverName;
-    }
-
-    public void setReceiverName(String receiverName) {
-        this.receiverName = receiverName;
-    }
-
-    public String getReceiverPhoto() {
-        return receiverPhoto;
-    }
-
-    public void setReceiverPhoto(String receiverPhoto) {
-        this.receiverPhoto = receiverPhoto;
-    }
-
-    @Bindable
-    public String getDateRequested() {
-        return dateRequested;
-    }
-
-    public void setDateRequested(String dateRequested) {
-        this.dateRequested = dateRequested;
+    public void setResponse(String response) {
+        this.response = response;
     }
 }

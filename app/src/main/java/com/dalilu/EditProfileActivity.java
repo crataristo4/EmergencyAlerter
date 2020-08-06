@@ -44,6 +44,9 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityEditProfileBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile);
+        setSupportActionBar(activityEditProfileBinding.toolBarCompleteProfile);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
         imgUserPhoto = activityEditProfileBinding.imgUploadPhoto;
         txtUserName = activityEditProfileBinding.txtUserName;
 
@@ -53,7 +56,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
         Objects.requireNonNull(txtUserName.getEditText()).setText(userName);
         Objects.requireNonNull(activityEditProfileBinding.txtPhone.getEditText()).setText(phoneNumber);
-        Glide.with(this).load(MainActivity.userPhotoUrl).into(imgUserPhoto);
+        Glide.with(this).load(MainActivity.userPhotoUrl)
+                .error(R.drawable.photo).into(imgUserPhoto);
         //activityEditProfileBinding.txtPhone.setEnabled(false);
 
         progressDialog = DisplayViewUI.displayProgress(this, getString(R.string.saveDetails));

@@ -119,66 +119,13 @@ public class SplashScreenActivity extends AppCompatActivity {
                 });
 
 
-
-            /*   usersDbRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                        if (snapshot.exists() && snapshot.hasChild(uid)) {
-
-                            // usersDetails = usersDbRef.child(uid);
-                            usersDbRef.child(uid).addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                                    userPhotoUrl = (String) snapshot.child("userPhotoUrl").getValue();
-                                    userName = (String) snapshot.child("userName").getValue();
-
-
-                                    intent = new Intent(SplashScreenActivity.this, MainActivity.class);
-                                    intent.putExtra(AppConstants.UID, uid);
-                                    intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
-                                    intent.putExtra(AppConstants.USER_NAME, userName);
-                                    intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(intent);
-                                    SplashScreenActivity.this.finishAffinity();
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-
-
-                        } else if (!snapshot.hasChild(uid)) {
-
-                            intent = new Intent(SplashScreenActivity.this, FinishAccountSetupActivity.class);
-                            intent.putExtra(AppConstants.UID, uid);
-                            intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            SplashScreenActivity.this.finishAffinity();
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-*/
-
             } else {
                 //Opens the Phone Auth Activity once the time elapses
                 startActivity(new Intent(SplashScreenActivity.this, PhoneAuthActivity.class));
                 finish();
             }
 
-        }, 3000);
+        }, 2000);
 
 
     }

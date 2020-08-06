@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,6 +43,7 @@ public class HomeFragment extends Fragment {
     private Parcelable mState;
     private ListenerRegistration registration;
     private DocumentSnapshot mLastResult;
+    ProgressBar pbHomeLoading;
     private boolean isScrolling = false;
     private boolean isLastItemReached = false;
     private CollectionReference collectionReference = FirebaseFirestore
@@ -59,6 +61,7 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         loadActivityData();
         requireActivity().runOnUiThread(this::fetchData);
 
@@ -71,8 +74,18 @@ public class HomeFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
+        pbHomeLoading = fragmentHomeBinding.pbHomeLoading;
+
+        new Handler().postDelayed(() -> {
+
+            pbHomeLoading.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+
+        }, 5000);
+
         adapter = new HomeRecyclerAdapter(arrayList, getContext());
         recyclerView.setAdapter(adapter);
+
 
     }
 

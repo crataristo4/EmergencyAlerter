@@ -1,9 +1,11 @@
 package com.dalilu;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dalilu.adapters.ContactsAdapter;
 import com.dalilu.databinding.ActivitySearchContactBinding;
 import com.dalilu.model.RequestModel;
-import com.dalilu.model.Users;
-import com.dalilu.utils.DisplayViewUI;
+import com.dalilu.ui.bottomsheets.PopUpAlerter;
+import com.dalilu.utils.AppConstants;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -23,112 +25,92 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
 public class SearchContactActivity extends AppCompatActivity {
     private ActivitySearchContactBinding activitySearchContactBinding;
     private CollectionReference usersDbReF;
     private ContactsAdapter adapter;
+    ProgressBar progressBar;
     Button btnAdd;
     DatabaseReference requestDbRef;
     String receiverName;
     String receiverPhotoUrl;
     String receiverId;
+    String receiverPhoneNumber;
+    private long mLastClickTime = 0;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activitySearchContactBinding = DataBindingUtil.setContentView(this, R.layout.activity_search_contact);
 
+        usersDbReF = FirebaseFirestore.getInstance().collection("Users");
+        requestDbRef = FirebaseDatabase.getInstance().getReference("Friends");
+
+        activitySearchContactBinding = DataBindingUtil.setContentView(this, R.layout.activity_search_contact);
+        progressBar = activitySearchContactBinding.progressLoading;
+        setSupportActionBar(activitySearchContactBinding.toolBarFindUser);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         RecyclerView rv = activitySearchContactBinding.recyclerViewContacts;
         rv.setHasFixedSize(true);
-        usersDbReF = FirebaseFirestore.getInstance().collection("Users");
-        requestDbRef = FirebaseDatabase.getInstance().getReference("Friends");
 
         activitySearchContactBinding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-
-
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
                 if (!s.isEmpty()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    new Handler().postDelayed(() -> progressBar.setVisibility(View.GONE), 3000);
 
-                    Query query = usersDbReF.orderBy("userName").whereEqualTo("userName", s);
-                    FirestoreRecyclerOptions<Users> options =
-                            new FirestoreRecyclerOptions.Builder<Users>().setQuery(query,
-                                    Users.class).build();
+                    runOnUiThread(() -> {
+                        Query query = usersDbReF.orderBy("userName").whereEqualTo("userName", s);
+                        FirestoreRecyclerOptions<RequestModel> options =
+                                new FirestoreRecyclerOptions.Builder<RequestModel>().setQuery(query,
+                                        RequestModel.class).build();
 
-                    rv.setLayoutManager(new LinearLayoutManager(SearchContactActivity.this));
+                        rv.setLayoutManager(new LinearLayoutManager(SearchContactActivity.this));
 
+                        adapter = new ContactsAdapter(options);
+                        adapter.notifyDataSetChanged();
+                        adapter.startListening();
+                        rv.setAdapter(adapter);
+                    });
 
-                    adapter = new ContactsAdapter(options);
-                    adapter.notifyDataSetChanged();
-                    adapter.startListening();
-                    rv.setAdapter(adapter);
+                } else {
+                    progressBar.setVisibility(View.GONE);
+
                 }
+
 
                 adapter.setOnItemClickListener((v, position) -> {
 
+                    if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+                        return;
+                    }
 
-                    //receiver details
+                    receiverId = adapter.getItem(position).getUserId();
                     receiverName = adapter.getItem(position).getUserName();
                     receiverPhotoUrl = adapter.getItem(position).getUserPhotoUrl();
-                    receiverId = adapter.getItem(position).getUserId();
+                    receiverPhoneNumber = adapter.getItem(position).getPhoneNumber();
 
-                    DatabaseReference requestDbRef = FirebaseDatabase.getInstance().getReference("Friends");//.getReference("Friends");
-                    String requestId = requestDbRef.push().getKey();
-                    assert requestId != null;
+                    mLastClickTime = SystemClock.elapsedRealtime();
+                    Bundle bundleFriendDetails = new Bundle();
+                    bundleFriendDetails.putString(AppConstants.USER_NAME, receiverName);
+                    bundleFriendDetails.putString(AppConstants.UID, receiverId);
+                    bundleFriendDetails.putString(AppConstants.USER_PHOTO_URL, receiverPhotoUrl);
+                    bundleFriendDetails.putString(AppConstants.PHONE_NUMBER, receiverPhoneNumber);
 
-                    //sender details
-                    String senderName = MainActivity.userName;
-                    String senderId = MainActivity.userId;
-                    String senderPhotoUrl = MainActivity.userPhotoUrl;
-                    String response = "pending";
+                    PopUpAlerter popUpAlerter = new PopUpAlerter();
+                    popUpAlerter.setCancelable(false);
+                    popUpAlerter.setArguments(bundleFriendDetails);
+                    popUpAlerter.show(getSupportFragmentManager(), AppConstants.SEND_REQUEST_TAG);
 
-                    ProgressDialog pd = DisplayViewUI.displayProgress(SearchContactActivity.this, getString(R.string.addingUser));
-
-                    Map<String, Object> friendsMap = new HashMap<>();
-
-
-                  /*  friendsMap.put("Friends/" + senderId + "/" + receiverId + "/receiverName", receiverName);
-                    friendsMap.put("Friends/" + senderId + "/" + receiverId + "/receiverId", receiverId);
-                    friendsMap.put("Friends/" + senderId + "/" + receiverId + "/receiverPhoto", receiverPhotoUrl);
-                    friendsMap.put("Friends/" + senderId + "/" + receiverId + "/response", response);
-                    friendsMap.put("Friends/" + receiverId + "/" + senderId + "/senderName", senderName);
-                    friendsMap.put("Friends/" + receiverId + "/" + senderId + "/senderId", senderId);
-                    friendsMap.put("Friends/" + receiverId + "/" + senderId + "/senderPhoto", senderPhotoUrl);
-                    friendsMap.put("Friends/" + receiverId + "/" + senderId + "/response", response);
-*/
-
-                    Log.i("Receiver : ", "name: " + receiverName + " url " + receiverPhotoUrl + " id: " + receiverId);
-                    Log.i("Sender : ", "name: " + senderName + " url " + senderPhotoUrl + " id: " + senderId);
-
-                    RequestModel sendRequest = new RequestModel(senderId, receiverId, response, senderPhotoUrl, senderName, receiverName, receiverPhotoUrl);
-                    // child(receiverId).child(senderId)
-                    /*requestDbRef.child(receiverId).child(senderId).setValue(sendRequest).addOnCompleteListener(task -> {
-                        pd.show();
-                        new Handler().postDelayed(() -> {
-                            if (task.isSuccessful()) {
-                                pd.dismiss();
-                                DisplayViewUI.displayToast(SearchContactActivity.this, getString(R.string.successFull));
-                                finish();
-
-                            } else {
-                                pd.dismiss();
-                                DisplayViewUI.displayToast(SearchContactActivity.this, Objects.requireNonNull(task.getException()).getMessage());
-
-                            }
-                        }, 3000);
-
-                    });
-*/
 
                 });
 

@@ -12,25 +12,15 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 public class Dalilu extends Application {
     private HttpProxyCacheServer proxy;
+    public static Context context;
 
     public static HttpProxyCacheServer getProxy(Context context) {
         Dalilu app = (Dalilu) context.getApplicationContext();
         return app.proxy == null ? (app.proxy = app.newProxy()) : app.proxy;
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-       // FirebaseApp.initializeApp(this);
-
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        FirebaseDatabase.getInstance().getReference().keepSynced(true);
-
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED)
-                .build();
-        FirebaseFirestore.getInstance().setFirestoreSettings(settings);
-
+    public static Context getDaliluAppContext() {
+        return Dalilu.context;
 
     }
 
@@ -43,6 +33,23 @@ public class Dalilu extends Application {
 
     private HttpProxyCacheServer newProxy() {
         return new HttpProxyCacheServer(this);
+
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Dalilu.context = getApplicationContext();
+        // FirebaseApp.initializeApp(this);
+
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        FirebaseDatabase.getInstance().getReference().keepSynced(true);
+
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED)
+                .build();
+        FirebaseFirestore.getInstance().setFirestoreSettings(settings);
+
 
     }
 

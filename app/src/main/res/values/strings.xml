@@ -146,4 +146,15 @@
     <string name="notifs">{0} Notifications Alerts</string>
     <string name="noNotifs">{0} No notification alert received</string>
     <string name="oneNotif">{0}  Notification alerts received</string>
+    <string name="dcln">Decline</string>
+    <string name="acpt">Accept</string>
+    <string name="frnds">Friends</string>
+    <string name="Pending">Pending</string>
+    <string name="justNow"> just now</string>
+    <string name="aMinuteAgo"> a minute ago</string>
+    <string name="minuteAgo"> minutes ago"</string>
+    <string name="hoursAgo"> hours ago</string>
+    <string name="anHourAgo"> an hour ago</string>
+    <string name="yesterday"> yesterday</string>
+    <string name="daysAgo"> days ago</string>
 </resources>

@@ -138,8 +138,8 @@ public class MainActivity extends BaseActivity {
 
         });
 
-        /* activityMainBinding.searchContact.setOnClickListener(view -> startActivity(new Intent(view.getContext(), SearchContactActivity.class)));
-         */
+        activityMainBinding.searchContact.setOnClickListener(view -> startActivity(new Intent(view.getContext(), SearchContactActivity.class)));
+
         activityMainBinding.logOut.setOnClickListener(view -> {
 
 

@@ -22,7 +22,7 @@ import com.dalilu.MainActivity;
 import com.dalilu.R;
 import com.dalilu.adapters.ContactsAdapter;
 import com.dalilu.databinding.FragmentContactsBinding;
-import com.dalilu.model.Users;
+import com.dalilu.model.RequestModel;
 import com.dalilu.utils.DisplayViewUI;
 import com.dalilu.utils.GetTimeAgo;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -191,9 +191,9 @@ public class ContactsFragment extends Fragment {
                     requireActivity().runOnUiThread(() -> {
                         Query query = usersDbReF.orderBy("userName").whereEqualTo("userName", s);
 
-                        FirestoreRecyclerOptions<Users> options =
-                                new FirestoreRecyclerOptions.Builder<Users>().setQuery(query,
-                                        Users.class).build();
+                        FirestoreRecyclerOptions<RequestModel> options =
+                                new FirestoreRecyclerOptions.Builder<RequestModel>().setQuery(query,
+                                        RequestModel.class).build();
 
 
                         adapter = new ContactsAdapter(options);

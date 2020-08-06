@@ -1,34 +1,25 @@
 package com.dalilu.adapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.dalilu.MainActivity;
 import com.dalilu.R;
-import com.dalilu.databinding.UsersSingleLayoutBinding;
+import com.dalilu.databinding.LayoutAddUserBinding;
 import com.dalilu.model.RequestModel;
-import com.dalilu.utils.DisplayViewUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, RequestAdapter.RequestViewHolder> {
-
+    private static ContactsAdapter.onItemClickListener onItemClickListener;
     String uid;
 
 
@@ -46,13 +37,9 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
     @Override
     protected void onBindViewHolder(@NonNull RequestViewHolder holder, int i, @NonNull RequestModel requestModel) {
 
-      /*  holder.layoutRequestReceivedBinding.setUsers(requestModel);
-        holder.showResponse(requestModel.getResponse());
-*/
-
         DatabaseReference br = FirebaseDatabase.getInstance().getReference().child("Friends");
 
-        br.addListenerForSingleValueEvent(new ValueEventListener() {
+      /*  br.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -81,7 +68,7 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
         });
 
 
-        holder.btnAccept.setOnClickListener(new View.OnClickListener() {
+        holder.btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (requestModel.getResponse().equals("pending")) {
@@ -94,46 +81,42 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
         });
 
 
+*/
+
+        //  holder.layoutAddUserBinding.setUsers(requestModel);
+        holder.showResponse(requestModel.getResponse());
+
     }
 
     @NonNull
     @Override
     public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new RequestViewHolder((DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.users_single_layout, parent, false)));
+        return new RequestViewHolder((DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_add_user, parent, false)));
 
     }
 
-    public static class RequestViewHolder extends RecyclerView.ViewHolder {
+    public void setOnItemClickListener(ContactsAdapter.onItemClickListener onItemClickListener) {
+        RequestAdapter.onItemClickListener = onItemClickListener;
 
-       /* LayoutRequestReceivedBinding layoutRequestReceivedBinding;
-        private Button btnAddContact;
-        private CheckBox selectUserCheckBox;
-        private TextView txtNewReq;*/
+    }
 
-     /*     public RequestViewHolder(@NonNull LayoutRequestReceivedBinding layoutRequestReceivedBinding) {
-            super(layoutRequestReceivedBinding.getRoot());
-          this.layoutRequestReceivedBinding = layoutRequestReceivedBinding;
+    public interface onItemClickListener {
+        void onClick(View view, int position);
+    }
 
-            btnAddContact = layoutRequestReceivedBinding.btnAddContact;
-            selectUserCheckBox = layoutRequestReceivedBinding.checkBox;
-            txtNewReq = layoutRequestReceivedBinding.txtNewRequest;
-        }*/
+    public static class RequestViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        LayoutAddUserBinding layoutAddUserBinding;
+        Button btnAdd;
 
 
-        UsersSingleLayoutBinding usersSingleLayoutBinding;
-        Button btnAccept, btnDecline;
-        TextView txtName, txtId;
-        CircleImageView img;
+        public RequestViewHolder(@NonNull LayoutAddUserBinding layoutAddUserBinding) {
+            super(layoutAddUserBinding.getRoot());
+            this.layoutAddUserBinding = layoutAddUserBinding;
 
-        public RequestViewHolder(@NonNull UsersSingleLayoutBinding usersSingleLayoutBinding) {
-            super(usersSingleLayoutBinding.getRoot());
-            this.usersSingleLayoutBinding = usersSingleLayoutBinding;
+            btnAdd = layoutAddUserBinding.btnAddContact;
+            btnAdd.setOnClickListener(this);
 
-            btnAccept = usersSingleLayoutBinding.accept;
-            btnDecline = usersSingleLayoutBinding.decline;
-            txtName = usersSingleLayoutBinding.txtName;
-            txtId = usersSingleLayoutBinding.txtId;
-            img = usersSingleLayoutBinding.userImage;
 
         }
 
@@ -141,35 +124,22 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
         //display the response details
         void showResponse(String response) {
 
-            if (response.equals("pending")) {
-                btnAccept.setText("Accept");
-                btnDecline.setText("Decline");
+            if (response.equals("sent")) {
+                btnAdd.setText(R.string.dcln);
 
-               /* btnAddContact.setText(R.string.add);
-                selectUserCheckBox.setVisibility(View.GONE);
-
-*/
 
             }
             if (response.equals("accepted")) {
-                btnDecline.setVisibility(View.GONE);
-                btnAccept.setText("Accepted");
 
-               /* btnAddContact.setText(R.string.added);
-                selectUserCheckBox.setVisibility(View.VISIBLE);
-                txtNewReq.setVisibility(View.GONE);
-*/
+                btnAdd.setText(R.string.frnds);
+
 
             }
 
             if (response.equals("declined")) {
-                btnDecline.setVisibility(View.GONE);
-                btnAccept.setText("Declined");
 
-               /* btnAddContact.setText(R.string.declined);
-                selectUserCheckBox.setVisibility(View.GONE);
-                txtNewReq.setVisibility(View.GONE);
-*/
+                btnAdd.setText(R.string.Pending);
+
 
             }
 
@@ -177,6 +147,11 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
         }
 
 
+        @Override
+        public void onClick(View view) {
+            onItemClickListener.onClick(layoutAddUserBinding.getRoot(), getAdapterPosition());
+
+        }
     }
 
 }

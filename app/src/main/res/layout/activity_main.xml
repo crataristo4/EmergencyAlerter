@@ -80,19 +80,19 @@
                         app:fab_title_textColor="@color/black"
                         app:srcCompat="@drawable/ic_baseline_report_24" />
 
-                   <!-- <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                        android:id="@+id/searchContact"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:backgroundTint="@color/white"
-                        app:fabSize="mini"
-                        app:fab_enableTitleClick="true"
-                        app:fab_title="@string/searchContact"
-                        app:fab_title_backgroundColor="@color/colorGreen"
-                        app:fab_title_textColor="@color/white"
-                        app:srcCompat="@drawable/ic_baseline_search_24" />
+                 <jahirfiquitiva.libs.fabsmenu.TitleFAB
+                     android:id="@+id/searchContact"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     app:backgroundTint="@color/white"
+                     app:fabSize="mini"
+                     app:fab_enableTitleClick="true"
+                     app:fab_title="@string/searchContact"
+                     app:fab_title_backgroundColor="@color/colorGreen"
+                     app:fab_title_textColor="@color/white"
+                     app:srcCompat="@drawable/ic_baseline_search_24" />
 
--->
+
                     <jahirfiquitiva.libs.fabsmenu.TitleFAB
                         android:id="@+id/editProfile"
                         android:layout_width="wrap_content"

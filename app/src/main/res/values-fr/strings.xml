@@ -94,7 +94,7 @@
     <string name="if_you_choose_not_to_provide_a_name_a_random_name_will_be_generated_for_you_as_a_user_name">"Si vous decidez de ne pas donner votre nom, l'application donnera un nom par defaut "</string>
     <string name="enterUserName">Entrez votre nom (optionel)</string>
     <string name="plsSlct">Choisissez une photo SVP</string>
-    <string name="addingUser">Ajout de ......</string>
+    <string name="addingUser">Ajout de …</string>
     <string name="added">Amis</string>
     <string name="declined">Refuse</string>
     <string name="new_request_from">Nouvelle demande de....</string>
@@ -106,8 +106,8 @@
     <string name="yes">Oui</string>
     <string name="no">Non</string>
     <string name="shLoc">Localisation partagee</string>
-    <string name="withU">": Avec vous "</string>
-    <string name="urLoc">Vote localisation :</string>
-    <string name="isShared">est partagee avec :</string>
+    <string name="withU">"  Avec vous "</string>
+    <string name="urLoc">"Vote localisation "</string>
+    <string name="isShared">"est partagee avec "</string>
     <string name="on">sur la plateforme</string>
 </resources>
