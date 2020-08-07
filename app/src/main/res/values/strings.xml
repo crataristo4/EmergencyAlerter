@@ -157,4 +157,7 @@
     <string name="anHourAgo"> an hour ago</string>
     <string name="yesterday"> yesterday</string>
     <string name="daysAgo"> days ago</string>
+    <string name="cancelRequest">Cancel Request</string>
+    <string name="view">View</string>
+    <string name="pending">pnd</string>
 </resources>

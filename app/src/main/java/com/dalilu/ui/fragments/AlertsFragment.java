@@ -1,10 +1,12 @@
 package com.dalilu.ui.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,6 +22,7 @@ import com.dalilu.R;
 import com.dalilu.adapters.LocationSharingAdapter;
 import com.dalilu.databinding.FragmentAlertsBinding;
 import com.dalilu.model.ShareLocation;
+import com.dalilu.utils.DisplayViewUI;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,6 +42,9 @@ public class AlertsFragment extends Fragment {
     private LocationSharingAdapter adapter;
     NotificationBadge notificationBadge;
     RelativeLayout relativeLayout;
+    RecyclerView rv;
+    TextView txtNotificationCount;
+    ProgressBar pbLoading;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -52,13 +58,32 @@ public class AlertsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TextView txtNotificationCount = fragmentAlertsBinding.txtNotifCount;
+        initViews();
+
+        loadData();
+
+
+    }
+
+    void initViews() {
+        txtNotificationCount = fragmentAlertsBinding.txtNotifCount;
         relativeLayout = fragmentAlertsBinding.badgeLayout;
         notificationBadge = fragmentAlertsBinding.notifBadge;
         notificationBadge.setAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.blinking_text));
+        pbLoading = fragmentAlertsBinding.pbLoading;
 
-        RecyclerView rv = fragmentAlertsBinding.alertRecyclerView;
+    }
+
+    private void loadData() {
+        rv = fragmentAlertsBinding.alertRecyclerView;
         rv.setHasFixedSize(true);
+
+        new Handler().postDelayed(() -> {
+
+            pbLoading.setVisibility(View.GONE);
+            rv.setVisibility(View.VISIBLE);
+
+        }, 2000);
 
         locationDbRef = FirebaseDatabase.getInstance().getReference().child("Locations").child(MainActivity.userId);
         Query query = locationDbRef.orderByChild("timeStamp");
@@ -97,6 +122,7 @@ public class AlertsFragment extends Fragment {
 
 
                 } else if (!snapshot.exists()) {
+                    relativeLayout.setVisibility(View.GONE);
 
                 }
 
@@ -105,6 +131,7 @@ public class AlertsFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                DisplayViewUI.displayToast(requireActivity(), error.getMessage());
 
             }
         });
@@ -116,8 +143,6 @@ public class AlertsFragment extends Fragment {
         rv.setLayoutManager(new LinearLayoutManager(requireContext()));
         adapter = new LocationSharingAdapter(options);
         rv.setAdapter(adapter);
-
-
     }
 
     @Override

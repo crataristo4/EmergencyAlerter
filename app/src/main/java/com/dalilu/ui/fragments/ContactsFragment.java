@@ -20,17 +20,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dalilu.MainActivity;
 import com.dalilu.R;
-import com.dalilu.adapters.ContactsAdapter;
+import com.dalilu.adapters.RequestAdapter;
 import com.dalilu.databinding.FragmentContactsBinding;
 import com.dalilu.model.RequestModel;
 import com.dalilu.utils.DisplayViewUI;
 import com.dalilu.utils.GetTimeAgo;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 
 import java.text.DateFormat;
 import java.text.MessageFormat;
@@ -47,16 +47,16 @@ public class ContactsFragment extends Fragment {
     private static final int INITIAL_LOAD = 15;
     ProgressBar progressBar;
     private FragmentContactsBinding fragmentContactsBinding;
-    private DatabaseReference locationDbRef;
+    RecyclerView rv;
     private CollectionReference usersDbReF;
-    private ContactsAdapter adapter;
+    private DatabaseReference locationDbRef, friendsDbRef;
+    private RequestAdapter adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         fragmentContactsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_contacts, container, false);
         return fragmentContactsBinding.getRoot();
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -68,22 +68,23 @@ public class ContactsFragment extends Fragment {
         String photo = MainActivity.userPhotoUrl;
         String yourLocation = MainActivity.knownName;
 
+        rv = fragmentContactsBinding.contactsRecyclerView;
+        rv.setHasFixedSize(true);
+        rv.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         progressBar = fragmentContactsBinding.progressLoading;
         usersDbReF = FirebaseFirestore.getInstance().collection("Users");
         locationDbRef = FirebaseDatabase.getInstance().getReference("Locations");
+        friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends").child(senderId);
 
+        Query query = friendsDbRef.orderByKey();
 
-        // Query query = usersDbReF.orderByChild("senderId").equalTo(senderId);
-       /* Query query = usersDbReF.orderBy("userName", Query.Direction.ASCENDING);
-        FirestoreRecyclerOptions<Users> options =
-                new FirestoreRecyclerOptions.Builder<Users>().setQuery(query,
-                        Users.class).build();
+        FirebaseRecyclerOptions<RequestModel> options =
+                new FirebaseRecyclerOptions.Builder<RequestModel>().setQuery(query,
+                        RequestModel.class).build();
 
-        rv.setLayoutManager(new LinearLayoutManager(requireContext()));
-        adapter = new ContactsAdapter(options);
-        rv.setAdapter(adapter);*/
-
+        adapter = new RequestAdapter(options);
+        rv.setAdapter(adapter);
 
         fragmentContactsBinding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             private void onClick(View view1, int position) {
@@ -114,11 +115,6 @@ public class ContactsFragment extends Fragment {
 
                                     //..location received from another user ..//
                                     Map<String, Object> fromUser = new HashMap<>();
-                                    /*fromUser.put("locationName", yourLocation);
-                                    fromUser.put("date", dateSent);
-                                    fromUser.put("from", name);
-                                    fromUser.put("to", getUserName);
-                                    fromUser.put("userPhoto", photo);*/
                                     fromUser.put("location", locationReceived);
                                     fromUser.put("knownName", yourLocation);
                                     fromUser.put("url", url);
@@ -129,11 +125,6 @@ public class ContactsFragment extends Fragment {
 
                                     //..location sent to ..(user who sent  will view this) //
                                     Map<String, Object> toReceiver = new HashMap<>();
-                                    /*toReceiver.put("locationName", yourLocation);
-                                    toReceiver.put("date", dateSent);
-                                    toReceiver.put("to", getUserName);
-                                    toReceiver.put("from", name);
-                                    toReceiver.put("userPhoto", photo);*/
                                     toReceiver.put("location", sharedLocation);
                                     toReceiver.put("knownName", yourLocation);
                                     toReceiver.put("url", url);
@@ -179,9 +170,7 @@ public class ContactsFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String s) {
                 if (!s.isEmpty()) {
-                    RecyclerView rv = fragmentContactsBinding.contactsRecyclerView;
-                    rv.setHasFixedSize(true);
-                    rv.setLayoutManager(new LinearLayoutManager(requireActivity()));
+
 
                     progressBar.setVisibility(View.VISIBLE);
 
@@ -189,14 +178,14 @@ public class ContactsFragment extends Fragment {
 
 
                     requireActivity().runOnUiThread(() -> {
-                        Query query = usersDbReF.orderBy("userName").whereEqualTo("userName", s);
+                        Query query = friendsDbRef.orderByChild("name");
 
-                        FirestoreRecyclerOptions<RequestModel> options =
-                                new FirestoreRecyclerOptions.Builder<RequestModel>().setQuery(query,
+                        FirebaseRecyclerOptions<RequestModel> options =
+                                new FirebaseRecyclerOptions.Builder<RequestModel>().setQuery(query,
                                         RequestModel.class).build();
 
 
-                        adapter = new ContactsAdapter(options);
+                        adapter = new RequestAdapter(options);
                         adapter.notifyDataSetChanged();
                         adapter.startListening();
                         rv.setAdapter(adapter);
@@ -227,13 +216,13 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-//        adapter.startListening();
+        adapter.startListening();
 
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        //  adapter.stopListening();
+        adapter.stopListening();
     }
 }

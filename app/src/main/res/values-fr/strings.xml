@@ -53,7 +53,23 @@
     <string name="welcome">Bienvenue sur Dalilu</string>
     <string name="completeProfile">Remplir le profil</string>
     <string name="latitude_label">Latitude</string>
-    <string name="welcomeNote">[....]</string>
+    <string name="welcomeNote">
+        <![CDATA[
+
+        Thank you creating an account with <b>Dalilu. </b>
+        Help us fight crime by reporting suspicious activities<br>
+<br>
+         <b>Please <b>TAKE NOTE</b> of the following</b>
+         <ol>
+        <li><b>When you feel unsafe send your location to at least three of your contacts list</b></li>
+        <li><b>Always capture a crime , accident and upload it</b></li>
+        <li><b>To enable a fast crime scene investigation please follow up on comments</b> </li>
+        <li><b>Report any suspicious / fraudulent account </b></li>
+        <li><b>Do not be rude, act professional<b></li>
+        </ol>
+        <br>
+        ]]>
+    </string>
     <string name="longitude_label">Longitude</string>
     <string name="last_update_time_label">Date mise a jour de  la derniere localisation</string>
     <string name="start_updates">Commencer la mise a jour</string>
@@ -110,4 +126,9 @@
     <string name="urLoc">"Vote localisation "</string>
     <string name="isShared">"est partagee avec "</string>
     <string name="on">sur la plateforme</string>
+    <string-array name="selectLanguage">
+        <item>Please select language</item>
+        <item>English</item>
+        <item>French</item>
+    </string-array>
 </resources>

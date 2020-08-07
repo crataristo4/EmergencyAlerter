@@ -123,6 +123,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
 
                                 if (task1.isSuccessful()) {
                                     progressBar.dismiss();
+                                    dismiss();
 
                                 } else {
                                     progressBar.dismiss();
@@ -146,13 +147,26 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
 
 
         //check friends details and update button
-        friendsDbCheck.child(senderId).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+        friendsDbCheck.child(id).child(senderId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && snapshot.hasChildren()) {
                     String response = (String) snapshot.child("response").getValue();
 
                     Log.i(TAG, "Response: " + response);
+                    assert response != null;
+                    if (response.equals("sent")) {
+                        //change add user btn to cancel request
+                        btnAddUser.setText(R.string.cancelRequest);
+                        btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.colorRed));
+                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_baseline_cancel_24), null);
+                    } else if (response.equals("friends")) {
+//change add user btn to delete request
+                        btnAddUser.setText(R.string.delete);
+                        btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
+                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
+
+                    }
                 }
             }
 

@@ -51,33 +51,32 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/curvedbuttonstyle"
             android:drawableEnd="@drawable/ic_baseline_person_add_24"
             android:drawablePadding="@dimen/eightDp"
             android:padding="@dimen/eightDp"
             android:text="@string/add"
             android:textAlignment="center"
-            android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtName" />
-
-        <Button
-            android:id="@+id/btnCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@color/colorRed"
-            android:drawableEnd="@drawable/ic_baseline_cancel_24"
-            android:drawablePadding="@dimen/eightDp"
-            android:padding="@dimen/eightDp"
-            android:text="@string/cancel"
+            android:textAllCaps="false"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnAddUser" />
+            app:layout_constraintTop_toBottomOf="@+id/txtName" />
+
+        <ImageView
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/buttonpinklining"
+            android:contentDescription="@string/app_name"
+            android:padding="@dimen/eightDp"
+            android:src="@drawable/ic_baseline_cancel_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imgPhoto" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

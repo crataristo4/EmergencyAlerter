@@ -81,7 +81,7 @@ public class HomeFragment extends Fragment {
             pbHomeLoading.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
 
-        }, 5000);
+        }, 2000);
 
         adapter = new HomeRecyclerAdapter(arrayList, getContext());
         recyclerView.setAdapter(adapter);
