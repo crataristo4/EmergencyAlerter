@@ -65,8 +65,7 @@
 
             <Button
                 android:id="@+id/accept"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/colorAccent"
@@ -74,21 +73,26 @@
                 android:elevation="5dp"
                 android:focusable="true"
                 android:text="@string/acpt"
+                android:textAllCaps="false"
                 android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/decline"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/userImage"
                 app:layout_constraintTop_toBottomOf="@+id/txtId" />
 
             <Button
                 android:id="@+id/decline"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/colorPrimary"
+                android:backgroundTint="@color/colorRed"
                 android:clickable="true"
                 android:elevation="5dp"
                 android:focusable="true"
                 android:text="@string/dcln"
+                android:textAllCaps="false"
                 android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/accept"
                 app:layout_constraintTop_toTopOf="@+id/accept" />
 

@@ -102,7 +102,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         from.put("name", senderName);
         from.put("photo", senderPhotoUrl);
         from.put("phoneNumber", senderPhoneNumber);
-        from.put("response", "sent");
+        from.put("response", "received");
 
         //sender
         Map<String, Object> to = new HashMap<>();
@@ -110,7 +110,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         to.put("name", name);
         to.put("photo", photoUrl);
         to.put("phoneNumber", phoneNumber);
-        to.put("response", "received");
+        to.put("response", "sent");
 
         btnAddUser.setOnClickListener(view -> {
             progressBar.show();
@@ -145,9 +145,13 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
 
         popUpAlerterBottomSheetBinding.btnCancel.setOnClickListener(v -> dismiss());
 
+        //Double checking
+        //1. check friends db
+        //2. check the senders and receivers node respectively
+        //3. check the response and update the UI
 
-        //check friends details and update button
-        friendsDbCheck.child(id).child(senderId).addListenerForSingleValueEvent(new ValueEventListener() {
+        //check senders details and update button
+        friendsDbCheck.child(senderId).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && snapshot.hasChildren()) {
@@ -166,6 +170,12 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                         btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
                         btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
 
+                    } else {
+                        //change add user btn to accept  request
+                        btnAddUser.setText(R.string.acpt);
+                        btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.acceptGreen));
+                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_check_black_24dp), null);
+
                     }
                 }
             }
@@ -175,6 +185,42 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
 
             }
         });
+
+       /* if (!senderId.equals(id)){
+            //check receivers details and update the UI
+            friendsDbCheck.child(id).child(senderId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists() && snapshot.hasChildren()) {
+                        String response = (String) snapshot.child("response").getValue();
+
+                        Log.i(TAG, "Response: " + response);
+                        assert response != null;
+                        if (response.equals("received")) {
+                            //change add user btn to cancel request
+                            btnAddUser.setText(R.string.acpt);
+                            btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.colorRed));
+                            btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_baseline_cancel_24), null);
+                        }
+                        else if (response.equals("friends")) {
+//change add user btn to delete request
+                            btnAddUser.setText(R.string.delete);
+                            btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
+                            btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
+
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+        }
+*/
 
 
     }

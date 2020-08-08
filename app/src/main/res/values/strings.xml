@@ -125,6 +125,7 @@
     <string name="addingUser">adding user…</string>
     <string name="added">Friends</string>
     <string name="declined">Declined</string>
+    <string name="declineRequest">Decline request</string>
     <string name="new_request_from">New request from</string>
     <string name="sendLocation">Send your location</string>
     <string-array name="selectLanguage">
@@ -159,5 +160,4 @@
     <string name="daysAgo"> days ago</string>
     <string name="cancelRequest">Cancel Request</string>
     <string name="view">View</string>
-    <string name="pending">pnd</string>
 </resources>

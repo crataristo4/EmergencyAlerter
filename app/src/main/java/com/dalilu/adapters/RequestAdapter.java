@@ -81,11 +81,16 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
                 btnDecline.setVisibility(View.GONE);
 
 
-            }
-            if (response.equals("received")) {
+            } else if (response.equals("received")) {
 
-                btnAccept.setText(R.string.pending);
-                btnDecline.setVisibility(View.GONE);
+                btnAccept.setVisibility(View.VISIBLE);
+                btnDecline.setVisibility(View.VISIBLE);
+
+
+            } else if (response.equals("sent")) {
+
+                btnAccept.setText(R.string.Pending);
+                btnDecline.setText(R.string.cancelRequest);
 
 
             }

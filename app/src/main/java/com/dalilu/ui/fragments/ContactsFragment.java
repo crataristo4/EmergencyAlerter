@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,7 @@ public class ContactsFragment extends Fragment {
 
         //current users details
         String senderId = MainActivity.userId;
+        Log.i(TAG, "onViewCreated: " + senderId);
         String name = MainActivity.userName;
         String photo = MainActivity.userPhotoUrl;
         String yourLocation = MainActivity.knownName;

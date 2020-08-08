@@ -25,8 +25,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-import java.util.Objects;
-
 public class SearchContactActivity extends AppCompatActivity {
     private ActivitySearchContactBinding activitySearchContactBinding;
     private CollectionReference usersDbReF;
@@ -50,8 +48,12 @@ public class SearchContactActivity extends AppCompatActivity {
 
         activitySearchContactBinding = DataBindingUtil.setContentView(this, R.layout.activity_search_contact);
         progressBar = activitySearchContactBinding.progressLoading;
-        setSupportActionBar(activitySearchContactBinding.toolBarFindUser);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        activitySearchContactBinding.imgBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         RecyclerView rv = activitySearchContactBinding.recyclerViewContacts;
         rv.setHasFixedSize(true);
@@ -133,5 +135,10 @@ public class SearchContactActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         // adapter.stopListening();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }
