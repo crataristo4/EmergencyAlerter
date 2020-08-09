@@ -9,11 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.dalilu.R;
 import com.dalilu.databinding.LayoutRequestReceivedBinding;
 import com.dalilu.model.RequestModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, RequestAdapter.RequestViewHolder> {
     private static RequestAdapter.onItemClickListener onItemClickListener;
@@ -35,6 +40,13 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
         holder.layoutRequestReceivedBinding.setRequests(requestModel);
         holder.showResponse(requestModel.getResponse());
 
+        Glide.with(holder.layoutRequestReceivedBinding.getRoot().getContext())
+                .load(requestModel.getPhoto())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .error(holder.layoutRequestReceivedBinding.getRoot().getContext().getDrawable(R.drawable.photo))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.imgPhoto);
+
     }
 
     @NonNull
@@ -50,14 +62,23 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
 
     }
 
+    public void setOnLocationSharingItemClickListener(RequestAdapter.onItemClickListener onItemClickListener) {
+        RequestAdapter.onItemClickListener = onItemClickListener;
+
+
+    }
+
     public interface onItemClickListener {
         void onClick(View view, int position);
+
+        void onClickLocation(View view, int position);
     }
 
     public static class RequestViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         LayoutRequestReceivedBinding layoutRequestReceivedBinding;
         Button btnAccept, btnDecline, btnSendLocation;
+        CircleImageView imgPhoto;
 
         public RequestViewHolder(@NonNull LayoutRequestReceivedBinding layoutRequestReceivedBinding) {
             super(layoutRequestReceivedBinding.getRoot());
@@ -66,9 +87,10 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
             btnAccept = layoutRequestReceivedBinding.accept;
             btnDecline = layoutRequestReceivedBinding.decline;
             btnSendLocation = layoutRequestReceivedBinding.btnSendLocation;
+            imgPhoto = layoutRequestReceivedBinding.userImage;
 
             btnAccept.setOnClickListener(this);
-            //btnDecline.setOnClickListener(this);
+            btnSendLocation.setOnClickListener(this);
 
 
         }
@@ -115,7 +137,7 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
         @Override
         public void onClick(View view) {
             onItemClickListener.onClick(layoutRequestReceivedBinding.getRoot(), getAdapterPosition());
-            // onItemClickListener.onClick(btnDecline, getAdapterPosition());
+            onItemClickListener.onClickLocation(btnSendLocation, getAdapterPosition());
 
         }
     }
