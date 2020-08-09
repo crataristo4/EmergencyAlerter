@@ -16,7 +16,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, RequestAdapter.RequestViewHolder> {
-    private static ContactsAdapter.onItemClickListener onItemClickListener;
+    private static RequestAdapter.onItemClickListener onItemClickListener;
 
     /**
      * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
@@ -44,8 +44,9 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
 
     }
 
-    public void setOnItemClickListener(ContactsAdapter.onItemClickListener onItemClickListener) {
+    public void setOnItemClickListener(RequestAdapter.onItemClickListener onItemClickListener) {
         RequestAdapter.onItemClickListener = onItemClickListener;
+
 
     }
 
@@ -56,7 +57,7 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
     public static class RequestViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         LayoutRequestReceivedBinding layoutRequestReceivedBinding;
-        Button btnAccept, btnDecline;
+        Button btnAccept, btnDecline, btnSendLocation;
 
         public RequestViewHolder(@NonNull LayoutRequestReceivedBinding layoutRequestReceivedBinding) {
             super(layoutRequestReceivedBinding.getRoot());
@@ -64,9 +65,10 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
 
             btnAccept = layoutRequestReceivedBinding.accept;
             btnDecline = layoutRequestReceivedBinding.decline;
+            btnSendLocation = layoutRequestReceivedBinding.btnSendLocation;
 
             btnAccept.setOnClickListener(this);
-            btnDecline.setOnClickListener(this);
+            //btnDecline.setOnClickListener(this);
 
 
         }
@@ -78,20 +80,29 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
             if (response.equals("friends")) {
 
                 btnAccept.setText(R.string.frnds);
+                btnAccept.setEnabled(false);
                 btnDecline.setVisibility(View.GONE);
+                btnSendLocation.setVisibility(View.VISIBLE);
 
 
             } else if (response.equals("received")) {
 
                 btnAccept.setVisibility(View.VISIBLE);
                 btnDecline.setVisibility(View.VISIBLE);
+                btnSendLocation.setVisibility(View.GONE);
 
 
             } else if (response.equals("sent")) {
 
                 btnAccept.setText(R.string.Pending);
                 btnDecline.setText(R.string.cancelRequest);
+                btnSendLocation.setVisibility(View.GONE);
 
+
+            } else if (response.equals("declined")) {
+                btnAccept.setText(R.string.Pending);
+                btnSendLocation.setVisibility(View.GONE);
+                btnAccept.setEnabled(false);
 
             }
 
@@ -103,8 +114,8 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
 
         @Override
         public void onClick(View view) {
-            onItemClickListener.onClick(btnAccept, getAdapterPosition());
-            onItemClickListener.onClick(btnDecline, getAdapterPosition());
+            onItemClickListener.onClick(layoutRequestReceivedBinding.getRoot(), getAdapterPosition());
+            // onItemClickListener.onClick(btnDecline, getAdapterPosition());
 
         }
     }

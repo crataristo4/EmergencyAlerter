@@ -46,6 +46,7 @@ public class SearchContactActivity extends AppCompatActivity {
         usersDbReF = FirebaseFirestore.getInstance().collection("Users");
         requestDbRef = FirebaseDatabase.getInstance().getReference("Friends");
 
+
         activitySearchContactBinding = DataBindingUtil.setContentView(this, R.layout.activity_search_contact);
         progressBar = activitySearchContactBinding.progressLoading;
         activitySearchContactBinding.imgBackBtn.setOnClickListener(new View.OnClickListener() {
@@ -100,8 +101,9 @@ public class SearchContactActivity extends AppCompatActivity {
                     receiverName = adapter.getItem(position).getUserName();
                     receiverPhotoUrl = adapter.getItem(position).getUserPhotoUrl();
                     receiverPhoneNumber = adapter.getItem(position).getPhoneNumber();
-
                     mLastClickTime = SystemClock.elapsedRealtime();
+
+
                     Bundle bundleFriendDetails = new Bundle();
                     bundleFriendDetails.putString(AppConstants.USER_NAME, receiverName);
                     bundleFriendDetails.putString(AppConstants.UID, receiverId);

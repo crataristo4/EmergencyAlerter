@@ -27,6 +27,8 @@ import com.dalilu.model.RequestModel;
 import com.dalilu.utils.DisplayViewUI;
 import com.dalilu.utils.GetTimeAgo;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -52,6 +54,10 @@ public class ContactsFragment extends Fragment {
     private CollectionReference usersDbReF;
     private DatabaseReference locationDbRef, friendsDbRef;
     private RequestAdapter adapter;
+    String receiverName;
+    String receiverPhotoUrl;
+    String receiverId;
+    String receiverPhoneNumber;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -70,6 +76,9 @@ public class ContactsFragment extends Fragment {
         String photo = MainActivity.userPhotoUrl;
         String yourLocation = MainActivity.knownName;
 
+        ProgressDialog loading = DisplayViewUI.displayProgress(requireActivity(), getString(R.string.addingUser));
+
+
         rv = fragmentContactsBinding.contactsRecyclerView;
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(requireActivity()));
@@ -77,9 +86,9 @@ public class ContactsFragment extends Fragment {
         progressBar = fragmentContactsBinding.progressLoading;
         usersDbReF = FirebaseFirestore.getInstance().collection("Users");
         locationDbRef = FirebaseDatabase.getInstance().getReference("Locations");
-        friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends").child(senderId);
+        friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");
 
-        Query query = friendsDbRef.orderByKey();
+        Query query = friendsDbRef.child(senderId).orderByKey();
 
         FirebaseRecyclerOptions<RequestModel> options =
                 new FirebaseRecyclerOptions.Builder<RequestModel>().setQuery(query,
@@ -210,6 +219,49 @@ public class ContactsFragment extends Fragment {
 
                 return true;
             }
+        });
+
+
+        //adding users...
+
+        adapter.setOnItemClickListener((view12, position) -> {
+
+            loading.show();
+
+            receiverId = adapter.getItem(position).getId();
+            receiverName = adapter.getItem(position).getUserName();
+            receiverPhotoUrl = adapter.getItem(position).getUserPhotoUrl();
+            receiverPhoneNumber = adapter.getItem(position).getPhoneNumber();
+
+            Log.i(TAG, "onViewCreated: " + receiverId);
+
+
+            //sender
+            Map<String, Object> updateResponse = new HashMap<>();
+            // to.put("id", receiverId);
+            updateResponse.put("response", "friends");
+
+            friendsDbRef.child(receiverId).child(senderId).updateChildren(updateResponse).addOnCompleteListener(task -> {
+
+                if (task.isSuccessful()) {
+
+                    friendsDbRef.child(senderId).child(receiverId).updateChildren(updateResponse).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                loading.dismiss();
+                            }
+
+                        }
+                    });
+
+                } else {
+                    DisplayViewUI.displayToast(requireContext(), Objects.requireNonNull(task.getException()).getMessage());
+                }
+
+            });
+
+
         });
 
 

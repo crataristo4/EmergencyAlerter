@@ -16,6 +16,7 @@ public final class AppConstants {
     public static String SEND_REQUEST_TAG = "sendRequest";
     public static final String UID = "uid";
     public static final String PHONE_NUMBER = "phoneNumber";
+    public static final String RESPONSE = "response";
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
     public static final String USER_NAME = "userName";

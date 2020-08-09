@@ -36,11 +36,11 @@ import java.util.Objects;
 public class PopUpAlerter extends BottomSheetDialogFragment {
     PopUpAlerterBottomSheetBinding popUpAlerterBottomSheetBinding;
     private static final String TAG = "PopUpAlerter";
-    private String name, id, phoneNumber, photoUrl;
+    private String name, id, phoneNumber, photoUrl, response;
     private TextView txtName;
     private ImageView imgPhoto;
     private Button btnAddUser;
-    private DatabaseReference friendsDbCheck;
+    private DatabaseReference friendsDbRef, friendsDbCheck;
 
 
     @Override
@@ -64,19 +64,20 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        friendsDbCheck = FirebaseDatabase.getInstance().getReference("Friends");
         initViews();
 
 
     }
 
     private void initViews() {
-
         ProgressDialog progressBar = DisplayViewUI.displayProgress(requireActivity(), getString(R.string.addingUser));
 
         txtName = popUpAlerterBottomSheetBinding.txtName;
         imgPhoto = popUpAlerterBottomSheetBinding.imgPhoto;
         btnAddUser = popUpAlerterBottomSheetBinding.btnAddUser;
+
+        friendsDbCheck = FirebaseDatabase.getInstance().getReference().child("Friends");
+        friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");
 
         Bundle getUserDetailsBundle = getArguments();
         if (getUserDetailsBundle != null) {
@@ -85,11 +86,14 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
             id = getUserDetailsBundle.getString(AppConstants.UID);
             photoUrl = getUserDetailsBundle.getString(AppConstants.USER_PHOTO_URL);
             phoneNumber = getUserDetailsBundle.getString(AppConstants.PHONE_NUMBER);
+            response = getUserDetailsBundle.getString(AppConstants.RESPONSE);
 
             txtName.setText(name);
             Glide.with(requireActivity()).load(photoUrl).into(imgPhoto);
 
         }
+
+
         //sender details
         String senderName = MainActivity.userName;
         String senderId = MainActivity.userId;
@@ -112,12 +116,14 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         to.put("phoneNumber", phoneNumber);
         to.put("response", "sent");
 
+        Log.i(TAG, "current user: " + senderId + " receiver :: " + id + " response:: " + response);
+
         btnAddUser.setOnClickListener(view -> {
             progressBar.show();
 
             requireActivity().runOnUiThread(() -> {
                 try {
-                    friendsDbCheck.child(senderId).child(id).setValue(to).addOnCompleteListener(task -> {
+                    friendsDbRef.child(senderId).child(id).setValue(to).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             friendsDbCheck.child(id).child(senderId).setValue(from).addOnCompleteListener(task1 -> {
 
@@ -150,14 +156,14 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         //2. check the senders and receivers node respectively
         //3. check the response and update the UI
 
-        //check senders details and update button
-        friendsDbCheck.child(senderId).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+
+        friendsDbCheck.child(senderId).child(id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists() && snapshot.hasChildren()) {
+                if (snapshot.exists()) {
                     String response = (String) snapshot.child("response").getValue();
 
-                    Log.i(TAG, "Response: " + response);
+                    Log.i("Response", "Response: " + response);
                     assert response != null;
                     if (response.equals("sent")) {
                         //change add user btn to cancel request
@@ -170,13 +176,13 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                         btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
                         btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
 
-                    } else {
+                    }/*else {
                         //change add user btn to accept  request
                         btnAddUser.setText(R.string.acpt);
                         btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.acceptGreen));
                         btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_check_black_24dp), null);
 
-                    }
+                    }*/
                 }
             }
 
@@ -186,40 +192,32 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
             }
         });
 
-       /* if (!senderId.equals(id)){
-            //check receivers details and update the UI
-            friendsDbCheck.child(id).child(senderId).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists() && snapshot.hasChildren()) {
-                        String response = (String) snapshot.child("response").getValue();
 
-                        Log.i(TAG, "Response: " + response);
-                        assert response != null;
-                        if (response.equals("received")) {
-                            //change add user btn to cancel request
-                            btnAddUser.setText(R.string.acpt);
-                            btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.colorRed));
-                            btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_baseline_cancel_24), null);
-                        }
-                        else if (response.equals("friends")) {
-//change add user btn to delete request
-                            btnAddUser.setText(R.string.delete);
-                            btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
-                            btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
+       /* friendsDbCheck.child(id).child(senderId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        }
-                    }
+                String response = (String) snapshot.child("response").getValue();
+                assert  response != null;
+
+                Log.i(TAG, "response: " + response);
+
+                if (response.equals("received")){
+                    Log.i(TAG, "response: " + response);
+                    //change add user btn to accept  request
+                    btnAddUser.setText(R.string.acpt);
+                    btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.acceptGreen));
+                    btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_check_black_24dp), null);
 
                 }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+            }
 
-                }
-            });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-        }
+            }
+        });
 */
 
 
