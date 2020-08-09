@@ -17,8 +17,6 @@
     <string name="directory"> directory</string>
     <string name="captureCanceled">Capturing image cancelled</string>
     <string name="failedToCapture">Sorry! Failed to capture image</string>
-    <string name="uploadingImage">uploading image please wait…</string>
-    <string name="uploadingVideo">uploading video please wait…</string>
     <string name="uploadingPleaseWait">uploading  please wait…</string>
     <string name="perRequired">Permissions required!</string>
     <string name="camPerm">Camera needs few permissions to work properly. Grant them in settings.</string>
@@ -125,7 +123,6 @@
     <string name="addingUser">adding user…</string>
     <string name="added">Friends</string>
     <string name="declined">Declined</string>
-    <string name="declineRequest">Decline request</string>
     <string name="new_request_from">New request from</string>
     <string name="sendLocation">Send your location</string>
     <string-array name="selectLanguage">
@@ -160,4 +157,7 @@
     <string name="daysAgo"> days ago</string>
     <string name="cancelRequest">Cancel Request</string>
     <string name="view">View</string>
+    <string name="uploadingImage">uploading image please wait…</string>
+    <string name="uploadingVideo">uploading video please wait…</string>
+    <string name="declineRequest">Decline request</string>
 </resources>
