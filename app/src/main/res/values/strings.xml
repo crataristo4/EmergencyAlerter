@@ -53,23 +53,7 @@
 
     <string name="welcome">Welcome to Dalilu App</string>
     <string name="completeProfile">Complete profile</string>
-    <string name="welcomeNote">
-        <![CDATA[
-
-        Thank you creating an account with <b>Dalilu. </b>
-        Help us fight crime by reporting suspicious activities<br>
-<br>
-         <b>Please <b>TAKE NOTE</b> of the following</b>
-         <ol>
-        <li><b>When you feel unsafe send your location to at least three of your contacts list</b></li>
-        <li><b>Always capture a crime , accident and upload it</b></li>
-        <li><b>To enable a fast crime scene investigation please follow up on comments</b> </li>
-        <li><b>Report any suspicious / fraudulent account </b></li>
-        <li><b>Do not be rude, act professional<b></li>
-        </ol>
-        <br>
-        ]]>
-    </string>
+    <string name="welcomeNote">"         <![CDATA[          Thank you creating an account with <b>Dalilu. </b>         Help us fight crime by reporting suspicious activities<br> <br>          <b>Please <b>TAKE NOTE</b> of the following</b>          <ol>         <li><b>When you feel unsafe send your location to at least three of your contacts list</b></li>         <li><b>Always capture a crime , accident and upload it</b></li>         <li><b>To enable a fast crime scene investigation please follow up on comments</b> </li>         <li><b>Report any suspicious / fraudulent account </b></li>         <li><b>Do not be rude, act professional<b></li>         </ol>         <br>         ]]>     "</string>
     <!--location-->
     <string name="latitude_label">Latitude</string>
     <string name="longitude_label">Longitude</string>

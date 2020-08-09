@@ -131,4 +131,23 @@
         <item>English</item>
         <item>French</item>
     </string-array>
+    <string name="notifs">Notification d\'alerte</string>
+    <string name="noNotifs">Notification d\'alerte non recue</string>
+    <string name="oneNotif">Notification d\'alerte recue</string>
+    <string name="dcln">Refuser</string>
+    <string name="acpt">Accepter</string>
+    <string name="frnds">Amis</string>
+    <string name="Pending">En attente</string>
+    <string name="justNow">Juste maintenant</string>
+    <string name="aMinuteAgo">Il y a une minute</string>
+    <string name="minuteAgo">Il y a des minutes</string>
+    <string name="hoursAgo">Il y a des heures</string>
+    <string name="anHourAgo">Il y a une heure</string>
+    <string name="yesterday">Hier</string>
+    <string name="daysAgo">Il y a des jours</string>
+    <string name="cancelRequest">Annuller la requeste</string>
+    <string name="view">Vue</string>
+    <string name="uploadingImage">Image en cours de transmission. Attendez SVP.</string>
+    <string name="uploadingVideo">Video en cours de transmission. Attendez SVP</string>
+    <string name="declineRequest">Requete refusee</string>
 </resources>
