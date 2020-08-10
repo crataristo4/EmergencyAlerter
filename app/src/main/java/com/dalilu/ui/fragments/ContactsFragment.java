@@ -1,6 +1,5 @@
 package com.dalilu.ui.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,23 +21,12 @@ import com.dalilu.adapters.RequestAdapter;
 import com.dalilu.databinding.FragmentContactsBinding;
 import com.dalilu.model.RequestModel;
 import com.dalilu.utils.DisplayViewUI;
-import com.dalilu.utils.GetTimeAgo;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.text.DateFormat;
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 
 public class ContactsFragment extends Fragment {
@@ -49,7 +37,7 @@ public class ContactsFragment extends Fragment {
     private FragmentContactsBinding fragmentContactsBinding;
     RecyclerView rv;
     private CollectionReference usersDbReF;
-    private DatabaseReference locationDbRef, friendsDbRef;
+    private DatabaseReference locationDbRef, friendsDbRef, testDb;
     private RequestAdapter adapter;
     String receiverName;
     String receiverPhotoUrl;
@@ -84,17 +72,19 @@ public class ContactsFragment extends Fragment {
         usersDbReF = FirebaseFirestore.getInstance().collection("Users");
         locationDbRef = FirebaseDatabase.getInstance().getReference("Locations");
         friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");
+        testDb = FirebaseDatabase.getInstance().getReference().child("Friends").child(senderId);
 
         Query query = friendsDbRef.child(senderId).orderByKey();
+        Query query1 = testDb.orderByPriority();
 
         FirebaseRecyclerOptions<RequestModel> options =
-                new FirebaseRecyclerOptions.Builder<RequestModel>().setQuery(query,
+                new FirebaseRecyclerOptions.Builder<RequestModel>().setQuery(query1,
                         RequestModel.class).build();
 
         adapter = new RequestAdapter(options);
         rv.setAdapter(adapter);
 
-        adapter.setOnLocationSharingItemClickListener(new RequestAdapter.onItemClickListener() {
+        /*adapter.setOnLocationSharingItemClickListener(new RequestAdapter.onItemClickListener() {
             @Override
             public void onClick(View view, int position) {
 //adding users...
@@ -210,7 +200,7 @@ public class ContactsFragment extends Fragment {
 
             }
         });
-
+*/
 
 /*
 

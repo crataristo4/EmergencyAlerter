@@ -118,7 +118,6 @@
                         app:fab_title_textColor="@color/white"
                         app:srcCompat="@drawable/ic_baseline_log_out" />
 
-
                 </jahirfiquitiva.libs.fabsmenu.FABsMenu>
 
             </jahirfiquitiva.libs.fabsmenu.FABsMenuLayout>

@@ -9,9 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.dalilu.R;
 import com.dalilu.databinding.LayoutRequestReceivedBinding;
 import com.dalilu.model.RequestModel;
@@ -40,12 +37,12 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
         holder.layoutRequestReceivedBinding.setRequests(requestModel);
         holder.showResponse(requestModel.getResponse());
 
-        Glide.with(holder.layoutRequestReceivedBinding.getRoot().getContext())
+      /*  Glide.with(holder.layoutRequestReceivedBinding.getRoot().getContext())
                 .load(requestModel.getPhoto())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .error(holder.layoutRequestReceivedBinding.getRoot().getContext().getDrawable(R.drawable.photo))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.imgPhoto);
+                .into(holder.imgPhoto);*/
 
     }
 
@@ -62,16 +59,11 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
 
     }
 
-    public void setOnLocationSharingItemClickListener(RequestAdapter.onItemClickListener onItemClickListener) {
-        RequestAdapter.onItemClickListener = onItemClickListener;
-
-
-    }
 
     public interface onItemClickListener {
         void onClick(View view, int position);
 
-        void onClickLocation(View view, int position);
+
     }
 
     public static class RequestViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -90,7 +82,7 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
             imgPhoto = layoutRequestReceivedBinding.userImage;
 
             btnAccept.setOnClickListener(this);
-            btnSendLocation.setOnClickListener(this);
+            // btnSendLocation.setOnClickListener(this);
 
 
         }
@@ -137,7 +129,7 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
         @Override
         public void onClick(View view) {
             onItemClickListener.onClick(layoutRequestReceivedBinding.getRoot(), getAdapterPosition());
-            onItemClickListener.onClickLocation(btnSendLocation, getAdapterPosition());
+            // onItemClickListener.onClickLocation(btnSendLocation, getAdapterPosition());
 
         }
     }
