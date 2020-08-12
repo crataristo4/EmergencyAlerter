@@ -112,13 +112,23 @@
             android:textSize="12sp"
             app:emojiconSize="28sp" />
 
+        <ImageView
+            android:id="@+id/imgRecordAudio"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="7dp"
+            android:contentDescription="@string/recordAudio"
+            android:padding="4dp"
+            app:srcCompat="@drawable/ic_baseline_keyboard_voice_24" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+
+        <ImageView
+            android:layout_width="30dp"
             android:id="@+id/btnComment"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="7dp"
+            android:padding="4dp"
             app:backgroundTint="@color/colorAsh"
-            app:fabSize="mini"
             app:srcCompat="@drawable/ic_send" />
     </LinearLayout>
 

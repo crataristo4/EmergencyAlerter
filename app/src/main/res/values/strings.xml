@@ -144,4 +144,7 @@
     <string name="uploadingImage">uploading image please wait…</string>
     <string name="uploadingVideo">uploading video please wait…</string>
     <string name="declineRequest">Decline request</string>
+    <string name="stdVoiceRecordind">Started voice recording</string>
+    <string name="stpdVoiceRecording">Stopped voice recording</string>
+    <string name="rcAud">Recording audio , press stop to upload</string>
 </resources>

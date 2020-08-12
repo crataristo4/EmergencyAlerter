@@ -9,12 +9,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dalilu.R;
 import com.dalilu.databinding.LayoutCommentBinding;
+import com.dalilu.databinding.LayoutPlayAudioBinding;
 import com.dalilu.model.Message;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentsViewHolder> {
+public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Message> commentList;
 
@@ -29,19 +30,30 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CommentsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+       /* Message commentMsg = commentList.get(position);
 
-        Message commentMsg = commentList.get(position);
+        holder.layoutCommentBinding.setComments(commentMsg);*/
 
-        holder.layoutCommentBinding.setComments(commentMsg);
 
     }
+
 
     @Override
     public int getItemCount() {
         return commentList == null ? 0 : commentList.size();
     }
 
+
+    @Override
+    public long getItemId(int position) {
+        return commentList.get(position).getId().hashCode();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
 
     static class CommentsViewHolder extends RecyclerView.ViewHolder {
 
@@ -50,6 +62,19 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         CommentsViewHolder(@NonNull LayoutCommentBinding layoutCommentBinding) {
             super(layoutCommentBinding.getRoot());
             this.layoutCommentBinding = layoutCommentBinding;
+
+        }
+
+
+    }
+
+    static class AudioViewHolder extends RecyclerView.ViewHolder {
+
+        LayoutPlayAudioBinding layoutPlayAudioBinding;
+
+        AudioViewHolder(@NonNull LayoutPlayAudioBinding layoutPlayAudioBinding) {
+            super(layoutPlayAudioBinding.getRoot());
+            this.layoutPlayAudioBinding = layoutPlayAudioBinding;
 
         }
 

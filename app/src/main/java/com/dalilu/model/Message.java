@@ -19,6 +19,8 @@ import com.bumptech.glide.request.target.Target;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Message extends BaseObservable {
+    private Type type;
+
     public static final int ITEM_TYPE_SENT = 0;
     public static final int ITEM_TYPE_RECEIVED = 1;
     public String userName, receiverName;
@@ -26,8 +28,38 @@ public class Message extends BaseObservable {
     private String senderId, receiverId;
     private String senderPhoto, receiverPhoto;
     private String message;
+    private String id;
+    private Object content;
+
+    public String getId() {
+        return id;
+    }
 
     public Message() {
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public Object getContent() {
+        return content;
+    }
+
+    public void setContent(Object content) {
+        this.content = content;
+    }
+
+    public enum Type {
+        TEXT, IMAGE, SOUND
     }
 
     @BindingAdapter("chatImage")
