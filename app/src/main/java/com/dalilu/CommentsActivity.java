@@ -113,7 +113,7 @@ public class CommentsActivity extends AppCompatActivity {
         recording = false;
         btnRecord = findViewById(R.id.imgRecordAudio);
         btnRecord.setOnClickListener(v -> voiceRecordingAction());
-        pd = DisplayViewUI.displayProgress(this, getResources().getString(R.string.plsWait));
+        pd = DisplayViewUI.displayProgress(this, getResources().getString(R.string.uploadingPleaseWait));
 
         TextView txtItemDes = findViewById(R.id.txtItemDescription);
         TextView txtDatePosted = findViewById(R.id.txtDatePosted);
@@ -236,7 +236,7 @@ public class CommentsActivity extends AppCompatActivity {
                 initializeMediaRecord();
                 startRecordingAudio();
             } else {
-                DisplayViewUI.displayToast(CommentsActivity.this, getString(R.string.stpdVoiceRecording));
+                // DisplayViewUI.displayToast(CommentsActivity.this, getString(R.string.stpdVoiceRecording));
                 emojiconEditText.setHint(getResources().getString(R.string.type_your_comments_here));
                 emojiconEditText.setHintTextColor(getResources().getColor(R.color.black));
                 emojiconEditText.setEnabled(true);
@@ -272,8 +272,7 @@ public class CommentsActivity extends AppCompatActivity {
                 Map<String, Object> uploadAudio = new HashMap<>();
                 uploadAudio.put("userName", name);
                 uploadAudio.put("url", url);
-                uploadAudio.put(type, type);
-                uploadAudio.put("userId", userId);
+                uploadAudio.put("type", type);
                 uploadAudio.put("timeStamp", GetTimeAgo.getTimeInMillis());
                 uploadAudio.put("messageDateTime", dateTime);
 
