@@ -9,7 +9,8 @@ public final class AppConstants {
     public static final int VIDEO_TYPE = 0;
     public static final int IMAGE_TYPE = 1;
     public static final int VIEW_TYPE_LOADING = 2;
-    public static final int AUDIO_TYPE = 3;
+    public static final int AUDIO_TYPE = 2;
+    public static final int TEXT_TYPE = 1;
     public static final int CAMERA_REQUEST_CODE = 1;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
@@ -25,6 +26,7 @@ public final class AppConstants {
     public static final String KNOWN_LOCATION = "known location";
     public static final String USER_PHOTO_URL = "userPhotoUrl";
     public static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+    public static final String CACHE_UTILS = "CacheUtils";
 
     /**
      * Constant used in the location settings dialog.

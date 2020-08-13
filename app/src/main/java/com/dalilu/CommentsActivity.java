@@ -2,7 +2,6 @@ package com.dalilu;
 
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +9,7 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,24 +24,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.dalilu.adapters.CommentsAdapter;
 import com.dalilu.model.Message;
+import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.dalilu.utils.FileUtils;
 import com.dalilu.utils.GetTimeAgo;
 import com.dalilu.utils.PermissionUtils;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -77,6 +77,13 @@ public class CommentsActivity extends AppCompatActivity {
     private ImageView btnRecord;
     private ProgressDialog pd;
     private StorageReference audioFilePath, filePath;
+    private static final String TAG = "CommentsActivity";
+    private ListenerRegistration registration;
+    private DocumentSnapshot mLastResult;
+    private boolean isScrolling = false;
+    private boolean isLastItemReached = false;
+    private CollectionReference commentsRef;
+    private DocumentReference documentReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +94,58 @@ public class CommentsActivity extends AppCompatActivity {
         setSupportActionBar(commentToolBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
+
         initViews();
-        loadData();
+        // loadData();
+        //   runOnUiThread(this::fetchCommentsData);
+        fetchCommentsData();
+
+
+    }
+
+    private void fetchCommentsData() {
+
+
+        // Create a query against the collection.
+        Query query = commentsRef.orderBy("timeStamp", Query.Direction.DESCENDING);
+
+        registration = query.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e);
+                return;
+            }
+            commentList.clear();
+            assert queryDocumentSnapshots != null;
+            for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
+
+                Message messageList = ds.toObject(Message.class);
+                String name = messageList.getUserName();
+                String dateTime = messageList.getMessageDateTime();
+                long timeStamp = messageList.getTimeStamp();
+                String message = messageList.getMessage();
+                String audioUrl = messageList.getUrl();
+                String id = ds.getId();
+
+                //group data by text
+                if (ds.getData().containsKey("text")) {
+
+                    commentList.add(new Message(AppConstants.TEXT_TYPE, name, timeStamp, id, message));
+
+                }
+                //group data by audio
+                else if (ds.getData().containsKey("audio")) {
+
+                    commentList.add(new Message(AppConstants.AUDIO_TYPE, name, timeStamp, audioUrl));
+
+                }
+
+
+            }
+
+            adapter.notifyDataSetChanged();
+
+
+        });
 
     }
 
@@ -101,6 +158,24 @@ public class CommentsActivity extends AppCompatActivity {
             getDatePosted = getCommentsIntent.getStringExtra("datePosted");
             getAlertPhotoUrl = getCommentsIntent.getStringExtra("alertPhotoUrl");
         }
+
+        commentsRef = FirebaseFirestore.getInstance().collection("Comments").document(getAlertItemId).collection(getAlertItemId);
+
+        commentsRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                int count = 0;
+                Log.i(TAG, "Num of items: " + task.getResult().size());
+                for (DocumentSnapshot ds : task.getResult()) {
+                    count++;
+
+
+                }
+
+
+            }
+
+        });
+
         audioFilePath = FirebaseStorage.getInstance().getReference().child("audio");
         filePath = audioFilePath.child(UUID.randomUUID().toString());
 
@@ -130,13 +205,10 @@ public class CommentsActivity extends AppCompatActivity {
             addComment();
         });
 
-        databaseReference = FirebaseDatabase.getInstance()
-                .getReference()
-                .child("Comments").child(getAlertItemId);
-        databaseReference.keepSynced(true);
 
-        randomId = databaseReference.push().getKey();
-        assert randomId != null;
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM HH:mm", Locale.ENGLISH);
+        dateTime = simpleDateFormat.format(calendar.getTime());
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -145,62 +217,10 @@ public class CommentsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         commentList = new ArrayList<>();
 
-        adapter = new CommentsAdapter(commentList);
+        adapter = new CommentsAdapter(commentList, CommentsActivity.this);
         recyclerView.setAdapter(adapter);
 
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM HH:mm", Locale.ENGLISH);
-        dateTime = simpleDateFormat.format(calendar.getTime());
 
-
-    }
-
-    private void loadData() {
-        Query query = databaseReference.orderByChild("timeStamp");
-
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                commentList.clear();
-
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                        Message commentsList = ds.getValue(Message.class);
-
-                        commentList.add(commentsList);
-                    }
-                }
-
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-    }
-
-    private void addComment() {
-        String postComment = emojiconEditText.getText().toString();
-
-        if (!postComment.trim().isEmpty()) {
-            HashMap<String, Object> comments = new HashMap<>();
-            comments.put("message", postComment);
-            comments.put("userName", name);
-            comments.put("messageDateTime", dateTime);
-            comments.put("type", "text");
-
-            databaseReference.child(randomId).setValue(comments);
-
-            emojiconEditText.getText().clear();
-
-        } else if (postComment.trim().isEmpty()) {
-            emojiconEditText.setError("Cannot send empty message");
-        }
 
 
     }
@@ -211,7 +231,6 @@ public class CommentsActivity extends AppCompatActivity {
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
     }
-
 
     private void voiceRecordingAction() {
 
@@ -242,17 +261,36 @@ public class CommentsActivity extends AppCompatActivity {
                 emojiconEditText.setEnabled(true);
                 btnRecord.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_keyboard_voice_24));
                 stopRecordingAudio();
-                uploadAudioRecording(Uri.fromFile(new File(recordPath)), "audio");
+                uploadAudioRecording(Uri.fromFile(new File(recordPath)));
             }
             recording = !recording;
         }
     }
 
-    private void uploadAudioRecording(Uri uri, String type) {
-        pd.show();
-        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:MM a");
-        String dateReported = dateFormat.format(Calendar.getInstance().getTime());
+    private void addComment() {
+        String postComment = emojiconEditText.getText().toString();
 
+        if (!postComment.trim().isEmpty()) {
+            HashMap<String, Object> comments = new HashMap<>();
+            comments.put("message", postComment);
+            comments.put("userName", name);
+            comments.put("messageDateTime", dateTime);
+            comments.put("timeStamp", GetTimeAgo.getTimeInMillis());
+            comments.put("text", "text");
+
+            commentsRef.add(comments);
+
+            emojiconEditText.getText().clear();
+
+        } else if (postComment.trim().isEmpty()) {
+            emojiconEditText.setError("Cannot send empty message");
+        }
+
+
+    }
+
+    private void uploadAudioRecording(Uri uri) {
+        pd.show();
         //upload audio to server
         filePath.putFile(uri).continueWithTask(task -> {
             if (!task.isSuccessful()) {
@@ -272,11 +310,23 @@ public class CommentsActivity extends AppCompatActivity {
                 Map<String, Object> uploadAudio = new HashMap<>();
                 uploadAudio.put("userName", name);
                 uploadAudio.put("url", url);
-                uploadAudio.put("type", type);
+                uploadAudio.put("audio", "audio");
                 uploadAudio.put("timeStamp", GetTimeAgo.getTimeInMillis());
                 uploadAudio.put("messageDateTime", dateTime);
 
-                databaseReference.child(randomId).setValue(uploadAudio).addOnCompleteListener(new OnCompleteListener<Void>() {
+                commentsRef.add(uploadAudio).addOnCompleteListener(task1 -> {
+
+                    if (task1.isSuccessful()) {
+                        pd.dismiss();
+                        DisplayViewUI.displayToast(CommentsActivity.this, getString(R.string.successFull));
+                    } else {
+                        pd.dismiss();
+                        DisplayViewUI.displayToast(CommentsActivity.this, Objects.requireNonNull(task.getException()).getMessage());
+
+                    }
+                });
+
+               /* databaseReference.child(randomId).setValue(uploadAudio).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
 
@@ -291,7 +341,7 @@ public class CommentsActivity extends AppCompatActivity {
                         }
                     }
                 });
-
+*/
 
             } else {
                 pd.dismiss();
@@ -350,4 +400,9 @@ public class CommentsActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        registration.remove();
+    }
 }

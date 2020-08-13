@@ -19,8 +19,6 @@ import com.dalilu.ui.bottomsheets.WelcomeNoticeBottomSheet;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -37,7 +35,6 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
     private ActivityFinishAccountSetupBinding activityFinishAccountSetupBinding;
     private CircleImageView imgUserPhoto;
     private StorageReference mStorageReference;
-    private DatabaseReference usersDbRef;
     private CollectionReference usersCollection;
     private String uid, getImageUri, phoneNumber;
     private Uri uri;
@@ -64,7 +61,6 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
         imgUserPhoto.setOnClickListener(view -> DisplayViewUI.openGallery(FinishAccountSetupActivity.this));
 
 //database reference
-        usersDbRef = FirebaseDatabase.getInstance().getReference("Users").child(uid);
         usersCollection = FirebaseFirestore.getInstance().collection("Users");
         //storage reference
         mStorageReference = FirebaseStorage.getInstance().getReference("user photos");
@@ -101,8 +97,6 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
 
     private void uploadFile() {
         String userName = Objects.requireNonNull(txtUserName.getEditText()).getText().toString();
-
-
         //validations for user name
         if (userName.trim().isEmpty()) {
             int numberOfLetters = 6;

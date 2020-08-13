@@ -1,107 +1,66 @@
 package com.dalilu.model;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-
-import androidx.annotation.Nullable;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
-import androidx.databinding.BindingAdapter;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Message extends BaseObservable {
-    private Type type;
-
-    public static final int ITEM_TYPE_SENT = 0;
-    public static final int ITEM_TYPE_RECEIVED = 1;
     public String userName, receiverName;
     public String messageDateTime;
-    private String senderId, receiverId;
-    private String senderPhoto, receiverPhoto;
     private String message;
-    private String id;
-    private Object content;
+    public String id;
+    public int type;
+    public Object timeStamp;
+    private String url;
+
+
+    public Message() {
+    }
+
+
+    //TEXT type
+    public Message(int type, String userName, Object timeStamp, String id, String message) {
+        this.type = type;
+        this.userName = userName;
+        this.timeStamp = timeStamp;
+        this.id = id;
+        this.message = message;
+
+    }
+
+    //audio type
+    public Message(int type, String userName, Object timeStamp, String url) {
+        this.type = type;
+        this.userName = userName;
+        this.timeStamp = timeStamp;
+        this.url = url;
+
+
+    }
 
     public String getId() {
         return id;
-    }
-
-    public Message() {
     }
 
     public void setId(String id) {
         this.id = id;
     }
 
-    public Type getType() {
-        return type;
+    public String getUrl() {
+        return url;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public Object getContent() {
-        return content;
+    public long getTimeStamp() {
+        return (long) timeStamp;
     }
 
-    public void setContent(Object content) {
-        this.content = content;
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
-    public enum Type {
-        TEXT, IMAGE, SOUND
-    }
-
-    @BindingAdapter("chatImage")
-    public static void loadSingleImages(CircleImageView imageView, String imageUrl) {
-        Context context = imageView.getContext();
-        Glide.with(context)
-                .load(imageUrl)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object o, Target<Drawable> target, boolean b) {
-
-
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable drawable, Object o, Target<Drawable> target, DataSource dataSource, boolean b) {
-
-
-                        return false;
-                    }
-                })
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView);
-    }
-
-    public String getSenderId() {
-        return senderId;
-    }
-
-    public void setSenderId(String senderId) {
-        this.senderId = senderId;
-    }
-
-    public String getReceiverId() {
-        return receiverId;
-    }
-
-    public void setReceiverId(String receiverId) {
-        this.receiverId = receiverId;
-    }
 
     @Bindable
     public String getUserName() {
@@ -121,21 +80,6 @@ public class Message extends BaseObservable {
         this.receiverName = receiverName;
     }
 
-    public String getSenderPhoto() {
-        return senderPhoto;
-    }
-
-    public void setSenderPhoto(String senderPhoto) {
-        this.senderPhoto = senderPhoto;
-    }
-
-    public String getReceiverPhoto() {
-        return receiverPhoto;
-    }
-
-    public void setReceiverPhoto(String receiverPhoto) {
-        this.receiverPhoto = receiverPhoto;
-    }
 
     @Bindable
     public String getMessageDateTime() {

@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.dalilu.databinding.ActivitySplashScreenBinding;
-import com.dalilu.ui.auth.PhoneAuthActivity;
+import com.dalilu.ui.auth.RegisterPhoneNumberActivity;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -105,7 +105,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                                 } else {
 
-                                    DisplayViewUI.displayToast(SplashScreenActivity.this, task1.getException().getMessage());
+                                    DisplayViewUI.displayToast(SplashScreenActivity.this, Objects.requireNonNull(task1.getException()).getMessage());
 
 
                                 }
@@ -121,7 +121,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
             } else {
                 //Opens the Phone Auth Activity once the time elapses
-                startActivity(new Intent(SplashScreenActivity.this, PhoneAuthActivity.class));
+                startActivity(new Intent(SplashScreenActivity.this, RegisterPhoneNumberActivity.class));
                 finish();
             }
 

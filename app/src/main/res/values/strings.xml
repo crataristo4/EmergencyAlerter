@@ -147,4 +147,10 @@
     <string name="stdVoiceRecordind">Started voice recording</string>
     <string name="stpdVoiceRecording">Stopped voice recording</string>
     <string name="rcAud">Recording audio , press stop to upload</string>
+    <string name="dalilu_will_send_an_sms_message_to_verify_your_phone_number">Dalilu will send an SMS message to verify your phone number :</string>
+    <string name="verify_your_phone_number">Verify your phone number</string>
+    <string name="waiting_to_automatically_detect_an_sms_sent_to">Waiting to automatically detect an SMS sent to</string>
+    <string name="dash">- - - - - -</string>
+    <string name="enter_6_digit_code">Enter 6-digit code</string>
+    <string name="wrong_number">Wrong number?</string>
 </resources>
