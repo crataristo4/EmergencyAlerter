@@ -72,13 +72,12 @@ public class ContactsFragment extends Fragment {
         usersDbReF = FirebaseFirestore.getInstance().collection("Users");
         locationDbRef = FirebaseDatabase.getInstance().getReference("Locations");
         friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");
-        testDb = FirebaseDatabase.getInstance().getReference().child("Friends").child(senderId);
 
         Query query = friendsDbRef.child(senderId).orderByKey();
-        Query query1 = testDb.orderByPriority();
+
 
         FirebaseRecyclerOptions<RequestModel> options =
-                new FirebaseRecyclerOptions.Builder<RequestModel>().setQuery(query1,
+                new FirebaseRecyclerOptions.Builder<RequestModel>().setQuery(query,
                         RequestModel.class).build();
 
         adapter = new RequestAdapter(options);

@@ -61,39 +61,68 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        loadActivityData();
+        initViews();
         requireActivity().runOnUiThread(this::fetchData);
 
     }
 
 
-    private void loadActivityData() {
+    private void initViews() {
+
         recyclerView = fragmentHomeBinding.recyclerViewHome;
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-
-        pbHomeLoading = fragmentHomeBinding.pbHomeLoading;
-
-        new Handler().postDelayed(() -> {
-
-            pbHomeLoading.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-
-        }, 2000);
-
         adapter = new HomeRecyclerAdapter(arrayList, getContext());
         recyclerView.setAdapter(adapter);
 
 
     }
 
-
     private void fetchData() {
 
         // Create a query against the collection.
         Query query = collectionReference.orderBy("timeStamp", Query.Direction.DESCENDING).limit(INITIAL_LOAD);
+
+      /*  query.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            // arrayList.clear();
+            assert queryDocumentSnapshots != null;
+            for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
+
+                AlertItems alertItems = ds.toObject(AlertItems.class);
+                //get data from model
+                String address = alertItems.getAddress();
+                String userName = alertItems.getUserName();
+                String phoneNumber = alertItems.getPhoneNumber();
+                long timeStamp = alertItems.getTimeStamp();
+                String userPhotoUrl = alertItems.getUserPhotoUrl();
+                String url = alertItems.getUrl();
+
+                String id = ds.getId();
+                String dateReported = alertItems.getDateReported();
+//group data by images
+                if (ds.getData().containsKey("image")) {
+                    arrayList.add(new AlertItems(AppConstants.IMAGE_TYPE,
+                            userName, userPhotoUrl, url, timeStamp, address, id, dateReported));
+
+                }
+                //group data by Videos
+                else if (ds.getData().containsKey("video")) {
+                    arrayList.add(new AlertItems(AppConstants.VIDEO_TYPE,
+                            userName,
+                            url,
+                            userPhotoUrl,
+                            timeStamp,
+                            address
+                    ));
+                }
+
+
+
+            }
+
+            adapter.notifyDataSetChanged();
+        });*/
 
         registration = query.addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (e != null) {
@@ -106,7 +135,6 @@ public class HomeFragment extends Fragment {
 
                 AlertItems alertItems = ds.toObject(AlertItems.class);
                 //get data from model
-
                 String address = alertItems.getAddress();
                 String userName = alertItems.getUserName();
                 String phoneNumber = alertItems.getPhoneNumber();
@@ -137,164 +165,20 @@ public class HomeFragment extends Fragment {
                     ));
                 }
 
-                //group data by audios
-               /* else if (ds.getData().containsKey("audios")) {
-                    arrayList.add(new AlertItems(AppConstants.VIDEO_TYPE,
-                            itemImage,
-                            itemDescription,
-                            userName,
-                            userPhoto,
-                            timeStamp,
-                            id
-                    ));
-                }*/
             }
 
             adapter.notifyDataSetChanged();
 
-            //get the last visible item
-//            mLastResult = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
-
-
-          /*  //load more
-            RecyclerView.OnScrollListener  listener = new RecyclerView.OnScrollListener() {
-
-                @Override
-                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                    if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-                        isScrolling = true;
-                    }
-
-                }
-
-                @Override
-                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-
-                    int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
-                    int visibleCount = layoutManager.getChildCount();
-                    int totalItemCount = layoutManager.getItemCount();
-
-                    if (isScrolling && (firstVisibleItem + visibleCount == totalItemCount) && !isLastItemReached){
-
-                        isScrolling = false;
-                        Query queryNext =collectionReference.orderBy("timeStamp", Query.Direction.DESCENDING)
-                                .startAfter(mLastResult).limit(INITIAL_LOAD);
-
-                        registration =    queryNext.addSnapshotListener((queryDocumentSnapshots1, e1) -> {
-
-                            if (e1 != null) {
-                                Log.w(TAG, "Listen failed.", e1);
-                                return;
-                            }
-                              arrayList.clear();
-                            assert queryDocumentSnapshots1 != null;
-                            for (QueryDocumentSnapshot ds : queryDocumentSnapshots1) {
-
-
-                                ActivityItemModel itemModel = ds.toObject(ActivityItemModel.class);
-                                //get data from model
-                                String userName = itemModel.getUserName();
-                                String userPhoto = itemModel.getUserPhoto();
-                                String itemDescription = itemModel.getItemDescription();
-                                String status = itemModel.getStatus();
-                                String itemImage = itemModel.getItemImage();
-                                long timeStamp = itemModel.getTimeStamp();
-                                String id = ds.getId();
-//group data by status
-                                if (ds.getData().containsKey("status")) {
-                                    Log.i(TAG, "status: " + ds.getData().get("status"));
-
-                                    arrayList.add(new ActivityItemModel(ActivityItemModel.TEXT_TYPE,
-                                            status,
-                                            userName,
-                                            userPhoto,
-                                            timeStamp,
-                                            id));
-
-                                }
-                                //group data by item description
-                                else if (ds.getData().containsKey("itemDescription")) {
-                                    arrayList.add(new ActivityItemModel(ActivityItemModel.IMAGE_TYPE,
-                                            itemImage,
-                                            itemDescription,
-                                            userName,
-                                            userPhoto,
-                                            timeStamp,
-                                            id
-                                    ));
-                                }
-                            }
-
-
-                            adapter.notifyDataSetChanged();
-                            //get the last visible item
-                            mLastResult = queryDocumentSnapshots1.getDocuments().get(queryDocumentSnapshots1.size() -1);
-
-                            if (queryDocumentSnapshots1.getDocuments().size() < INITIAL_LOAD){
-
-                                isLastItemReached = true;
-                            }
-
-                        });
-
-
-                    }
-
-                }
-            };
-
-            recyclerView.addOnScrollListener(listener);
-
-*/
         });
 
-       /* //get all items from fire store
-        query.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot ds : Objects.requireNonNull(task.getResult())) {
-                    Log.i(TAG, "onComplete: " + ds.getId() + " " + ds.getData());
 
-                    ActivityItemModel itemModel = ds.toObject(ActivityItemModel.class);
-
-                    //group data by status
-                    if (ds.getData().containsKey("status")) {
-                        Log.i(TAG, "status: " + ds.getData().get("status"));
-
-                        arrayList.add(new ActivityItemModel(ActivityItemModel.TEXT_TYPE,
-                                itemModel.getStatus(),
-                                itemModel.getUserName(),
-                                itemModel.getUserPhoto(),
-                                itemModel.getTimeStamp()));
-
-                    }
-                    //group data by item description
-                    else if (ds.getData().containsKey("itemDescription")) {
-                        Log.i(TAG, "itemDescription: " + ds.getData().get("itemDescription"));
-
-                        arrayList.add(new ActivityItemModel(ActivityItemModel.IMAGE_TYPE,
-                                itemModel.getItemImage(),
-                                itemModel.getItemDescription(),
-                                itemModel.getUserName(),
-                                itemModel.getUserPhoto(),
-                                itemModel.getTimeStamp()));
-                    }
-
-                }
-
-                adapter.notifyDataSetChanged();
-
-            }
-
-        });*/
     }
 
     @Override
     public void onStop() {
         super.onStop();
         //activityItemAdapter.stopListening();
-        registration.remove();
+        //registration.remove();
     }
 
     @Override

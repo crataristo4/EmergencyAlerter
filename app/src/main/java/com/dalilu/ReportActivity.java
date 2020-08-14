@@ -248,6 +248,8 @@ public class ReportActivity extends AppCompatActivity {
 
                         pd.dismiss();
                         DisplayViewUI.displayToast(ReportActivity.this, getString(R.string.reportSuccess));
+                        startActivity(new Intent(ReportActivity.this, MainActivity.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                         finish();
 
 
