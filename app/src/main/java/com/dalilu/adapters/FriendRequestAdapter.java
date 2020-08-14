@@ -1,5 +1,6 @@
 package com.dalilu.adapters;
 
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,7 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
         holder.layoutRequestReceivedBinding.setRequests(users);
         holder.showResponse(users.getResponse());
         Glide.with(holder.layoutRequestReceivedBinding.getRoot().getContext())
-                .load(users.getUserPhotoUrl())
+                .load(users.getPhoto())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .error(holder.layoutRequestReceivedBinding.getRoot().getContext().getDrawable(R.drawable.photo))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -60,7 +61,9 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
 
         String id = MainActivity.userId;
         String receiverId = getSnapshots().get(position).getId();
-        String friends = "friends", declined = " declined", response = "response";
+        String name = getSnapshots().get(position).getName();
+
+        String friends = "friends", declined = "declined", response = "response";
 
         holder.btnAccept.setOnClickListener(view -> {
             friendsCollectionReference.document(receiverId).collection(receiverId).document(id).update(response, friends);
@@ -70,12 +73,56 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
 
         });
 
-        holder.btnDecline.setOnClickListener(view -> {
 
-            friendsCollectionReference.document(receiverId).collection(receiverId).document(id).update(response, declined);
-            friendsCollectionReference.document(id).collection(id).document(receiverId).update(response, declined);
+        if (holder.btnDecline.getText().toString().equals(holder.layoutRequestReceivedBinding.getRoot().getResources().getString(R.string.cancelRequest))) {
+            holder.btnDecline.setOnClickListener(view -> {
+                DisplayViewUI.displayAlertDialog(view.getContext(),
+                        "Decline", "Are you sure you want to cancel request to " + name,
+                        " Yes", "No",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (i == -1) {
 
-        });
+                                    //remove document id for both users
+                                    friendsCollectionReference.document(id).collection(id).document(receiverId).delete();
+                                    friendsCollectionReference.document(receiverId).collection(receiverId).document(id).delete();
+                                } else if (i == -2) {
+                                    dialogInterface.dismiss();
+                                }
+
+
+                            }
+                        });
+
+            });
+        } else if (holder.btnDecline.getText().toString().equals(holder.layoutRequestReceivedBinding.getRoot().getResources().getString(R.string.dcln))) {
+            holder.btnDecline.setOnClickListener(view -> {
+
+                DisplayViewUI.displayAlertDialog(view.getContext(),
+                        "Decline", "Are you sure you want to decline " + name,
+                        " Yes", "No",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (i == -1) {
+
+                                    //remove document id for receiver
+                                    friendsCollectionReference.document(receiverId).collection(receiverId).document(id).update(response, declined);
+                                    friendsCollectionReference.document(id).collection(id).document(receiverId).delete();
+
+                                } else if (i == -2) {
+                                    dialogInterface.dismiss();
+                                }
+
+
+                            }
+                        });
+
+
+            });
+
+        }
 
 
     }
@@ -145,15 +192,19 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
                     break;
                 case "sent":
 
-                    btnAccept.setText(R.string.Pending);
+                    btnAccept.setVisibility(View.GONE);
                     btnDecline.setText(R.string.cancelRequest);
                     btnSendLocation.setVisibility(View.GONE);
                     imgDelete.setVisibility(View.GONE);
+                    txtRequestDes.setVisibility(View.VISIBLE);
+                    txtRequestDes.setText(R.string.requestSentTo);
+                    txtRequestDes.setTextColor(this.layoutRequestReceivedBinding.getRoot().getContext().getResources().getColor(R.color.colorRed));
 
 
                     break;
                 case "declined":
                     btnAccept.setText(R.string.Pending);
+                    btnAccept.setVisibility(View.VISIBLE);
                     btnDecline.setVisibility(View.GONE);
                     btnSendLocation.setVisibility(View.GONE);
                     imgDelete.setVisibility(View.GONE);

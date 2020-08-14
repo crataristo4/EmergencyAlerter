@@ -16,36 +16,37 @@ import com.dalilu.R;
 import com.dalilu.databinding.ActivityVerifyPhoneNumberBinding;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class VerifyPhoneNumberActivity extends AppCompatActivity {
     private static String code = "";
     ActivityVerifyPhoneNumberBinding activityVerifyPhoneNumberBinding;
-    FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
     AppCompatEditText edtCode;
     String phoneNumber;
-    private FirebaseUser user;
+
     private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityVerifyPhoneNumberBinding = DataBindingUtil.setContentView(this, R.layout.activity_verify_phone_number);
-
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+       /* assert user != null;
+        uid = user.getUid();*/
 
         Intent intent = getIntent();
         if (intent != null) {
-            mAuth = FirebaseAuth.getInstance();
-            user = mAuth.getCurrentUser();
-            assert user != null;
-            uid = user.getUid();
+
             phoneNumber = intent.getStringExtra(AppConstants.PHONE_NUMBER);
             activityVerifyPhoneNumberBinding.phone.setText(phoneNumber);
         }
@@ -69,17 +70,11 @@ public class VerifyPhoneNumberActivity extends AppCompatActivity {
                 if (s.length() == 6) {
                     PhoneAuthCredential credential = PhoneAuthProvider.getCredential(code, s.toString());
                     mAuth.signInWithCredential(credential).addOnSuccessListener(authResult -> {
-                        Intent intent12 = new Intent(VerifyPhoneNumberActivity.this, FinishAccountSetupActivity.class);
-                        intent12.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
-                        intent12.putExtra(AppConstants.UID, uid);
-                        startActivity(intent12);
-                        finish();
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            DisplayViewUI.displayToast(VerifyPhoneNumberActivity.this, e.getMessage());
-                        }
-                    });
+
+                        uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                        gotoFinishAccount(uid);
+
+                    }).addOnFailureListener(e -> DisplayViewUI.displayToast(VerifyPhoneNumberActivity.this, e.getMessage()));
                 }
 
             }
@@ -91,11 +86,8 @@ public class VerifyPhoneNumberActivity extends AppCompatActivity {
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
                         mAuth.signInWithCredential(credential).addOnCompleteListener(VerifyPhoneNumberActivity.this,
                                 task -> {
-                                    Intent intent1 = new Intent(VerifyPhoneNumberActivity.this, FinishAccountSetupActivity.class);
-                                    intent1.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
-                                    intent1.putExtra(AppConstants.UID, uid);
-                                    startActivity(intent1);
-                                    finish();
+                                    uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                                    gotoFinishAccount(uid);
                                 });
                     }
 
@@ -111,6 +103,14 @@ public class VerifyPhoneNumberActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    void gotoFinishAccount(String id) {
+        Intent intent1 = new Intent(VerifyPhoneNumberActivity.this, FinishAccountSetupActivity.class);
+        intent1.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
+        intent1.putExtra(AppConstants.UID, id);
+        startActivity(intent1);
+        finish();
     }
 
     public void wrongNumber(View view) {

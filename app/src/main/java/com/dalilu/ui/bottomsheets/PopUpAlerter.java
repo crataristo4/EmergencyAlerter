@@ -23,8 +23,6 @@ import com.dalilu.databinding.PopUpAlerterBottomSheetBinding;
 import com.dalilu.model.RequestModel;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -35,7 +33,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class PopUpAlerter extends BottomSheetDialogFragment {
     PopUpAlerterBottomSheetBinding popUpAlerterBottomSheetBinding;
@@ -124,11 +121,13 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
 
 
         btnAddUser.setOnClickListener(view -> {
-            progressBar.show();
+            try {
+                friendsCollectionReference.document(senderId).collection(senderId).document(id).set(to);
+                friendsCollectionReference.document(id).collection(id).document(senderId).set(from);
+                dismiss();
 
-            requireActivity().runOnUiThread(() -> {
-
-                try {
+                DisplayViewUI.displayToast(requireContext(), requireActivity().getString(R.string.addedUser));
+/*
 
                     friendsCollectionReference.document(senderId).collection(senderId).document(id).set(to).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -144,39 +143,14 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                             }
                         }
                     });
+*/
 
 
-                } catch (Exception e) {
+            } catch (Exception e) {
 
-                    e.printStackTrace();
-                }
+                e.printStackTrace();
+            }
 
-
-               /* try {
-                    friendsDbRef.child(senderId).child(id).setValue(to).addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            friendsDbCheck.child(id).child(senderId).setValue(from).addOnCompleteListener(task1 -> {
-
-                                if (task1.isSuccessful()) {
-                                    progressBar.dismiss();
-                                    dismiss();
-
-                                } else {
-                                    progressBar.dismiss();
-                                    DisplayViewUI.displayToast(requireContext(), Objects.requireNonNull(task1.getException()).getMessage());
-                                }
-                            });
-                        } else {
-                            progressBar.dismiss();
-                            DisplayViewUI.displayToast(requireContext(), Objects.requireNonNull(task.getException()).getMessage());
-                        }
-                    });
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }*/
-            });
         });
 
         popUpAlerterBottomSheetBinding.btnCancel.setOnClickListener(v -> dismiss());

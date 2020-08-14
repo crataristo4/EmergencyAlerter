@@ -83,6 +83,7 @@
                 android:id="@+id/btnSendLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/bottomsheetbg"
                 android:drawableEnd="@drawable/ic_gps"
@@ -95,12 +96,13 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/decline"
-                app:layout_constraintTop_toTopOf="@+id/accept" />
+                app:layout_constraintTop_toBottomOf="@+id/userImage" />
 
             <Button
                 android:id="@+id/decline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:backgroundTint="@color/colorRed"
                 android:clickable="true"
                 android:elevation="5dp"
@@ -111,7 +113,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/btnSendLocation"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/accept"
-                app:layout_constraintTop_toTopOf="@+id/accept" />
+                app:layout_constraintTop_toBottomOf="@+id/userImage" />
 
             <ImageView
                 android:id="@+id/imgDeleteUser"

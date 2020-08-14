@@ -42,6 +42,7 @@ public class ContactsFragment extends Fragment {
     String receiverPhotoUrl;
     String receiverId;
     String receiverPhoneNumber;
+    String id;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -53,20 +54,8 @@ public class ContactsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
-        assert mCurrentUser != null;
-        String id = mCurrentUser.getUid();
-
-
-        rv = fragmentContactsBinding.contactsRecyclerView;
-        rv.setHasFixedSize(true);
-        rv.setLayoutManager(new LinearLayoutManager(requireActivity()));
-
-        progressBar = fragmentContactsBinding.progressLoading;
-        friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
-        locationDbRef = FirebaseDatabase.getInstance().getReference("Locations");
-        friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");
+        initViews();
+        requireActivity().runOnUiThread(this::loadData);// loadData();
 
         // Query query = friendsDbRef.child(senderId).orderByKey();
       /*  FirebaseRecyclerOptions<RequestModel> options =
@@ -75,13 +64,6 @@ public class ContactsFragment extends Fragment {
 
         adapter = new RequestAdapter(options);*/
 
-        Query query = friendsCollectionReference.document(id).collection(id).orderBy("name", Query.Direction.ASCENDING);
-        FirestoreRecyclerOptions<RequestModel> options =
-                new FirestoreRecyclerOptions.Builder<RequestModel>().setQuery(query,
-                        RequestModel.class).build();
-
-        adapter = new FriendRequestAdapter(options);
-        rv.setAdapter(adapter);
 
         /*adapter.setOnLocationSharingItemClickListener(new RequestAdapter.onItemClickListener() {
             @Override
@@ -316,6 +298,38 @@ public class ContactsFragment extends Fragment {
 */
 
 
+    }
+
+    void initViews() {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+        assert mCurrentUser != null;
+        id = mCurrentUser.getUid();
+
+
+        rv = fragmentContactsBinding.contactsRecyclerView;
+        rv.setHasFixedSize(true);
+        rv.setLayoutManager(new LinearLayoutManager(requireActivity()));
+
+        progressBar = fragmentContactsBinding.progressLoading;
+        friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
+        locationDbRef = FirebaseDatabase.getInstance().getReference("Locations");
+        friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");
+
+
+    }
+
+    private void loadData() {
+
+        Query query = friendsCollectionReference.document(id).collection(id).orderBy("name", Query.Direction.ASCENDING);
+        FirestoreRecyclerOptions<RequestModel> options =
+                new FirestoreRecyclerOptions.Builder<RequestModel>().setQuery(query,
+                        RequestModel.class).build();
+
+        adapter = new FriendRequestAdapter(options);
+        rv.setAdapter(adapter);
+
+
         adapter.setOnItemClickListener((view1, position) -> {
             receiverId = adapter.getItem(position).getId();
             receiverName = adapter.getItem(position).getUserName();
@@ -326,8 +340,6 @@ public class ContactsFragment extends Fragment {
 
 
         });
-
-
     }
 
     @Override

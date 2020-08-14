@@ -19,6 +19,8 @@ import com.dalilu.ui.bottomsheets.WelcomeNoticeBottomSheet;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -39,6 +41,8 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
     private String uid, getImageUri, phoneNumber;
     private Uri uri;
     private TextInputLayout txtUserName;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,11 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
 
         Intent getUserData = getIntent();
         if (getUserData != null) {
+            mAuth = FirebaseAuth.getInstance();
+            user = mAuth.getCurrentUser();
+            assert user != null;
+            uid = user.getUid();
+
             uid = getUserData.getStringExtra(AppConstants.UID);
             phoneNumber = getUserData.getStringExtra(AppConstants.PHONE_NUMBER);
         }

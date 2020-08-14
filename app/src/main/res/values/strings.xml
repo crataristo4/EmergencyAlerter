@@ -105,6 +105,7 @@
     <string name="enterUserName">enter user name (optional)</string>
     <string name="plsSlct">Please select a picture</string>
     <string name="addingUser">adding user…</string>
+    <string name="addedUser">user added</string>
     <string name="added">Friends</string>
     <string name="declined">Declined</string>
     <string name="new_request_from">New request from</string>
@@ -154,4 +155,5 @@
     <string name="enter_6_digit_code">Enter 6-digit code</string>
     <string name="wrong_number">Wrong number?</string>
     <string name="newReq">New request</string>
+    <string name="requestSentTo">Request sent to</string>
 </resources>
