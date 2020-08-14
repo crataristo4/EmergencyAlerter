@@ -20,14 +20,18 @@ import com.bumptech.glide.Glide;
 import com.dalilu.MainActivity;
 import com.dalilu.R;
 import com.dalilu.databinding.PopUpAlerterBottomSheetBinding;
+import com.dalilu.model.RequestModel;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +45,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
     private ImageView imgPhoto;
     private Button btnAddUser;
     private DatabaseReference friendsDbRef, friendsDbCheck;
+    private CollectionReference friendsCollectionReference;
 
 
     @Override
@@ -78,6 +83,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
 
         friendsDbCheck = FirebaseDatabase.getInstance().getReference().child("Friends");
         friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");
+        friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
 
         Bundle getUserDetailsBundle = getArguments();
         if (getUserDetailsBundle != null) {
@@ -116,13 +122,37 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         to.put("phoneNumber", phoneNumber);
         to.put("response", "sent");
 
-        Log.i(TAG, "current user: " + senderId + " receiver :: " + id + " response:: " + response);
 
         btnAddUser.setOnClickListener(view -> {
             progressBar.show();
 
             requireActivity().runOnUiThread(() -> {
+
                 try {
+
+                    friendsCollectionReference.document(senderId).collection(senderId).document(id).set(to).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                friendsCollectionReference.document(id).collection(id).document(senderId).set(from);
+                                progressBar.dismiss();
+                                dismiss();
+
+                            } else {
+                                progressBar.dismiss();
+                                DisplayViewUI.displayToast(requireContext(), Objects.requireNonNull(task.getException()).getMessage());
+                            }
+                        }
+                    });
+
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+                }
+
+
+               /* try {
                     friendsDbRef.child(senderId).child(id).setValue(to).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             friendsDbCheck.child(id).child(senderId).setValue(from).addOnCompleteListener(task1 -> {
@@ -145,7 +175,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
+                }*/
             });
         });
 
@@ -155,9 +185,66 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         //1. check friends db
         //2. check the senders and receivers node respectively
         //3. check the response and update the UI
+        Query query = friendsCollectionReference.document(senderId).collection(senderId);
+
+        query.addSnapshotListener((value, error) -> {
+
+            assert value != null;
+            for (QueryDocumentSnapshot ds : value) {
+                RequestModel requestModel = ds.toObject(RequestModel.class);
+                String response = requestModel.getResponse();
+
+                if (response.equals("sent")) {
+                    //change add user btn to cancel request
+                    Log.i(TAG, "Response: " + response);
+
+                    btnAddUser.setText(R.string.cancelRequest);
+                    btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.colorRed));
+                    btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_baseline_cancel_24), null);
+
+                    // TODO: 8/14/2020 remove request sent
+                    btnAddUser.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            DisplayViewUI.displayToast(requireActivity(), "removing user");
+                        }
+                    });
+                } else if (response.equals("friends")) {
+                    DisplayViewUI.displayToast(requireActivity(), response);
+                    btnAddUser.setText(R.string.delete);
+                    btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
+                    btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
+                    // TODO: 8/14/2020 delete request sent
+                    btnAddUser.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            DisplayViewUI.displayToast(requireActivity(), "deleting user");
+
+                        }
+                    });
+
+                } else if (response.equals("received")) {
+                    DisplayViewUI.displayToast(requireActivity(), response);
+                    Log.i(TAG, "Response: " + response);
+                    btnAddUser.setText(R.string.delete);
+                    btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
+                    btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
+                    // TODO: 8/14/2020 remove request received
+                    btnAddUser.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            DisplayViewUI.displayToast(requireActivity(), "removing user");
+
+                        }
+                    });
+                }
+
+            }
+
+        });
 
 
-        friendsDbCheck.child(senderId).child(id).addValueEventListener(new ValueEventListener() {
+       /* friendsDbCheck.child(senderId).child(id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -176,13 +263,13 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                         btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
                         btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
 
-                    }/*else {
+                    }*//*else {
                         //change add user btn to accept  request
                         btnAddUser.setText(R.string.acpt);
                         btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.acceptGreen));
                         btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_check_black_24dp), null);
 
-                    }*/
+                    }*//*
                 }
             }
 
@@ -191,7 +278,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
 
             }
         });
-
+*/
 
        /* friendsDbCheck.child(id).child(senderId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

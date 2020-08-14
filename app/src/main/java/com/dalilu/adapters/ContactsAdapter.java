@@ -217,6 +217,13 @@ public class ContactsAdapter extends FirestoreRecyclerAdapter<RequestModel, Cont
 
             }
 
+            if (response.equals("received")) {
+
+                btnAdd.setText(R.string.Pending);
+
+
+            }
+
 
         }
 

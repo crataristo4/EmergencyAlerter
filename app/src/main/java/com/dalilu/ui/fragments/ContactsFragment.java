@@ -1,8 +1,6 @@
 package com.dalilu.ui.fragments;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,18 +13,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dalilu.MainActivity;
 import com.dalilu.R;
-import com.dalilu.adapters.RequestAdapter;
+import com.dalilu.adapters.FriendRequestAdapter;
 import com.dalilu.databinding.FragmentContactsBinding;
 import com.dalilu.model.RequestModel;
-import com.dalilu.utils.DisplayViewUI;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 
 public class ContactsFragment extends Fragment {
@@ -36,9 +34,10 @@ public class ContactsFragment extends Fragment {
     ProgressBar progressBar;
     private FragmentContactsBinding fragmentContactsBinding;
     RecyclerView rv;
-    private CollectionReference usersDbReF;
+    private CollectionReference friendsCollectionReference;
     private DatabaseReference locationDbRef, friendsDbRef, testDb;
-    private RequestAdapter adapter;
+    // private RequestAdapter adapter;
+    private FriendRequestAdapter adapter;
     String receiverName;
     String receiverPhotoUrl;
     String receiverId;
@@ -54,14 +53,10 @@ public class ContactsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //current users details
-        String senderId = MainActivity.userId;
-        Log.i(TAG, "onViewCreated: " + senderId);
-        String name = MainActivity.userName;
-        String photo = MainActivity.userPhotoUrl;
-        String yourLocation = MainActivity.knownName;
-
-        ProgressDialog loading = DisplayViewUI.displayProgress(requireActivity(), getString(R.string.addingUser));
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+        assert mCurrentUser != null;
+        String id = mCurrentUser.getUid();
 
 
         rv = fragmentContactsBinding.contactsRecyclerView;
@@ -69,18 +64,23 @@ public class ContactsFragment extends Fragment {
         rv.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         progressBar = fragmentContactsBinding.progressLoading;
-        usersDbReF = FirebaseFirestore.getInstance().collection("Users");
+        friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
         locationDbRef = FirebaseDatabase.getInstance().getReference("Locations");
         friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");
 
-        Query query = friendsDbRef.child(senderId).orderByKey();
-
-
-        FirebaseRecyclerOptions<RequestModel> options =
+        // Query query = friendsDbRef.child(senderId).orderByKey();
+      /*  FirebaseRecyclerOptions<RequestModel> options =
                 new FirebaseRecyclerOptions.Builder<RequestModel>().setQuery(query,
                         RequestModel.class).build();
 
-        adapter = new RequestAdapter(options);
+        adapter = new RequestAdapter(options);*/
+
+        Query query = friendsCollectionReference.document(id).collection(id).orderBy("name", Query.Direction.ASCENDING);
+        FirestoreRecyclerOptions<RequestModel> options =
+                new FirestoreRecyclerOptions.Builder<RequestModel>().setQuery(query,
+                        RequestModel.class).build();
+
+        adapter = new FriendRequestAdapter(options);
         rv.setAdapter(adapter);
 
         /*adapter.setOnLocationSharingItemClickListener(new RequestAdapter.onItemClickListener() {
@@ -316,6 +316,16 @@ public class ContactsFragment extends Fragment {
 */
 
 
+        adapter.setOnItemClickListener((view1, position) -> {
+            receiverId = adapter.getItem(position).getId();
+            receiverName = adapter.getItem(position).getUserName();
+            receiverPhotoUrl = adapter.getItem(position).getUserPhotoUrl();
+            receiverPhoneNumber = adapter.getItem(position).getPhoneNumber();
+
+            //todo send location to user
+
+
+        });
 
 
     }

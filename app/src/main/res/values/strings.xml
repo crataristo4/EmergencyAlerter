@@ -153,4 +153,5 @@
     <string name="dash">- - - - - -</string>
     <string name="enter_6_digit_code">Enter 6-digit code</string>
     <string name="wrong_number">Wrong number?</string>
+    <string name="newReq">New request</string>
 </resources>
