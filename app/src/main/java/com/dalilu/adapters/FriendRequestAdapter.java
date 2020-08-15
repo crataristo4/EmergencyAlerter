@@ -1,20 +1,28 @@
 package com.dalilu.adapters;
 
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.dalilu.MainActivity;
 import com.dalilu.R;
 import com.dalilu.databinding.LayoutRequestReceivedBinding;
@@ -46,12 +54,40 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
 
     }
 
+    @SuppressLint("CheckResult")
     @Override
     protected void onBindViewHolder(@NonNull FriendRequestAdapter.RequestViewHolder holder, int position, @NonNull RequestModel users) {
         holder.layoutRequestReceivedBinding.setRequests(users);
         holder.showResponse(users.getResponse());
+
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.placeholder(DisplayViewUI.getRandomDrawableColor());
+        requestOptions.error(DisplayViewUI.getRandomDrawableColor());
+        requestOptions.centerCrop();
+
         Glide.with(holder.layoutRequestReceivedBinding.getRoot().getContext())
                 .load(users.getPhoto())
+                .thumbnail(0.5f)
+                .apply(requestOptions)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        if (isFirstResource) {
+                            holder.pbImageLoading.setVisibility(View.GONE);
+
+                        }
+                        holder.pbImageLoading.setVisibility(View.VISIBLE);
+                        return false;
+
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.pbImageLoading.setVisibility(View.GONE);
+
+                        return false;
+                    }
+                })
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .error(holder.layoutRequestReceivedBinding.getRoot().getContext().getDrawable(R.drawable.photo))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -79,20 +115,17 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
                 DisplayViewUI.displayAlertDialog(view.getContext(),
                         "Decline", "Are you sure you want to cancel request to " + name,
                         " Yes", "No",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                if (i == -1) {
+                        (dialogInterface, i) -> {
+                            if (i == -1) {
 
-                                    //remove document id for both users
-                                    friendsCollectionReference.document(id).collection(id).document(receiverId).delete();
-                                    friendsCollectionReference.document(receiverId).collection(receiverId).document(id).delete();
-                                } else if (i == -2) {
-                                    dialogInterface.dismiss();
-                                }
-
-
+                                //remove document id for both users
+                                friendsCollectionReference.document(id).collection(id).document(receiverId).delete();
+                                friendsCollectionReference.document(receiverId).collection(receiverId).document(id).delete();
+                            } else if (i == -2) {
+                                dialogInterface.dismiss();
                             }
+
+
                         });
 
             });
@@ -102,21 +135,18 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
                 DisplayViewUI.displayAlertDialog(view.getContext(),
                         "Decline", "Are you sure you want to decline " + name,
                         " Yes", "No",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                if (i == -1) {
+                        (dialogInterface, i) -> {
+                            if (i == -1) {
 
-                                    //remove document id for receiver
-                                    friendsCollectionReference.document(receiverId).collection(receiverId).document(id).update(response, declined);
-                                    friendsCollectionReference.document(id).collection(id).document(receiverId).delete();
+                                //remove document id for receiver
+                                friendsCollectionReference.document(receiverId).collection(receiverId).document(id).update(response, declined);
+                                friendsCollectionReference.document(id).collection(id).document(receiverId).delete();
 
-                                } else if (i == -2) {
-                                    dialogInterface.dismiss();
-                                }
-
-
+                            } else if (i == -2) {
+                                dialogInterface.dismiss();
                             }
+
+
                         });
 
 
@@ -145,6 +175,7 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
         CircleImageView imgPhoto;
         ImageView imgDelete;
         TextView txtRequestDes;
+        ProgressBar pbImageLoading;
 
         public RequestViewHolder(@NonNull LayoutRequestReceivedBinding layoutRequestReceivedBinding) {
             super(layoutRequestReceivedBinding.getRoot());
@@ -156,6 +187,7 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
             imgPhoto = layoutRequestReceivedBinding.userImage;
             imgDelete = layoutRequestReceivedBinding.imgDeleteUser;
             txtRequestDes = layoutRequestReceivedBinding.txtRequestDes;
+            pbImageLoading = layoutRequestReceivedBinding.pbImageLoading;
 
             btnSendLocation.setOnClickListener(this);
 

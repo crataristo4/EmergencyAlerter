@@ -134,6 +134,17 @@
                 app:layout_constraintStart_toStartOf="@+id/txtPhone"
                 app:layout_constraintTop_toTopOf="@+id/userImage" />
 
+            <ProgressBar
+                android:id="@+id/pbImageLoading"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/userImage"
+                app:layout_constraintEnd_toEndOf="@+id/userImage"
+                app:layout_constraintStart_toStartOf="@+id/userImage"
+                app:layout_constraintTop_toTopOf="@+id/userImage" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

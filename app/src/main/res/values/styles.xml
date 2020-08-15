@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/amber</item>
         <item name="colorPrimaryDark">@color/amberLight</item>
@@ -10,13 +10,13 @@
         <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
+    <style name="Theme.MaterialComponents.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
 
-    <style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
+    <style name="DialogStyle" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="bottomSheetStyle">@style/BottomSheet</item>
@@ -28,12 +28,12 @@
     </style>
 
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 
     <!-- theme for tool bar. -->
-    <style name="ToolBarTheme" parent="ThemeOverlay.AppCompat.Light">
+    <style name="ToolBarTheme" parent="ThemeOverlay.MaterialComponents.Light">
         <!--<item name="background">@color/colorPrimaryDark</item>-->
 
         <item name="android:textColorPrimary">@android:color/white</item>
@@ -41,7 +41,7 @@
 
     </style>
 
-    <style name="CustomRatingBar" parent="Theme.AppCompat">
+    <style name="CustomRatingBar" parent="Theme.MaterialComponents">
         <item name="colorControlNormal">@color/amber</item>
         <item name="colorControlActivated">@color/purple</item>
     </style>

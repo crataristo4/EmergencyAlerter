@@ -56,7 +56,7 @@
                         android:id="@+id/fabUploadPhoto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:backgroundTint="@color/purple"
+                        app:backgroundTint="@color/amber"
                         app:layout_constraintBottom_toBottomOf="@+id/imgUploadPhoto"
                         app:layout_constraintEnd_toEndOf="@+id/imgUploadPhoto"
                         app:layout_constraintHorizontal_bias="1.0"
@@ -85,13 +85,7 @@
                             android:textColorHint="@color/black"
                             android:background="@drawable/textinputbackground"
                             app:counterEnabled="true"
-                            app:boxBackgroundMode="outline"
                             app:counterMaxLength="10"
-                            app:boxCornerRadiusBottomEnd="@dimen/twentyFourDp"
-                            app:boxCornerRadiusBottomStart="@dimen/twentyFourDp"
-                            app:boxCornerRadiusTopEnd="@dimen/twentyFourDp"
-                            app:boxCornerRadiusTopStart="@dimen/twentyFourDp"
-                            app:boxStrokeColor="@color/purple"
                             app:helperTextTextColor="@color/white">
 
                             <com.google.android.material.textfield.TextInputEditText

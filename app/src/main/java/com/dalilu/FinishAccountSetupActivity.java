@@ -233,6 +233,6 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
+        this.finishAffinity();
     }
 }

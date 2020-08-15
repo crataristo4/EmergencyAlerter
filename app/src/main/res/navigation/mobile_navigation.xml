@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/navigation_alerts"
-        android:name="com.dalilu.ui.fragments.AlertsFragment"
+        android:name="com.dalilu.ui.fragments.NotificationsFragment"
         android:label="@string/title_alerts"
-        tools:layout="@layout/fragment_alerts" />
+        tools:layout="@layout/fragment_notifications" />
 
     <fragment
         android:id="@+id/navigation_contacts"

@@ -150,4 +150,5 @@
     <string name="uploadingImage">Image en cours de transmission. Attendez SVP.</string>
     <string name="uploadingVideo">Video en cours de transmission. Attendez SVP</string>
     <string name="declineRequest">Requete refusee</string>
+    <string name="deleteUser">Supprimer utilisateur</string>
 </resources>

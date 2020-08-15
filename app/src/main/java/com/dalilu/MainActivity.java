@@ -11,6 +11,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -33,8 +35,16 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
 import java.util.List;
@@ -85,7 +95,8 @@ public class MainActivity extends BaseActivity {
     public static double latitude, longitude;
     private Geocoder geocoder;
     private List<Address> addressList;
-
+    private DatabaseReference locationDbRef;
+    private CollectionReference alertsCollectionReference;
 
 
     public static Context getAppContext() {
@@ -110,8 +121,7 @@ public class MainActivity extends BaseActivity {
         geocoder = new Geocoder(this, Locale.getDefault());
 
 
-        // Kick off the process of building the LocationCallback, LocationRequest, and
-        // LocationSettingsRequest objects.
+
         createLocationCallback();
         createLocationRequest();
         requestPermissions();
@@ -124,8 +134,11 @@ public class MainActivity extends BaseActivity {
     private void initViews() {
 
         BottomNavigationView navView = activityMainBinding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        Menu menu = navView.getMenu();
+        MenuItem menuItemHome = menu.findItem(R.id.navigation_home);
+        MenuItem menuItemFriends = menu.findItem(R.id.navigation_contacts);
+        MenuItem menuItemNotification = menu.findItem(R.id.navigation_alerts);
+
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_alerts, R.id.navigation_home, R.id.navigation_contacts)
                 .build();
@@ -137,6 +150,11 @@ public class MainActivity extends BaseActivity {
         navView.setOnNavigationItemReselectedListener(item -> {
 
         });
+
+
+        BadgeDrawable badgeDrawableHome = navView.getOrCreateBadge(menuItemHome.getItemId());
+        BadgeDrawable badgeDrawableNotification = navView.getOrCreateBadge(menuItemNotification.getItemId());
+        BadgeDrawable badgeDrawableFriends = navView.getOrCreateBadge(menuItemFriends.getItemId());
 
         activityMainBinding.searchContact.setOnClickListener(view -> startActivity(new Intent(view.getContext(), SearchContactActivity.class)));
 
@@ -158,10 +176,43 @@ public class MainActivity extends BaseActivity {
             userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
             phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
 
+            locationDbRef = FirebaseDatabase.getInstance().getReference().child("Locations").child(userId);
+            locationDbRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    if (snapshot.exists() && snapshot.hasChildren()) {
+
+                        int numberOfItems = (int) snapshot.getChildrenCount();
+
+                        if (numberOfItems > 0) {
+
+                            badgeDrawableNotification.setNumber(numberOfItems);
+
+
+                        }
+
+
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    DisplayViewUI.displayToast(MainActivity.this, error.getMessage());
+
+                }
+            });
+
+            alertsCollectionReference = FirebaseFirestore.getInstance().collection("Alerts");
+            alertsCollectionReference.get().addOnCompleteListener(task -> {
+
+                if (task.getResult().size() > 0)
+                    badgeDrawableHome.setNumber(task.getResult().size());
+
+            });
 
         }
-
-        // TODO: 8/1/2020  check internet before opening page
 
         activityMainBinding.report.setOnClickListener(v -> {
             Intent reportIntent = new Intent(v.getContext(), ReportActivity.class);

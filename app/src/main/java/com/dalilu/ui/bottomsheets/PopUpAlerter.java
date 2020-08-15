@@ -173,7 +173,8 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                     Log.i(TAG, "Response: " + response);
 
                     btnAddUser.setText(R.string.cancelRequest);
-                    btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.colorRed));
+                    btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
+                    btnAddUser.setBackgroundColor(requireActivity().getResources().getColor(R.color.colorRed));
                     btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_baseline_cancel_24), null);
 
                     // TODO: 8/14/2020 remove request sent
@@ -185,17 +186,11 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                     });
                 } else if (response.equals("friends")) {
                     DisplayViewUI.displayToast(requireActivity(), response);
-                    btnAddUser.setText(R.string.delete);
-                    btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
+                    btnAddUser.setText(R.string.deleteUser);
+                    btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.black));
                     btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
                     // TODO: 8/14/2020 delete request sent
-                    btnAddUser.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            DisplayViewUI.displayToast(requireActivity(), "deleting user");
-
-                        }
-                    });
+                    btnAddUser.setOnClickListener(view -> DisplayViewUI.displayToast(requireActivity(), "deleting user"));
 
                 } else if (response.equals("received")) {
                     DisplayViewUI.displayToast(requireActivity(), response);

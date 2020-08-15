@@ -41,8 +41,7 @@ public class VerifyPhoneNumberActivity extends AppCompatActivity {
         activityVerifyPhoneNumberBinding = DataBindingUtil.setContentView(this, R.layout.activity_verify_phone_number);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-       /* assert user != null;
-        uid = user.getUid();*/
+
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -68,40 +67,56 @@ public class VerifyPhoneNumberActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
 
                 if (s.length() == 6) {
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(code, s.toString());
-                    mAuth.signInWithCredential(credential).addOnSuccessListener(authResult -> {
 
-                        uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-                        gotoFinishAccount(uid);
+                    try {
+                        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(code, s.toString());
+                        mAuth.signInWithCredential(credential).addOnSuccessListener(authResult -> {
 
-                    }).addOnFailureListener(e -> DisplayViewUI.displayToast(VerifyPhoneNumberActivity.this, e.getMessage()));
+                            uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                            gotoFinishAccount(uid);
+
+                        }).addOnFailureListener(e -> DisplayViewUI.displayToast(VerifyPhoneNumberActivity.this, e.getMessage()));
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
+
 
             }
         });
 
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, 60, TimeUnit.SECONDS, this,
-                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                    @Override
-                    public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
-                        mAuth.signInWithCredential(credential).addOnCompleteListener(VerifyPhoneNumberActivity.this,
-                                task -> {
-                                    uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-                                    gotoFinishAccount(uid);
-                                });
-                    }
 
-                    @Override
-                    public void onVerificationFailed(@NonNull FirebaseException e) {
-                        DisplayViewUI.displayToast(VerifyPhoneNumberActivity.this, e.getMessage());
-                    }
+        try {
+            PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, 60, TimeUnit.SECONDS, this,
+                    new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                        @Override
+                        public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
+                            mAuth.signInWithCredential(credential).addOnCompleteListener(VerifyPhoneNumberActivity.this,
+                                    task -> {
+                                        uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                                        gotoFinishAccount(uid);
+                                    });
+                        }
 
-                    @Override
-                    public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                        super.onCodeSent(s, forceResendingToken);
-                        code = s;
-                    }
-                });
+                        @Override
+                        public void onVerificationFailed(@NonNull FirebaseException e) {
+                            DisplayViewUI.displayToast(VerifyPhoneNumberActivity.this, e.getMessage());
+                        }
+
+                        @Override
+                        public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                            super.onCodeSent(s, forceResendingToken);
+                            code = s;
+                            // edtCode.setText(code);
+                        }
+                    });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -110,10 +125,22 @@ public class VerifyPhoneNumberActivity extends AppCompatActivity {
         intent1.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
         intent1.putExtra(AppConstants.UID, id);
         startActivity(intent1);
-        finish();
+        this.finishAffinity();
     }
 
     public void wrongNumber(View view) {
-        onBackPressed();
+
+        this.finishAffinity();
+        startActivity(new Intent(this, RegisterPhoneNumberActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.finishAffinity();
+        startActivity(new Intent(this, RegisterPhoneNumberActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
+
     }
 }

@@ -21,7 +21,6 @@ import androidx.databinding.DataBindingUtil;
 import com.dalilu.R;
 import com.dalilu.databinding.ActivityRegisterPhoneNumberBinding;
 import com.dalilu.utils.AppConstants;
-import com.dalilu.utils.DisplayViewUI;
 import com.dalilu.utils.LanguageManager;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
@@ -47,6 +46,8 @@ public class RegisterPhoneNumberActivity extends AppCompatActivity {
         languageSelectSpinner = activityRegisterPhoneNumberBinding.spinner;
         txtNumber = activityRegisterPhoneNumberBinding.textInputLayoutPhone;
         loading = activityRegisterPhoneNumberBinding.pbLoading;
+        loading.setVisibility(View.GONE);
+
         btnNext = activityRegisterPhoneNumberBinding.btnNext;
         countryCodePicker = activityRegisterPhoneNumberBinding.ccp;
         countryCodePicker.registerCarrierNumberEditText(txtNumber.getEditText());
@@ -56,7 +57,7 @@ public class RegisterPhoneNumberActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    DisplayViewUI.displayToast(RegisterPhoneNumberActivity.this, getString(R.string.selectLanguage));
+                    // DisplayViewUI.displayToast(RegisterPhoneNumberActivity.this, getString(R.string.selectLanguage));
                     btnNext.setEnabled(false);
 
                 } else if (position == 1) {//english is selected
@@ -81,10 +82,13 @@ public class RegisterPhoneNumberActivity extends AppCompatActivity {
 
         if (btnNext.isEnabled()) {
             btnNext.setOnClickListener(view -> {
-                new Handler().postDelayed(() -> loading.setVisibility(View.VISIBLE), 2000);
+                loading.setVisibility(View.VISIBLE);
 
-                getPhoneNumber();
+                new Handler().postDelayed(this::getPhoneNumber, 3000);
+
+
             });
+
 
         }
 
@@ -111,16 +115,12 @@ public class RegisterPhoneNumberActivity extends AppCompatActivity {
 
         String getPhoneNumber = Objects.requireNonNull(txtNumber.getEditText()).getText().toString();
         if (!getPhoneNumber.trim().isEmpty()) {
-            if (DisplayViewUI.isNetworkConnected(RegisterPhoneNumberActivity.this)) {
-                getPhone = countryCodePicker.getFormattedFullNumber();
-                Intent verifyNumberIntent = new Intent(RegisterPhoneNumberActivity.this, VerifyPhoneNumberActivity.class);
-                verifyNumberIntent.putExtra(AppConstants.PHONE_NUMBER, getPhone);
-                startActivity(verifyNumberIntent);
+            getPhone = countryCodePicker.getFormattedFullNumber();
+            Intent verifyNumberIntent = new Intent(RegisterPhoneNumberActivity.this, VerifyPhoneNumberActivity.class);
+            verifyNumberIntent.putExtra(AppConstants.PHONE_NUMBER, getPhone);
+            verifyNumberIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(verifyNumberIntent);
 
-            } else {
-                DisplayViewUI.displayAlertDialogMsg(RegisterPhoneNumberActivity.this, getResources().getString(R.string.noInternet), "ok",
-                        (dialog, which) -> dialog.dismiss());
-            }
         } else if (getPhoneNumber.trim().isEmpty()) {
             txtNumber.setErrorEnabled(true);
             txtNumber.setError(getString(R.string.phoneReq));

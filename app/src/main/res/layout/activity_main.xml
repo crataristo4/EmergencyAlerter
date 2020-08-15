@@ -45,13 +45,13 @@
 
             <jahirfiquitiva.libs.fabsmenu.FABsMenuLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginEnd="0dp"
-                app:fabs_menu_clickableOverlay="true"
+                app:fabs_menu_clickableOverlay="false"
                 app:fabs_menu_overlayColor="#4d000000"
                 tools:layout_behavior="@string/fabs_menu_layout_behavior">
 
@@ -84,7 +84,7 @@
                      android:id="@+id/searchContact"
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
-                     app:backgroundTint="@color/white"
+                     app:backgroundTint="@color/colorGreen"
                      app:fabSize="mini"
                      app:fab_enableTitleClick="true"
                      app:fab_title="@string/searchContact"
@@ -97,7 +97,7 @@
                         android:id="@+id/editProfile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:backgroundTint="@color/white"
+                        app:backgroundTint="@color/amber"
                         app:fabSize="mini"
                         app:fab_enableTitleClick="true"
                         app:fab_title="@string/editProfile"

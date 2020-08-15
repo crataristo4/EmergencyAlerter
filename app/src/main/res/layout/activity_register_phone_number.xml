@@ -5,7 +5,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:fillViewport="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -60,17 +61,21 @@
                     android:id="@+id/btnNext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
+                    android:layout_marginBottom="16dp"
                     android:background="@drawable/curvedbuttonstyle"
                     android:text="@string/next"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="normal"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPhone"
                     app:layout_constraintStart_toStartOf="@+id/textInputLayoutPhone"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhone" />
+                    app:layout_constraintTop_toBottomOf="@+id/pbLoading" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textInputLayoutPhone"
@@ -79,15 +84,7 @@
                     android:layout_margin="@dimen/eightDp"
                     android:layout_marginStart="32dp"
                     android:layout_marginEnd="32dp"
-                    android:background="@drawable/textinputbackground"
                     android:textColorHint="@color/black"
-                    app:boxBackgroundMode="outline"
-                    app:boxCornerRadiusBottomEnd="@dimen/twentyFourDp"
-                    app:boxCornerRadiusBottomStart="@dimen/twentyFourDp"
-                    app:boxCornerRadiusTopEnd="@dimen/twentyFourDp"
-                    app:boxCornerRadiusTopStart="@dimen/twentyFourDp"
-                    app:boxStrokeColor="@color/purple"
-                    app:helperTextTextColor="@color/black"
                     app:layout_constraintEnd_toEndOf="@+id/ccp"
                     app:layout_constraintStart_toStartOf="@+id/ccp"
                     app:layout_constraintTop_toBottomOf="@+id/ccp">
@@ -127,15 +124,15 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="16dp"
                     android:entries="@array/selectLanguage"
                     android:gravity="center"
                     android:padding="@dimen/eightDp"
                     android:textAlignment="center"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhone" />
 
                 <ProgressBar
                     android:id="@+id/pbLoading"
@@ -143,13 +140,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
                     android:indeterminate="true"
                     android:visibility="gone"
-                    app:layout_constraintBottom_toTopOf="@+id/spinner"
                     app:layout_constraintEnd_toEndOf="@+id/btnNext"
                     app:layout_constraintStart_toStartOf="@+id/btnNext"
-                    app:layout_constraintTop_toBottomOf="@+id/btnNext" />
+                    app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
