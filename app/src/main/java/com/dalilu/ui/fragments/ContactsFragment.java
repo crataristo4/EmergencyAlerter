@@ -69,102 +69,105 @@ public class ContactsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initViews();
-        requireActivity().runOnUiThread(this::loadData);
-
+        // requireActivity().runOnUiThread(this::loadData);
+        loadData();
 
         adapter.setOnItemClickListener((view1, position) -> {
-            SharedPreferences pref = requireActivity().getSharedPreferences(AppConstants.PREFS, 0);
 
-            ProgressDialog progressBar = DisplayViewUI.displayProgress(requireActivity(), getString(R.string.XCC));
-            //send location
-            //Send location details to user
-            @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:MM a");
-            String dateSent = dateFormat.format(Calendar.getInstance().getTime());
+            requireActivity().runOnUiThread(() -> {
+                SharedPreferences pref = requireActivity().getSharedPreferences(AppConstants.PREFS, 0);
 
-            String getUserName = adapter.getItem(position).getName();
-            String getUserId = adapter.getItem(position).getId();
-            String getUserPhoto = adapter.getItem(position).getPhoto();
-            String name = MainActivity.userName, photo = MainActivity.userPhotoUrl, yourLocation = MainActivity.knownName, senderId = MainActivity.userId;
+                ProgressDialog progressBar = DisplayViewUI.displayProgress(requireActivity(), getString(R.string.XCC));
+                //send location
+                //Send location details to user
+                @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:MM a");
+                String dateSent = dateFormat.format(Calendar.getInstance().getTime());
 
-            DisplayViewUI.displayAlertDialog(requireActivity(),
-                    getString(R.string.sndloc),
-                    MessageFormat.format(getString(R.string.qst), getUserName), getString(R.string.yes), getString(R.string.no), (dialogInterface, i) -> {
-                        if (i == -1) {
-                            // progressBar.show();
-                            String sharedLocation = name + " " + getString(R.string.shLoc) + " " + getString(R.string.withU);
-                            String locationReceived = getString(R.string.urLoc) + " " + getString(R.string.isShared) + " " + getUserName;
+                String getUserName = adapter.getItem(position).getName();
+                String getUserId = adapter.getItem(position).getId();
+                String getUserPhoto = adapter.getItem(position).getPhoto();
+                String name = MainActivity.userName, photo = MainActivity.userPhotoUrl, yourLocation = MainActivity.knownName, senderId = MainActivity.userId;
 
-                            //get location coordinates
-                            String latitude = Double.toString(MainActivity.latitude);
-                            String longitude = Double.toString(MainActivity.longitude);
-                            String url = "http://maps.google.com/maps?q=loc:" + latitude + "," + longitude + "&z=15";
+                DisplayViewUI.displayAlertDialog(requireActivity(),
+                        getString(R.string.sndloc),
+                        MessageFormat.format(getString(R.string.qst), getUserName), getString(R.string.yes), getString(R.string.no), (dialogInterface, i) -> {
+                            if (i == -1) {
+                                // progressBar.show();
+                                String sharedLocation = name + " " + getString(R.string.shLoc) + " " + getString(R.string.withU);
+                                String locationReceived = getString(R.string.urLoc) + " " + getString(R.string.isShared) + " " + getUserName;
 
-                            //..location received from another user ..//
-                            Map<String, Object> fromUser = new HashMap<>();
-                            fromUser.put("location", locationReceived);
-                            fromUser.put("knownName", yourLocation);
-                            fromUser.put("url", url);
-                            fromUser.put("date", dateSent);
-                            fromUser.put("userName", name);
-                            fromUser.put("photo", getUserPhoto);
-                            fromUser.put("time", GetTimeAgo.getTimeInMillis());
+                                //get location coordinates
+                                String latitude = Double.toString(MainActivity.latitude);
+                                String longitude = Double.toString(MainActivity.longitude);
+                                String url = "http://maps.google.com/maps?q=loc:" + latitude + "," + longitude + "&z=15";
 
-                            //..location sent to ..(user who sent  will view this) //
-                            Map<String, Object> toReceiver = new HashMap<>();
-                            toReceiver.put("location", sharedLocation);
-                            toReceiver.put("knownName", yourLocation);
-                            toReceiver.put("url", url);
-                            toReceiver.put("date", dateSent);
-                            toReceiver.put("userName", getUserName);
-                            toReceiver.put("time", GetTimeAgo.getTimeInMillis());
-                            toReceiver.put("photo", photo);
+                                //..location received from another user ..//
+                                Map<String, Object> fromUser = new HashMap<>();
+                                fromUser.put("location", locationReceived);
+                                fromUser.put("knownName", yourLocation);
+                                fromUser.put("url", url);
+                                fromUser.put("date", dateSent);
+                                fromUser.put("userName", name);
+                                fromUser.put("photo", getUserPhoto);
+                                fromUser.put("time", GetTimeAgo.getTimeInMillis());
+
+                                //..location sent to ..(user who sent  will view this) //
+                                Map<String, Object> toReceiver = new HashMap<>();
+                                toReceiver.put("location", sharedLocation);
+                                toReceiver.put("knownName", yourLocation);
+                                toReceiver.put("url", url);
+                                toReceiver.put("date", dateSent);
+                                toReceiver.put("userName", getUserName);
+                                toReceiver.put("time", GetTimeAgo.getTimeInMillis());
+                                toReceiver.put("photo", photo);
 
 
-                            String locationDbId = locationDbRef.push().getKey();
-                            assert locationDbId != null;
-                            locationDbRef.child(senderId).child(locationDbId).setValue(fromUser);
-                            locationDbRef.child(getUserId).child(locationDbId).setValue(toReceiver);
-                            DisplayViewUI.displayToast(requireActivity(), getString(R.string.successFull));
+                                String locationDbId = locationDbRef.push().getKey();
+                                assert locationDbId != null;
+                                locationDbRef.child(senderId).child(locationDbId).setValue(fromUser);
+                                locationDbRef.child(getUserId).child(locationDbId).setValue(toReceiver);
+                                DisplayViewUI.displayToast(requireActivity(), getString(R.string.successFull));
 
-                            SharedPreferences.Editor shareLocationEditor = pref.edit();
-                            shareLocationEditor.putBoolean(AppConstants.IS_LOCATION_SHARED, true);
-                            shareLocationEditor.putString(AppConstants.USER_NAME, receiverName);
-                            shareLocationEditor.putString(AppConstants.UID, receiverId);
-                            shareLocationEditor.apply();
+                                SharedPreferences.Editor shareLocationEditor = pref.edit();
+                                shareLocationEditor.putBoolean(AppConstants.IS_LOCATION_SHARED, true);
+                                shareLocationEditor.putString(AppConstants.USER_NAME, receiverName);
+                                shareLocationEditor.putString(AppConstants.UID, receiverId);
+                                shareLocationEditor.apply();
 
 
 /*
-                          locationDbRef.child(senderId).child(locationDbId).setValue(fromUser).addOnCompleteListener(task -> {
-                              if (task.isSuccessful()) {
-                                  progressBar.dismiss();
-                                  DisplayViewUI.displayToast(requireActivity(), getString(R.string.successFull));
-                                  locationDbRef.child(getUserId).child(locationDbId).setValue(toReceiver);
+                      locationDbRef.child(senderId).child(locationDbId).setValue(fromUser).addOnCompleteListener(task -> {
+                          if (task.isSuccessful()) {
+                              progressBar.dismiss();
+                              DisplayViewUI.displayToast(requireActivity(), getString(R.string.successFull));
+                              locationDbRef.child(getUserId).child(locationDbId).setValue(toReceiver);
 
-                                  SharedPreferences.Editor shareLocationEditor = pref.edit();
-                                  shareLocationEditor.putBoolean(AppConstants.IS_LOCATION_SHARED, true);
-                                  shareLocationEditor.apply();
+                              SharedPreferences.Editor shareLocationEditor = pref.edit();
+                              shareLocationEditor.putBoolean(AppConstants.IS_LOCATION_SHARED, true);
+                              shareLocationEditor.apply();
 
 
-                              } else {
-                                  progressBar.dismiss();
-                                  DisplayViewUI.displayToast(requireActivity(), Objects.requireNonNull(task.getException()).getMessage());
+                          } else {
+                              progressBar.dismiss();
+                              DisplayViewUI.displayToast(requireActivity(), Objects.requireNonNull(task.getException()).getMessage());
 
-                              }
-                          });
+                          }
+                      });
 */
 
 
-                        } else if (i == -2) {
-                            dialogInterface.dismiss();
+                            } else if (i == -2) {
+                                dialogInterface.dismiss();
 
 
-                        }
-                    });
+                            }
+                        });
 
+
+            });
 
         });
-
-
+        //loadContactsFromPhone();
 
 /*
 
@@ -304,26 +307,30 @@ public class ContactsFragment extends Fragment {
 
     private void loadData() {
 
-        Query query = friendsCollectionReference.document(id).collection(id).orderBy("name", Query.Direction.ASCENDING);
-        FirestoreRecyclerOptions<RequestModel> options =
-                new FirestoreRecyclerOptions.Builder<RequestModel>().setQuery(query,
-                        RequestModel.class).build();
+        requireActivity().runOnUiThread(() -> {
+            Query query = friendsCollectionReference.document(id).collection(id).orderBy("name", Query.Direction.ASCENDING);
+            FirestoreRecyclerOptions<RequestModel> options =
+                    new FirestoreRecyclerOptions.Builder<RequestModel>().setQuery(query,
+                            RequestModel.class).build();
 
-        adapter = new FriendRequestAdapter(options);
-        rv.setAdapter(adapter);
+            adapter = new FriendRequestAdapter(options);
+            rv.setAdapter(adapter);
+
+           /* adapter.setOnItemClickListener((view1, position) -> {
+                receiverId = adapter.getItem(position).getId();
+                receiverName = adapter.getItem(position).getUserName();
+                receiverPhotoUrl = adapter.getItem(position).getUserPhotoUrl();
+                receiverPhoneNumber = adapter.getItem(position).getPhoneNumber();
+
+                //todo send location to user
 
 
-        adapter.setOnItemClickListener((view1, position) -> {
-            receiverId = adapter.getItem(position).getId();
-            receiverName = adapter.getItem(position).getUserName();
-            receiverPhotoUrl = adapter.getItem(position).getUserPhotoUrl();
-            receiverPhoneNumber = adapter.getItem(position).getPhoneNumber();
-
-            //todo send location to user
-
-
+            });*/
         });
+
+
     }
+
 
     @Override
     public void onStart() {

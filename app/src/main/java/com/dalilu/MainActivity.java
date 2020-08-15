@@ -159,10 +159,14 @@ public class MainActivity extends BaseActivity {
         activityMainBinding.searchContact.setOnClickListener(view -> startActivity(new Intent(view.getContext(), SearchContactActivity.class)));
 
         activityMainBinding.logOut.setOnClickListener(view -> {
-
-
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(view.getContext(), SplashScreenActivity.class));
+
+        });
+
+        activityMainBinding.contacts.setOnClickListener(view -> {
+
+            startActivity(new Intent(view.getContext(), ContactsActivity.class));
 
         });
 
@@ -493,4 +497,6 @@ public class MainActivity extends BaseActivity {
         }
 
     }
+
+
 }

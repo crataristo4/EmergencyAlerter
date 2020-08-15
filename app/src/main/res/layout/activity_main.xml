@@ -69,6 +69,18 @@
                     app:fab_moreButtonSize="normal">
 
                     <jahirfiquitiva.libs.fabsmenu.TitleFAB
+                        android:id="@+id/contacts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:backgroundTint="@color/white"
+                        app:fabSize="mini"
+                        app:fab_enableTitleClick="true"
+                        app:fab_title="@string/title_contacts"
+                        app:fab_title_backgroundColor="@color/white"
+                        app:fab_title_textColor="@color/black"
+                        app:srcCompat="@drawable/ic_person" />
+
+                    <jahirfiquitiva.libs.fabsmenu.TitleFAB
                         android:id="@+id/report"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
