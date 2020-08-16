@@ -2,6 +2,7 @@ package com.dalilu;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -16,9 +17,9 @@ public class ContactsActivity extends AppCompatActivity {
     private static final String TAG = "ContactsActivity";
     public static ArrayList<String> names = new ArrayList<>();
     public static ArrayList<String> phones = new ArrayList<>();
-    ListView listView;
+    static ListView listView;
     ArrayList<String> contactsModels;
-    ArrayAdapter<String> arrayAdapter;
+    static ArrayAdapter<String> arrayAdapter;
 
 
     @Override
@@ -31,9 +32,11 @@ public class ContactsActivity extends AppCompatActivity {
 
         Log.i(TAG, "Phones: " + ContactsActivity.phones);
         Log.i(TAG, "Names: " + ContactsActivity.names);
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contactsModels);
-        listView.setAdapter(arrayAdapter);
-        loadContactsFromPhone();
+        // arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contactsModels);
+        // listView.setAdapter(arrayAdapter);
+        //loadContactsFromPhone();
+
+        new ContactLoader().execute();
 
 
     }
@@ -70,6 +73,41 @@ public class ContactsActivity extends AppCompatActivity {
         });
 
 
+    }
+
+
+    @SuppressWarnings("deprecation")
+    static class ContactLoader extends AsyncTask<Void, Void, ArrayList<String>> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //visible your progress bar here
+        }
+
+        @Override
+        protected ArrayList<String> doInBackground(Void... voids) {
+            ArrayList<String> contacts = new ArrayList<>();
+            String order = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC";
+            try (Cursor cursor = Dalilu.getDaliluAppContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, order)) {
+                assert cursor != null;
+                while (cursor.moveToNext()) {
+                    String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                    String phonenumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    contacts.add(phonenumber);
+                }
+                cursor.close();
+            }
+            return contacts;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> contactList) {
+            super.onPostExecute(contactList);
+            //set list to your adapter
+            arrayAdapter = new ArrayAdapter<>(Dalilu.getDaliluAppContext(), android.R.layout.simple_list_item_1, contactList);
+
+            listView.setAdapter(arrayAdapter);
+        }
     }
 
 

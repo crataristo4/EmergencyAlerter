@@ -1,44 +1,35 @@
 package com.dalilu.ui.fragments;
 
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
-import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dalilu.MainActivity;
+import com.dalilu.Dalilu;
 import com.dalilu.R;
 import com.dalilu.adapters.FriendRequestAdapter;
 import com.dalilu.databinding.FragmentContactsBinding;
 import com.dalilu.model.RequestModel;
-import com.dalilu.utils.AppConstants;
-import com.dalilu.utils.DisplayViewUI;
-import com.dalilu.utils.GetTimeAgo;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-import java.text.DateFormat;
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 
 public class ContactsFragment extends Fragment {
@@ -57,6 +48,9 @@ public class ContactsFragment extends Fragment {
     String receiverId;
     String receiverPhoneNumber;
     String id;
+    static ListView listView;
+    static ArrayAdapter<String> arrayAdapter;
+    ArrayList<String> contactsModels;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -70,8 +64,9 @@ public class ContactsFragment extends Fragment {
 
         initViews();
         // requireActivity().runOnUiThread(this::loadData);
-        loadData();
+        //  loadData();
 
+/*
         adapter.setOnItemClickListener((view1, position) -> {
 
             requireActivity().runOnUiThread(() -> {
@@ -135,6 +130,7 @@ public class ContactsFragment extends Fragment {
                                 shareLocationEditor.apply();
 
 
+*/
 /*
                       locationDbRef.child(senderId).child(locationDbId).setValue(fromUser).addOnCompleteListener(task -> {
                           if (task.isSuccessful()) {
@@ -153,7 +149,8 @@ public class ContactsFragment extends Fragment {
 
                           }
                       });
-*/
+*//*
+
 
 
                             } else if (i == -2) {
@@ -167,6 +164,9 @@ public class ContactsFragment extends Fragment {
             });
 
         });
+*/
+
+
         //loadContactsFromPhone();
 
 /*
@@ -293,14 +293,18 @@ public class ContactsFragment extends Fragment {
         id = mCurrentUser.getUid();
 
 
-        rv = fragmentContactsBinding.contactsRecyclerView;
+        listView = fragmentContactsBinding.contactsListView;
+        contactsModels = new ArrayList<>();
+        new ContactLoader().execute();
+
+       /* rv = fragmentContactsBinding.contactsRecyclerView;
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         progressBar = fragmentContactsBinding.progressLoading;
         friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
         locationDbRef = FirebaseDatabase.getInstance().getReference("Locations");
-        friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");
+        friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");*/
 
 
     }
@@ -335,13 +339,49 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        adapter.startListening();
+//        adapter.startListening();
 
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
+        //  adapter.stopListening();
     }
+
+
+    @SuppressWarnings("deprecation")
+    static class ContactLoader extends AsyncTask<Void, Void, ArrayList<String>> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //visible your progress bar here
+        }
+
+        @Override
+        protected ArrayList<String> doInBackground(Void... voids) {
+            ArrayList<String> contacts = new ArrayList<>();
+            String order = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC";
+            try (Cursor cursor = Dalilu.getDaliluAppContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, order)) {
+                assert cursor != null;
+                while (cursor.moveToNext()) {
+                    String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                    String phonenumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    contacts.add(phonenumber);
+                }
+                cursor.close();
+            }
+            return contacts;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> contactList) {
+            super.onPostExecute(contactList);
+            //set list to your adapter
+            arrayAdapter = new ArrayAdapter<>(Dalilu.getDaliluAppContext(), android.R.layout.simple_list_item_1, contactList);
+
+            listView.setAdapter(arrayAdapter);
+        }
+    }
+
 }

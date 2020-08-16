@@ -6,6 +6,10 @@ public class ContactsModel {
     public ContactsModel() {
     }
 
+    public ContactsModel(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
