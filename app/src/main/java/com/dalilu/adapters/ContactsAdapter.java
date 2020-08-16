@@ -103,7 +103,9 @@ public class ContactsAdapter extends FirestoreRecyclerAdapter<RequestModel, Cont
     @NonNull
     @Override
     public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ContactsAdapter.RequestViewHolder((DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_add_user, parent, false)));
+        return new ContactsAdapter.RequestViewHolder((DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                R.layout.layout_add_user, parent,
+                false)));
 
     }
 

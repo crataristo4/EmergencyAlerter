@@ -140,7 +140,7 @@ public class MainActivity extends BaseActivity {
         MenuItem menuItemNotification = menu.findItem(R.id.navigation_alerts);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_alerts, R.id.navigation_home, R.id.navigation_contacts)
+                R.id.navigation_alerts, R.id.navigation_home, R.id.navigation_contacts, R.id.navigation_contactsList)
                 .build();
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);

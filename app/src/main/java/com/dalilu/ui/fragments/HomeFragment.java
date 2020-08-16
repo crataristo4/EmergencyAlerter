@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
     private void fetchData() {
 
         // Create a query against the collection.
-        Query query = collectionReference.orderBy("timeStamp", Query.Direction.DESCENDING).limit(INITIAL_LOAD);
+        Query query = collectionReference.orderBy("timeStamp", Query.Direction.DESCENDING);//.limit(INITIAL_LOAD);
 
       /*  query.get().addOnSuccessListener(queryDocumentSnapshots -> {
             // arrayList.clear();

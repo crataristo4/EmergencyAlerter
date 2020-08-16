@@ -22,4 +22,10 @@
         android:name="com.dalilu.ui.fragments.ContactsFragment"
         android:label="@string/title_contacts"
         tools:layout="@layout/fragment_contacts" />
+
+    <fragment
+        android:id="@+id/navigation_contactsList"
+        android:name="com.dalilu.ui.fragments.TestContactsFragment"
+        android:label="@string/title_contacts"
+        tools:layout="@layout/fragment_test_contacts" />
 </navigation>
