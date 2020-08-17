@@ -71,7 +71,6 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         activityReportBinding = DataBindingUtil.setContentView(this, R.layout.activity_report);
         setSupportActionBar(activityReportBinding.toolBarReport);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
 
         imageStorageRef = FirebaseStorage.getInstance().getReference().child("alerts");
@@ -355,4 +354,8 @@ public class ReportActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

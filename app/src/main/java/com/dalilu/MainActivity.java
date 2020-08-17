@@ -155,7 +155,9 @@ public class MainActivity extends BaseActivity {
 
         BadgeDrawable badgeDrawableHome = navView.getOrCreateBadge(menuItemHome.getItemId());
         BadgeDrawable badgeDrawableNotification = navView.getOrCreateBadge(menuItemNotification.getItemId());
+        badgeDrawableNotification.setBackgroundColor(getResources().getColor(R.color.amber));
         BadgeDrawable badgeDrawableFriends = navView.getOrCreateBadge(menuItemFriends.getItemId());
+        badgeDrawableFriends.setBackgroundColor(getResources().getColor(R.color.black));
 
         activityMainBinding.searchContact.setOnClickListener(view -> startActivity(new Intent(view.getContext(), SearchContactActivity.class)));
 
@@ -173,34 +175,36 @@ public class MainActivity extends BaseActivity {
             userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
             phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
 
-        }
+            locationDbRef.child(MainActivity.userId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-        locationDbRef.child(MainActivity.userId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists() && snapshot.hasChildren()) {
 
-                if (snapshot.exists() && snapshot.hasChildren()) {
+                        int numberOfItems = (int) snapshot.getChildrenCount();
 
-                    int numberOfItems = (int) snapshot.getChildrenCount();
+                        if (numberOfItems > 0) {
 
-                    if (numberOfItems > 0) {
+                            badgeDrawableNotification.setNumber(numberOfItems);
 
-                        badgeDrawableNotification.setNumber(numberOfItems);
+
+                        }
 
 
                     }
 
-
                 }
 
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    DisplayViewUI.displayToast(MainActivity.this, error.getMessage());
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                DisplayViewUI.displayToast(MainActivity.this, error.getMessage());
+                }
+            });
 
-            }
-        });
+
+        }
+
 
 
         alertsCollectionReference.get().addOnCompleteListener(task -> {

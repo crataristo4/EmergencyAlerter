@@ -48,7 +48,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EditProfileActivity"
-            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -58,7 +57,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ReportActivity"
-            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

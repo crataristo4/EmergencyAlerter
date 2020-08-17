@@ -46,7 +46,6 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         activityEditProfileBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile);
         setSupportActionBar(activityEditProfileBinding.toolBarCompleteProfile);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         imgUserPhoto = activityEditProfileBinding.imgUploadPhoto;
         txtUserName = activityEditProfileBinding.txtUserName;
@@ -128,7 +127,10 @@ public class EditProfileActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.successFull));
                     Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(AppConstants.UID, uid);
+                    intent.putExtra(AppConstants.USER_NAME, userName);
+                    intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
+                    intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
                     startActivity(intent);
                     EditProfileActivity.this.finishAffinity();
 
@@ -203,5 +205,10 @@ public class EditProfileActivity extends AppCompatActivity {
         } else {
             DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.plsSlct));
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }
