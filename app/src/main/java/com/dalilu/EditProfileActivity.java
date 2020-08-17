@@ -14,6 +14,7 @@ import androidx.databinding.DataBindingUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dalilu.databinding.ActivityEditProfileBinding;
+import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
@@ -36,7 +37,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private StorageReference mStorageReference;
     private DatabaseReference usersDbRef;
     private CollectionReference usersCollection;
-    private String uid, getImageUri, phoneNumber, userName;
+    private String uid, getImageUri, phoneNumber, userName, userPhotoUrl;
     private Uri uri;
     private TextInputLayout txtUserName;
 
@@ -45,19 +46,28 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         activityEditProfileBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile);
         setSupportActionBar(activityEditProfileBinding.toolBarCompleteProfile);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         imgUserPhoto = activityEditProfileBinding.imgUploadPhoto;
         txtUserName = activityEditProfileBinding.txtUserName;
 
-        uid = MainActivity.userId;
-        userName = MainActivity.userName;
-        phoneNumber = MainActivity.phoneNumber;
+        Intent getUserDetailsIntent = getIntent();
+        if (getUserDetailsIntent != null) {
+            userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
+            userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
+            uid = getUserDetailsIntent.getStringExtra(AppConstants.UID);
+            phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
 
-        Objects.requireNonNull(txtUserName.getEditText()).setText(userName);
-        Objects.requireNonNull(activityEditProfileBinding.txtPhone.getEditText()).setText(phoneNumber);
-        Glide.with(this).load(MainActivity.userPhotoUrl)
-                .error(R.drawable.photo).into(imgUserPhoto);
+            Objects.requireNonNull(txtUserName.getEditText()).setText(userName);
+            Objects.requireNonNull(activityEditProfileBinding.txtPhone.getEditText()).setText(phoneNumber);
+            Glide.with(this).load(userPhotoUrl)
+                    .error(R.drawable.photo).into(imgUserPhoto);
+        }
+
+       /* uid = MainActivity.userId;
+        userName = MainActivity.userName;
+        phoneNumber = MainActivity.phoneNumber;*/
+
+
         //activityEditProfileBinding.txtPhone.setEnabled(false);
 
         progressDialog = DisplayViewUI.displayProgress(this, getString(R.string.saveDetails));
@@ -117,7 +127,10 @@ public class EditProfileActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.successFull));
                     Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(AppConstants.UID, uid);
+                    intent.putExtra(AppConstants.USER_NAME, userName);
+                    intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
+                    intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
                     startActivity(intent);
                     EditProfileActivity.this.finishAffinity();
 
@@ -192,5 +205,10 @@ public class EditProfileActivity extends AppCompatActivity {
         } else {
             DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.plsSlct));
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

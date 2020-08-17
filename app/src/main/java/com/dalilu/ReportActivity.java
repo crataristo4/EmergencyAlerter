@@ -71,7 +71,6 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         activityReportBinding = DataBindingUtil.setContentView(this, R.layout.activity_report);
         setSupportActionBar(activityReportBinding.toolBarReport);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
 
         imageStorageRef = FirebaseStorage.getInstance().getReference().child("alerts");
@@ -82,18 +81,19 @@ public class ReportActivity extends AppCompatActivity {
         videoView = activityReportBinding.videoView;
         btnUpload = activityReportBinding.btnUpload;
 
+        Intent getUserDetailsIntent = getIntent();
+        if (getUserDetailsIntent != null) {
+            userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
+            userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
+            userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
+            phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
+            state = getUserDetailsIntent.getStringExtra(AppConstants.STATE);
+            country = getUserDetailsIntent.getStringExtra(AppConstants.COUNTRY);
+            knownName = getUserDetailsIntent.getStringExtra(AppConstants.KNOWN_LOCATION);
+            latitude = getUserDetailsIntent.getDoubleExtra(AppConstants.LATITUDE, 0);
+            longitude = getUserDetailsIntent.getDoubleExtra(AppConstants.LONGITUDE, 0);
 
-        //getting data from static values
-        latitude = MainActivity.latitude;
-        longitude = MainActivity.longitude;
-        knownName = MainActivity.knownName;
-        userName = MainActivity.userName;
-        country = MainActivity.country;
-        state = MainActivity.state;
-        phoneNumber = MainActivity.phoneNumber;
-        userId = MainActivity.userId;
-        userPhotoUrl = MainActivity.userPhotoUrl;
-
+        }
 
         activityReportBinding.fabCamera.setOnClickListener(v -> {
             if (CameraUtils.checkPermissions(v.getContext())) {
@@ -245,11 +245,19 @@ public class ReportActivity extends AppCompatActivity {
                 alertCollectionReference.add(alertItems).addOnCompleteListener(task2 -> {
 
                     if (task2.isSuccessful()) {
+                        String id = MainActivity.userId;
 
                         pd.dismiss();
                         DisplayViewUI.displayToast(ReportActivity.this, getString(R.string.reportSuccess));
+
                         startActivity(new Intent(ReportActivity.this, MainActivity.class)
-                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+                                .putExtra(AppConstants.UID, id)
+                                .putExtra(AppConstants.USER_NAME, userName)
+                                .putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl)
+                                .putExtra(AppConstants.PHONE_NUMBER, phoneNumber)
+
+
+                        );
                         finish();
 
 
@@ -346,4 +354,8 @@ public class ReportActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

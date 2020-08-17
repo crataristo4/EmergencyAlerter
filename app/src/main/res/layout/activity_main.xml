@@ -35,7 +35,7 @@
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             app:layout_anchorGravity="end|bottom"
             app:layout_constraintBottom_toTopOf="@+id/nav_view"
@@ -68,42 +68,30 @@
                     app:fab_moreButtonRippleColor="@color/pink"
                     app:fab_moreButtonSize="normal">
 
-                    <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                        android:id="@+id/contacts"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:backgroundTint="@color/white"
-                        app:fabSize="mini"
-                        app:fab_enableTitleClick="true"
-                        app:fab_title="@string/title_contacts"
-                        app:fab_title_backgroundColor="@color/white"
-                        app:fab_title_textColor="@color/black"
-                        app:srcCompat="@drawable/ic_person" />
+                    <!-- <jahirfiquitiva.libs.fabsmenu.TitleFAB
+                         android:id="@+id/contacts"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         app:backgroundTint="@color/white"
+                         app:fabSize="mini"
+                         app:fab_enableTitleClick="true"
+                         app:fab_title="@string/title_contacts"
+                         app:fab_title_backgroundColor="@color/white"
+                         app:fab_title_textColor="@color/black"
+                         app:srcCompat="@drawable/ic_person" />
+ -->
 
                     <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                        android:id="@+id/report"
+                        android:id="@+id/logOut"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:backgroundTint="@color/white"
+                        app:backgroundTint="@color/colorRed"
                         app:fabSize="mini"
                         app:fab_enableTitleClick="true"
-                        app:fab_title="@string/reportAct"
-                        app:fab_title_backgroundColor="@color/white"
-                        app:fab_title_textColor="@color/black"
-                        app:srcCompat="@drawable/ic_baseline_report_24" />
-
-                 <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                     android:id="@+id/searchContact"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     app:backgroundTint="@color/colorGreen"
-                     app:fabSize="mini"
-                     app:fab_enableTitleClick="true"
-                     app:fab_title="@string/searchContact"
-                     app:fab_title_backgroundColor="@color/colorGreen"
-                     app:fab_title_textColor="@color/white"
-                     app:srcCompat="@drawable/ic_baseline_search_24" />
-
+                        app:fab_title="@string/logOut"
+                        app:fab_title_backgroundColor="@color/colorRed"
+                        app:fab_title_textColor="@color/white"
+                        app:srcCompat="@drawable/ic_baseline_log_out" />
 
                     <jahirfiquitiva.libs.fabsmenu.TitleFAB
                         android:id="@+id/editProfile"
@@ -119,16 +107,30 @@
 
 
                     <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                        android:id="@+id/logOut"
+                        android:id="@+id/searchContact"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:backgroundTint="@color/colorRed"
+                        app:backgroundTint="@color/colorGreen"
                         app:fabSize="mini"
                         app:fab_enableTitleClick="true"
-                        app:fab_title="@string/logOut"
-                        app:fab_title_backgroundColor="@color/colorRed"
+                        app:fab_title="@string/searchContact"
+                        app:fab_title_backgroundColor="@color/colorGreen"
                         app:fab_title_textColor="@color/white"
-                        app:srcCompat="@drawable/ic_baseline_log_out" />
+                        app:srcCompat="@drawable/ic_baseline_search_24" />
+
+
+                    <jahirfiquitiva.libs.fabsmenu.TitleFAB
+                        android:id="@+id/report"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:backgroundTint="@color/white"
+                        app:fabSize="mini"
+                        app:fab_enableTitleClick="true"
+                        app:fab_title="@string/reportAct"
+                        app:fab_title_backgroundColor="@color/white"
+                        app:fab_title_textColor="@color/black"
+                        app:srcCompat="@drawable/ic_baseline_report_24" />
+
 
                 </jahirfiquitiva.libs.fabsmenu.FABsMenu>
 
