@@ -159,7 +159,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         //1. check friends db
         //2. check the senders and receivers node respectively
         //3. check the response and update the UI
-        Query query = friendsCollectionReference.document(senderId).collection(senderId);
+        Query query = friendsCollectionReference.document(senderId).collection(senderId).document(senderId).collection(id);
 
         query.addSnapshotListener((value, error) -> {
 

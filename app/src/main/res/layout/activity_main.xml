@@ -52,7 +52,7 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginEnd="0dp"
                 app:fabs_menu_clickableOverlay="false"
-                app:fabs_menu_overlayColor="#4d000000"
+                app:fabs_menu_overlayColor="#fff"
                 tools:layout_behavior="@string/fabs_menu_layout_behavior">
 
                 <jahirfiquitiva.libs.fabsmenu.FABsMenu

@@ -63,12 +63,6 @@ public class EditProfileActivity extends AppCompatActivity {
                     .error(R.drawable.photo).into(imgUserPhoto);
         }
 
-       /* uid = MainActivity.userId;
-        userName = MainActivity.userName;
-        phoneNumber = MainActivity.phoneNumber;*/
-
-
-        //activityEditProfileBinding.txtPhone.setEnabled(false);
 
         progressDialog = DisplayViewUI.displayProgress(this, getString(R.string.saveDetails));
 
@@ -119,32 +113,20 @@ public class EditProfileActivity extends AppCompatActivity {
         progressDialog.show();
         //validations for user name
         if (!userName.trim().isEmpty()) {
+
             Map<String, Object> accountInfo = new HashMap<>();
             accountInfo.put("userName", userName);
-            usersCollection.document(uid).update(accountInfo).addOnCompleteListener(task1 -> {
-
-                if (task1.isSuccessful()) {
-                    progressDialog.dismiss();
-                    DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.successFull));
-                    Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
-                    intent.putExtra(AppConstants.UID, uid);
-                    intent.putExtra(AppConstants.USER_NAME, userName);
-                    intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
-                    intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
-                    startActivity(intent);
-                    EditProfileActivity.this.finishAffinity();
-
-                } else {
-                    progressDialog.dismiss();
-                    DisplayViewUI.displayToast(EditProfileActivity.this, Objects.requireNonNull(task1.getException()).getMessage());
-
-                }
-
-            });
-
+            usersCollection.document(uid).update(accountInfo);
+            DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.successFull));
+            Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
+            intent.putExtra(AppConstants.UID, uid);
+            intent.putExtra(AppConstants.USER_NAME, userName);
+            intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
+            intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
+            startActivity(intent);
+            EditProfileActivity.this.finishAffinity();
 
         }
-
     }
 
 

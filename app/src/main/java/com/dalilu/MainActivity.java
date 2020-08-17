@@ -50,6 +50,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import jahirfiquitiva.libs.fabsmenu.FABsMenu;
+
 public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
@@ -97,7 +99,7 @@ public class MainActivity extends BaseActivity {
     private List<Address> addressList;
     private DatabaseReference locationDbRef;
     private CollectionReference alertsCollectionReference;
-
+    FABsMenu faBsMenu;
 
     public static Context getAppContext() {
         return (Context) mContext;
@@ -133,7 +135,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initViews() {
-
+        faBsMenu = activityMainBinding.fabsMenu;
         BottomNavigationView navView = activityMainBinding.navView;
         Menu menu = navView.getMenu();
         MenuItem menuItemHome = menu.findItem(R.id.navigation_home);
@@ -147,6 +149,7 @@ public class MainActivity extends BaseActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
 
         navView.setOnNavigationItemReselectedListener(item -> {
 
@@ -162,8 +165,22 @@ public class MainActivity extends BaseActivity {
         activityMainBinding.searchContact.setOnClickListener(view -> startActivity(new Intent(view.getContext(), SearchContactActivity.class)));
 
         activityMainBinding.logOut.setOnClickListener(view -> {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(view.getContext(), SplashScreenActivity.class));
+
+            DisplayViewUI.displayAlertDialog(view.getContext(),
+                    getString(R.string.logOut), getString(R.string.xcvv),
+                    getString(R.string.logMeOut), getString(R.string.cancel),
+                    (dialogInterface, i) -> {
+                        if (i == -1) {
+
+                            FirebaseAuth.getInstance().signOut();
+                            startActivity(new Intent(view.getContext(), SplashScreenActivity.class));
+                        } else if (i == -2) {
+                            dialogInterface.dismiss();
+                        }
+
+
+                    });
+
 
         });
 
@@ -197,7 +214,7 @@ public class MainActivity extends BaseActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    DisplayViewUI.displayToast(MainActivity.this, error.getMessage());
+                    //  DisplayViewUI.displayToast(MainActivity.this, error.getMessage());
 
                 }
             });
@@ -236,6 +253,7 @@ public class MainActivity extends BaseActivity {
         intent.putExtra(AppConstants.KNOWN_LOCATION, knownName);
         intent.putExtra(AppConstants.LATITUDE, latitude);
         intent.putExtra(AppConstants.LONGITUDE, longitude);
+        intent.putExtra(AppConstants.UID, userId);
 
 
         startActivity(intent);
@@ -507,6 +525,9 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (faBsMenu.isExpanded()) {
+            faBsMenu.collapse();
+        }
         if (checkPermissions()) {
             buildLocationSettingsRequest();
             startLocationUpdates();
