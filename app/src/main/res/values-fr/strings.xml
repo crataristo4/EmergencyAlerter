@@ -151,4 +151,15 @@
     <string name="uploadingVideo">Video en cours de transmission. Attendez SVP</string>
     <string name="declineRequest">Requete refusee</string>
     <string name="deleteUser">Supprimer utilisateur</string>
+    <string name="stdVoiceRecordind">L\'enregistrement de la voix a commence</string>
+    <string name="stpdVoiceRecording">L\'enregistrement de la voix est arretee</string>
+    <string name="rcAud">Enregistrement de l\'audio en cours, appuyer sur arret pour transmettre</string>
+    <string name="dalilu_will_send_an_sms_message_to_verify_your_phone_number">Dalilu vous enverra un SMS pour verfier votre numero de telephone</string>
+    <string name="verify_your_phone_number">Verifier votre numero de telephone</string>
+    <string name="waiting_to_automatically_detect_an_sms_sent_to">En attente pour la detection automatique du SMS envoye</string>
+    <string name="enter_6_digit_code">Entrez un code a 6 chiffre</string>
+    <string name="wrong_number">Mauvais numero</string>
+    <string name="newReq">Nouvelle requete</string>
+    <string name="requestSentTo">Requete envoyee a</string>
+    <string name="addedUser">Utilisateur ajoute</string>
 </resources>
