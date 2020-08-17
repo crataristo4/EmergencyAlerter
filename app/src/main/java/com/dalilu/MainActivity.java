@@ -38,11 +38,8 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -98,7 +95,7 @@ public class MainActivity extends BaseActivity {
     private Geocoder geocoder;
     private List<Address> addressList;
     private DatabaseReference locationDbRef;
-    private CollectionReference alertsCollectionReference;
+    private CollectionReference alertsCollectionReference, locationCollectionDbRef;
     FABsMenu faBsMenu;
 
     public static Context getAppContext() {
@@ -119,6 +116,7 @@ public class MainActivity extends BaseActivity {
 
         locationDbRef = FirebaseDatabase.getInstance().getReference().child("Locations");
         alertsCollectionReference = FirebaseFirestore.getInstance().collection("Alerts");
+        locationCollectionDbRef = FirebaseFirestore.getInstance().collection("Locations");
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mSettingsClient = LocationServices.getSettingsClient(this);
@@ -192,6 +190,13 @@ public class MainActivity extends BaseActivity {
             userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
             phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
 
+            locationCollectionDbRef.document(userId).collection(userId).get().addOnCompleteListener(task -> {
+                int numberOfItems = task.getResult().size();
+                if (numberOfItems > 0)
+                    badgeDrawableNotification.setNumber(numberOfItems);
+            });
+
+/*
             locationDbRef.child(MainActivity.userId).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -218,6 +223,7 @@ public class MainActivity extends BaseActivity {
 
                 }
             });
+*/
 
 
         }
@@ -229,7 +235,6 @@ public class MainActivity extends BaseActivity {
                 badgeDrawableHome.setNumber(task.getResult().size());
 
         });
-
 
         activityMainBinding.report.setOnClickListener(v -> {
             myIntent(ReportActivity.class);

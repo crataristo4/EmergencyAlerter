@@ -17,19 +17,22 @@ import com.dalilu.R;
 import com.dalilu.adapters.LocationSharingAdapter;
 import com.dalilu.databinding.FragmentNotificationsBinding;
 import com.dalilu.model.ShareLocation;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 
 public class NotificationsFragment extends Fragment {
 
     FragmentNotificationsBinding fragmentNotificationsBinding;
     private DatabaseReference locationDbRef;
+    String id;
     private LocationSharingAdapter adapter;
     RecyclerView rv;
     Query query;
+    private CollectionReference mCollectionReference;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -51,23 +54,33 @@ public class NotificationsFragment extends Fragment {
     }
 
     void initViews() {
-
+        id = MainActivity.userId;
         rv = fragmentNotificationsBinding.alertRecyclerView;
         rv.setHasFixedSize(true);
 
-        locationDbRef = FirebaseDatabase.getInstance().getReference().child("Locations").child(MainActivity.userId);
-        query = locationDbRef.orderByChild("timeStamp");
+        //locationDbRef = FirebaseDatabase.getInstance().getReference().child("Locations").child(MainActivity.userId);
+        mCollectionReference = FirebaseFirestore.getInstance().collection("Locations");
+
+
     }
 
     private void loadData() {
 
-        FirebaseRecyclerOptions<ShareLocation> options =
+       /* FirebaseRecyclerOptions<ShareLocation> options =
                 new FirebaseRecyclerOptions.Builder<ShareLocation>().setQuery(query,
-                        ShareLocation.class).build();
+                        ShareLocation.class).build();*/
 
-        rv.setLayoutManager(new LinearLayoutManager(requireContext()));
-        adapter = new LocationSharingAdapter(options);
-        rv.setAdapter(adapter);
+        requireActivity().runOnUiThread(() -> {
+            query = mCollectionReference.document(id).collection(id).orderBy("timeStamp");
+            FirestoreRecyclerOptions<ShareLocation> options =
+                    new FirestoreRecyclerOptions.Builder<ShareLocation>().setQuery(query,
+                            ShareLocation.class).build();
+
+            rv.setLayoutManager(new LinearLayoutManager(requireContext()));
+            adapter = new LocationSharingAdapter(options);
+            rv.setAdapter(adapter);
+        });
+
     }
 
     @Override

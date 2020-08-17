@@ -10,7 +10,7 @@ public class ShareLocation extends BaseObservable {
     public String url;
     public String knownName;
     public String date;
-    public Object time;
+    public Object timeStamp;
 
     public ShareLocation() {
     }
@@ -70,11 +70,11 @@ public class ShareLocation extends BaseObservable {
     }
 
     @Bindable
-    public long getTime() {
-        return (long) time;
+    public long getTimeStamp() {
+        return (long) timeStamp;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setTimeStamp(long time) {
+        this.timeStamp = time;
     }
 }

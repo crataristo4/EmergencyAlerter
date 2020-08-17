@@ -48,7 +48,7 @@ public class ContactsFragment extends Fragment {
     ProgressBar progressBar;
     private FragmentContactsBinding fragmentContactsBinding;
     RecyclerView rv;
-    private CollectionReference friendsCollectionReference;
+    private CollectionReference friendsCollectionReference, locationCollectionReference;
     private DatabaseReference locationDbRef, friendsDbRef;
     // private RequestAdapter adapter;
     private FriendRequestAdapter adapter;
@@ -109,7 +109,7 @@ public class ContactsFragment extends Fragment {
                                 fromUser.put("date", dateSent);
                                 fromUser.put("userName", name);
                                 fromUser.put("photo", getUserPhoto);
-                                fromUser.put("time", GetTimeAgo.getTimeInMillis());
+                                fromUser.put("timeStamp", GetTimeAgo.getTimeInMillis());
 
                                 //..location sent to ..(user who sent  will view this) //
                                 Map<String, Object> toReceiver = new HashMap<>();
@@ -118,14 +118,21 @@ public class ContactsFragment extends Fragment {
                                 toReceiver.put("url", url);
                                 toReceiver.put("date", dateSent);
                                 toReceiver.put("userName", getUserName);
-                                toReceiver.put("time", GetTimeAgo.getTimeInMillis());
+                                toReceiver.put("timeStamp", GetTimeAgo.getTimeInMillis());
                                 toReceiver.put("photo", photo);
 
 
                                 String locationDbId = locationDbRef.push().getKey();
                                 assert locationDbId != null;
+
                                 locationDbRef.child(senderId).child(locationDbId).setValue(fromUser);
                                 locationDbRef.child(getUserId).child(locationDbId).setValue(toReceiver);
+
+                                //to cloud server
+                                locationCollectionReference.document(senderId).collection(senderId).document(getUserId).set(fromUser);
+                                locationCollectionReference.document(getUserId).collection(getUserId).document(senderId).set(toReceiver);
+
+
                                 DisplayViewUI.displayToast(requireActivity(), getString(R.string.successFull));
 
                                 SharedPreferences.Editor shareLocationEditor = pref.edit();
@@ -135,25 +142,7 @@ public class ContactsFragment extends Fragment {
                                 shareLocationEditor.apply();
 
 
-/*
-                      locationDbRef.child(senderId).child(locationDbId).setValue(fromUser).addOnCompleteListener(task -> {
-                          if (task.isSuccessful()) {
-                              progressBar.dismiss();
-                              DisplayViewUI.displayToast(requireActivity(), getString(R.string.successFull));
-                              locationDbRef.child(getUserId).child(locationDbId).setValue(toReceiver);
 
-                              SharedPreferences.Editor shareLocationEditor = pref.edit();
-                              shareLocationEditor.putBoolean(AppConstants.IS_LOCATION_SHARED, true);
-                              shareLocationEditor.apply();
-
-
-                          } else {
-                              progressBar.dismiss();
-                              DisplayViewUI.displayToast(requireActivity(), Objects.requireNonNull(task.getException()).getMessage());
-
-                          }
-                      });
-*/
 
 
                             } else if (i == -2) {
@@ -167,122 +156,6 @@ public class ContactsFragment extends Fragment {
             });
 
         });
-        //loadContactsFromPhone();
-
-/*
-
-        fragmentContactsBinding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            private void onClick(View view1, int position) {
-                ProgressDialog progressBar = DisplayViewUI.displayProgress(requireActivity(), getString(R.string.XCC));
-                //send location
-                //Send location details to user
-                @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:MM a");
-                String dateSent = dateFormat.format(Calendar.getInstance().getTime());
-
-                String getUserName = adapter.getItem(position).getUserName();
-                String getUserId = adapter.getItem(position).getUserId();
-                String getUserPhoto = adapter.getItem(position).getUserPhotoUrl();
-
-                DisplayViewUI.displayAlertDialog(requireActivity(),
-                        getString(R.string.sndloc),
-                        MessageFormat.format(getString(R.string.qst), getUserName), getString(R.string.yes), getString(R.string.no), (dialogInterface, i) -> {
-                            if (i == -1) {
-                                progressBar.show();
-                                String sharedLocation = name + " " + getString(R.string.shLoc) + " " + getString(R.string.withU);
-                                String locationReceived = getString(R.string.urLoc) + " " + getString(R.string.isShared) + " " + getUserName;
-
-                                //get location coordinates
-                                String latitude = Double.toString(MainActivity.latitude);
-                                String longitude = Double.toString(MainActivity.longitude);
-                                String url = "http://maps.google.com/maps?q=loc:" + latitude + "," + longitude + "&z=15";
-
-                                //..location received from another user ..//
-                                Map<String, Object> fromUser = new HashMap<>();
-                                fromUser.put("location", locationReceived);
-                                fromUser.put("knownName", yourLocation);
-                                fromUser.put("url", url);
-                                fromUser.put("date", dateSent);
-                                fromUser.put("userName", name);
-                                fromUser.put("photo", getUserPhoto);
-                                fromUser.put("time", GetTimeAgo.getTimeInMillis());
-
-                                //..location sent to ..(user who sent  will view this) //
-                                Map<String, Object> toReceiver = new HashMap<>();
-                                toReceiver.put("location", sharedLocation);
-                                toReceiver.put("knownName", yourLocation);
-                                toReceiver.put("url", url);
-                                toReceiver.put("date", dateSent);
-                                toReceiver.put("userName", getUserName);
-                                toReceiver.put("time", GetTimeAgo.getTimeInMillis());
-                                toReceiver.put("photo", photo);
-
-
-                                String locationDbId = locationDbRef.push().getKey();
-                                assert locationDbId != null;
-                                locationDbRef.child(senderId).child(locationDbId).setValue(fromUser).addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        progressBar.dismiss();
-                                        DisplayViewUI.displayToast(requireActivity(), getString(R.string.successFull));
-                                        locationDbRef.child(getUserId).child(locationDbId).setValue(toReceiver);
-
-
-                                    } else {
-                                        progressBar.dismiss();
-                                        DisplayViewUI.displayToast(requireActivity(), Objects.requireNonNull(task.getException()).getMessage());
-
-                                    }
-                                });
-
-
-                            } else if (i == -2) {
-                                dialogInterface.dismiss();
-
-
-                            }
-                        });
-            }
-
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                if (!s.isEmpty()) {
-
-
-                    progressBar.setVisibility(View.VISIBLE);
-
-                    new Handler().postDelayed(() -> progressBar.setVisibility(View.GONE), 3000);
-
-
-                    requireActivity().runOnUiThread(() -> {
-                        Query query = friendsDbRef.orderByChild("name");
-
-                        FirebaseRecyclerOptions<RequestModel> options =
-                                new FirebaseRecyclerOptions.Builder<RequestModel>().setQuery(query,
-                                        RequestModel.class).build();
-
-
-                        adapter = new RequestAdapter(options);
-                        adapter.notifyDataSetChanged();
-                        adapter.startListening();
-                        rv.setAdapter(adapter);
-
-                    });
-
-                }
-
-
-                return true;
-            }
-        });
-
-*/
-
 
     }
 
@@ -299,6 +172,7 @@ public class ContactsFragment extends Fragment {
 
         progressBar = fragmentContactsBinding.progressLoading;
         friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
+        locationCollectionReference = FirebaseFirestore.getInstance().collection("Locations");
         locationDbRef = FirebaseDatabase.getInstance().getReference("Locations");
         friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");
 

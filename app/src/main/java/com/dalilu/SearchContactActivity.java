@@ -49,12 +49,7 @@ public class SearchContactActivity extends AppCompatActivity {
 
         activitySearchContactBinding = DataBindingUtil.setContentView(this, R.layout.activity_search_contact);
         progressBar = activitySearchContactBinding.progressLoading;
-        activitySearchContactBinding.imgBackBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        activitySearchContactBinding.imgBackBtn.setOnClickListener(view -> onBackPressed());
 
         RecyclerView rv = activitySearchContactBinding.recyclerViewContacts;
         rv.setHasFixedSize(true);
