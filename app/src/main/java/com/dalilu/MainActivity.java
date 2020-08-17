@@ -137,11 +137,11 @@ public class MainActivity extends BaseActivity {
         BottomNavigationView navView = activityMainBinding.navView;
         Menu menu = navView.getMenu();
         MenuItem menuItemHome = menu.findItem(R.id.navigation_home);
-        MenuItem menuItemFriends = menu.findItem(R.id.navigation_contactsList);
+        MenuItem menuItemFriends = menu.findItem(R.id.navigation_contacts);
         MenuItem menuItemNotification = menu.findItem(R.id.navigation_alerts);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_alerts, R.id.navigation_home, R.id.navigation_contactsList)
+                R.id.navigation_alerts, R.id.navigation_home, R.id.navigation_contacts)
                 .build();
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);

@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dalilu.Dalilu;
@@ -26,7 +27,9 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
@@ -63,8 +66,8 @@ public class ContactsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initViews();
-        // requireActivity().runOnUiThread(this::loadData);
-        //  loadData();
+        requireActivity().runOnUiThread(this::loadData);
+        loadData();
 
 /*
         adapter.setOnItemClickListener((view1, position) -> {
@@ -293,18 +296,18 @@ public class ContactsFragment extends Fragment {
         id = mCurrentUser.getUid();
 
 
-        listView = fragmentContactsBinding.contactsListView;
+        /*listView = fragmentContactsBinding.contactsListView;
         contactsModels = new ArrayList<>();
-        new ContactLoader().execute();
+        new ContactLoader().execute();*/
 
-       /* rv = fragmentContactsBinding.contactsRecyclerView;
+        rv = fragmentContactsBinding.contactsRecyclerView;
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         progressBar = fragmentContactsBinding.progressLoading;
         friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
         locationDbRef = FirebaseDatabase.getInstance().getReference("Locations");
-        friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");*/
+        friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");
 
 
     }
@@ -320,7 +323,7 @@ public class ContactsFragment extends Fragment {
             adapter = new FriendRequestAdapter(options);
             rv.setAdapter(adapter);
 
-           /* adapter.setOnItemClickListener((view1, position) -> {
+            adapter.setOnItemClickListener((view1, position) -> {
                 receiverId = adapter.getItem(position).getId();
                 receiverName = adapter.getItem(position).getUserName();
                 receiverPhotoUrl = adapter.getItem(position).getUserPhotoUrl();
@@ -329,7 +332,7 @@ public class ContactsFragment extends Fragment {
                 //todo send location to user
 
 
-            });*/
+            });
         });
 
 
