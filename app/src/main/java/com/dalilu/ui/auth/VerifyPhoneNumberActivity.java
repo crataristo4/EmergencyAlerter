@@ -29,7 +29,6 @@ public class VerifyPhoneNumberActivity extends AppCompatActivity {
     private static String code = "";
     ActivityVerifyPhoneNumberBinding activityVerifyPhoneNumberBinding;
     private FirebaseAuth mAuth;
-    private FirebaseUser user;
     AppCompatEditText edtCode;
     String phoneNumber;
 
@@ -40,7 +39,7 @@ public class VerifyPhoneNumberActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         activityVerifyPhoneNumberBinding = DataBindingUtil.setContentView(this, R.layout.activity_verify_phone_number);
         mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
+        FirebaseUser user = mAuth.getCurrentUser();
 
 
         Intent intent = getIntent();

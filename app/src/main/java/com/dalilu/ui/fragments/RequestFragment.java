@@ -26,7 +26,6 @@ import com.google.firebase.database.Query;
 public class RequestFragment extends Fragment {
 
     private FragmentRequestBinding fragmentRequestBinding;
-    private DatabaseReference requestDbRef;
     private RequestAdapter adapter;
 
 
@@ -44,7 +43,7 @@ public class RequestFragment extends Fragment {
         RecyclerView rv = fragmentRequestBinding.requestRecyclerView;
         rv.setHasFixedSize(true);
 
-        requestDbRef = FirebaseDatabase.getInstance().getReference().child("Friends").child(MainActivity.userId);
+        DatabaseReference requestDbRef = FirebaseDatabase.getInstance().getReference().child("Friends").child(MainActivity.userId);
         Query query = requestDbRef.orderByChild("receiverId").equalTo(MainActivity.userId);
 
         FirebaseRecyclerOptions<RequestModel> options =

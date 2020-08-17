@@ -35,7 +35,6 @@
                 android:src="@drawable/applogo"
                 app:civ_border_color="@color/black"
                 app:civ_border_overlay="true"
-                app:civ_border_width="1dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -59,10 +58,10 @@
                 android:id="@+id/txtTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_baseline_access_time_24"
                 android:drawablePadding="@dimen/eightDp"
                 android:padding="@dimen/eightDp"
                 app:layout_constraintStart_toStartOf="@+id/txtName"
+                app:drawableStartCompat="@drawable/ic_baseline_access_time_24"
                 app:layout_constraintTop_toBottomOf="@+id/txtName" />
 
             <!-- <LinearLayout

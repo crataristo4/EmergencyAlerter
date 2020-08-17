@@ -16,6 +16,7 @@ import com.dalilu.services.FirebaseManager;
 import com.dalilu.services.PointOfInterest;
 
 import java.io.IOException;
+import java.util.Objects;
 
 
 /**
@@ -78,21 +79,18 @@ public class DetailsFragment extends Fragment {
      */
 
         //Get the encoded image of the POI
-        if (poi.getEncodedImage() == null || poi.getEncodedImage().isEmpty()) {
+        if (Objects.requireNonNull(poi).getEncodedImage() == null || poi.getEncodedImage().isEmpty()) {
             //If the String is not set, request the image from firebase
             //Register the custom adapter
-            poi.registerCallbackInterface(new PointOfInterest.POIInteface() {
-                @Override
-                public void onImageUpdate() {
-                    //When the image has been fetched and updated in the poi
-                    String encodedImage = poi.getEncodedImage();
-                    //Set it in the image view of the fragment
-                    try {
-                        //Decode it into a bitmap
-                        imageView.setImageBitmap(FirebaseManager.getInstance().decodeFromBase64(encodedImage));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            poi.registerCallbackInterface(() -> {
+                //When the image has been fetched and updated in the poi
+                String encodedImage = poi.getEncodedImage();
+                //Set it in the image view of the fragment
+                try {
+                    //Decode it into a bitmap
+                    imageView.setImageBitmap(FirebaseManager.getInstance().decodeFromBase64(encodedImage));
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             });
             //Query for the encoded string (image) from firebase. Listener notifies when this is done

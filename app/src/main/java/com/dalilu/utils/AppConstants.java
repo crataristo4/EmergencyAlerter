@@ -15,7 +15,7 @@ public final class AppConstants {
     public static final int CAMERA_REQUEST_CODE = 1;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
-    public static String SEND_REQUEST_TAG = "sendRequest";
+    public static final String SEND_REQUEST_TAG = "sendRequest";
     public static final String UID = "uid";
     public static final String PHONE_NUMBER = "phoneNumber";
     public static final String RESPONSE = "response";

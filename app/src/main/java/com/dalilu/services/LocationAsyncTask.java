@@ -9,7 +9,11 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.Objects;
 
 
 public class LocationAsyncTask extends AsyncTask<LocationManager, Void, Void>
@@ -18,7 +22,7 @@ public class LocationAsyncTask extends AsyncTask<LocationManager, Void, Void>
     private static final int POLL_TIME = 500;
     //Reference to the service that launched the async task. Used so that `placeMarker()` can be called.
     @SuppressLint("StaticFieldLeak")
-    private LocationService activity;
+    private final LocationService activity;
 
     private boolean runAsyncTask = true;
     private boolean fetchForUpdate = true;
@@ -74,7 +78,7 @@ public class LocationAsyncTask extends AsyncTask<LocationManager, Void, Void>
         LatLng lastKnownPosition = new LatLng(location.getLatitude(), location.getLongitude());
 
         activity.placeMarker(lastKnownPosition);
-        Log.d("onLocationChanged", Looper.myLooper().toString());
+        Log.d("onLocationChanged", Objects.requireNonNull(Looper.myLooper()).toString());
     }
 
     @Override
@@ -83,11 +87,11 @@ public class LocationAsyncTask extends AsyncTask<LocationManager, Void, Void>
     }
 
     @Override
-    public void onProviderEnabled(String s) {
+    public void onProviderEnabled(@NonNull String s) {
     }
 
     @Override
-    public void onProviderDisabled(String s) {
+    public void onProviderDisabled(@NonNull String s) {
 
     }
 }

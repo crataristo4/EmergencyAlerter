@@ -31,8 +31,6 @@ public class WelcomeNoticeBottomSheet extends BottomSheetDialogFragment {
 
         layoutGotoEditProfileBinding.txtShowNotice.setText(Html.fromHtml(requireActivity().getResources().getString(R.string.welcomeNote)));
 
-        layoutGotoEditProfileBinding.btnSetUp.setOnClickListener(v -> {
-            dismiss();
-        });
+        layoutGotoEditProfileBinding.btnSetUp.setOnClickListener(v -> dismiss());
     }
 }

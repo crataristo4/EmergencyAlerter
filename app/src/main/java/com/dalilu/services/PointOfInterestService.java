@@ -11,6 +11,8 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
+import java.util.Objects;
+
 public class PointOfInterestService extends Service {
 
     public static final String BROADCAST_POI = "com.dalilu";
@@ -35,7 +37,7 @@ public class PointOfInterestService extends Service {
         LatLng userPosition = intent.getParcelableExtra("userPosition");
 
         //Query for POIs within +- 111km (roughly) of the user's position
-        FirebaseManager.getInstance().getPOIRef().orderByChild("longitude").startAt(userPosition.longitude - 1.0).endAt(userPosition.longitude + 1.0).addChildEventListener(new ChildEventListener() {
+        FirebaseManager.getInstance().getPOIRef().orderByChild("longitude").startAt(Objects.requireNonNull(userPosition).longitude - 1.0).endAt(userPosition.longitude + 1.0).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                 PointOfInterest poi = dataSnapshot.getValue(PointOfInterest.class);

@@ -19,6 +19,7 @@ import com.dalilu.services.PointOfInterest;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Objects;
 
 public class PointOfInterestActivity extends AppCompatActivity {
 
@@ -108,10 +109,10 @@ public class PointOfInterestActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap capturedImage = (Bitmap) extras.get("data");
+            Bitmap capturedImage = (Bitmap) Objects.requireNonNull(extras).get("data");
             picture = capturedImage;
             cameraPhotoView.setImageBitmap(capturedImage);
-            encodedImage = encodeBitmap(capturedImage);
+            encodedImage = encodeBitmap(Objects.requireNonNull(capturedImage));
         }
     }
 

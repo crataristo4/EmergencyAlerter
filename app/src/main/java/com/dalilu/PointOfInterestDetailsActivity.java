@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.dalilu.services.PointOfInterest;
 import com.dalilu.ui.fragments.DetailsFragment;
 
+import java.util.Objects;
+
 public class PointOfInterestDetailsActivity extends AppCompatActivity {
 
     private ImageView imageView;
@@ -26,7 +28,7 @@ public class PointOfInterestDetailsActivity extends AppCompatActivity {
         //Get the fragment from the saved stated if possible
         if (savedInstanceState != null) {
             fragment = getSupportFragmentManager().getFragment(savedInstanceState, "fragment");
-            fragmentTransaction.replace(R.id.details_fragment, fragment);
+            fragmentTransaction.replace(R.id.details_fragment, Objects.requireNonNull(fragment));
         } else {
             //Make a new one if there is no saved fragment
             PointOfInterest poi = getIntent().getParcelableExtra("poi");

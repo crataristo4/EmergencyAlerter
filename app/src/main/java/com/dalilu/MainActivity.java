@@ -93,8 +93,6 @@ public class MainActivity extends BaseActivity {
     public static String mLastUpdateTime, knownName, state, country, phoneNumber, userId;
     public static double latitude, longitude;
     private Geocoder geocoder;
-    private List<Address> addressList;
-    private DatabaseReference locationDbRef;
     private CollectionReference alertsCollectionReference, locationCollectionDbRef;
     FABsMenu faBsMenu;
 
@@ -114,7 +112,7 @@ public class MainActivity extends BaseActivity {
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
 
-        locationDbRef = FirebaseDatabase.getInstance().getReference().child("Locations");
+        DatabaseReference locationDbRef = FirebaseDatabase.getInstance().getReference().child("Locations");
         alertsCollectionReference = FirebaseFirestore.getInstance().collection("Alerts");
         locationCollectionDbRef = FirebaseFirestore.getInstance().collection("Locations");
 
@@ -162,25 +160,20 @@ public class MainActivity extends BaseActivity {
 
         activityMainBinding.searchContact.setOnClickListener(view -> startActivity(new Intent(view.getContext(), SearchContactActivity.class)));
 
-        activityMainBinding.logOut.setOnClickListener(view -> {
+        activityMainBinding.logOut.setOnClickListener(view -> DisplayViewUI.displayAlertDialog(view.getContext(),
+                getString(R.string.logOut), getString(R.string.xcvv),
+                getString(R.string.logMeOut), getString(R.string.cancel),
+                (dialogInterface, i) -> {
+                    if (i == -1) {
 
-            DisplayViewUI.displayAlertDialog(view.getContext(),
-                    getString(R.string.logOut), getString(R.string.xcvv),
-                    getString(R.string.logMeOut), getString(R.string.cancel),
-                    (dialogInterface, i) -> {
-                        if (i == -1) {
-
-                            FirebaseAuth.getInstance().signOut();
-                            startActivity(new Intent(view.getContext(), SplashScreenActivity.class));
-                        } else if (i == -2) {
-                            dialogInterface.dismiss();
-                        }
+                        FirebaseAuth.getInstance().signOut();
+                        startActivity(new Intent(view.getContext(), SplashScreenActivity.class));
+                    } else if (i == -2) {
+                        dialogInterface.dismiss();
+                    }
 
 
-                    });
-
-
-        });
+                }));
 
 
         Intent getUserDetailsIntent = getIntent();
@@ -236,10 +229,7 @@ public class MainActivity extends BaseActivity {
 
         });
 
-        activityMainBinding.report.setOnClickListener(v -> {
-            myIntent(ReportActivity.class);
-
-        });
+        activityMainBinding.report.setOnClickListener(v -> myIntent(ReportActivity.class));
 
         activityMainBinding.editProfile.setOnClickListener(view -> myIntent(EditProfileActivity.class));
 
@@ -355,7 +345,7 @@ public class MainActivity extends BaseActivity {
 
 
             try {
-                addressList = geocoder.getFromLocation(latitude, longitude, 1);
+                List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
 
                 if (addressList != null) {
                     String address = addressList.get(0).getAddressLine(0);

@@ -37,11 +37,11 @@ import java.util.Map;
 public class PopUpAlerter extends BottomSheetDialogFragment {
     PopUpAlerterBottomSheetBinding popUpAlerterBottomSheetBinding;
     private static final String TAG = "PopUpAlerter";
-    private String name, id, phoneNumber, photoUrl, response;
-    private TextView txtName;
-    private ImageView imgPhoto;
+    private String name;
+    private String id;
+    private String phoneNumber;
+    private String photoUrl;
     private Button btnAddUser;
-    private DatabaseReference friendsDbRef, friendsDbCheck;
     private CollectionReference friendsCollectionReference;
 
 
@@ -74,12 +74,12 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
     private void initViews() {
         ProgressDialog progressBar = DisplayViewUI.displayProgress(requireActivity(), getString(R.string.addingUser));
 
-        txtName = popUpAlerterBottomSheetBinding.txtName;
-        imgPhoto = popUpAlerterBottomSheetBinding.imgPhoto;
+        TextView txtName = popUpAlerterBottomSheetBinding.txtName;
+        ImageView imgPhoto = popUpAlerterBottomSheetBinding.imgPhoto;
         btnAddUser = popUpAlerterBottomSheetBinding.btnAddUser;
 
-        friendsDbCheck = FirebaseDatabase.getInstance().getReference().child("Friends");
-        friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");
+        DatabaseReference friendsDbCheck = FirebaseDatabase.getInstance().getReference().child("Friends");
+        DatabaseReference friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");
         friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
 
         Bundle getUserDetailsBundle = getArguments();
@@ -89,7 +89,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
             id = getUserDetailsBundle.getString(AppConstants.UID);
             photoUrl = getUserDetailsBundle.getString(AppConstants.USER_PHOTO_URL);
             phoneNumber = getUserDetailsBundle.getString(AppConstants.PHONE_NUMBER);
-            response = getUserDetailsBundle.getString(AppConstants.RESPONSE);
+            String response = getUserDetailsBundle.getString(AppConstants.RESPONSE);
 
             txtName.setText(name);
             Glide.with(requireActivity()).load(photoUrl).into(imgPhoto);
@@ -168,44 +168,37 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                 RequestModel requestModel = ds.toObject(RequestModel.class);
                 String response = requestModel.getResponse();
 
-                if (response.equals("sent")) {
-                    //change add user btn to cancel request
-                    Log.i(TAG, "Response: " + response);
+                switch (response) {
+                    case "sent":
+                        //change add user btn to cancel request
+                        Log.i(TAG, "Response: " + response);
 
-                    btnAddUser.setText(R.string.cancelRequest);
-                    btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
-                    btnAddUser.setBackgroundColor(requireActivity().getResources().getColor(R.color.colorRed));
-                    btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_baseline_cancel_24), null);
+                        btnAddUser.setText(R.string.cancelRequest);
+                        btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
+                        btnAddUser.setBackgroundColor(requireActivity().getResources().getColor(R.color.colorRed));
+                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_baseline_cancel_24), null);
 
-                    // TODO: 8/14/2020 remove request sent
-                    btnAddUser.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            DisplayViewUI.displayToast(requireActivity(), "removing user");
-                        }
-                    });
-                } else if (response.equals("friends")) {
-                    DisplayViewUI.displayToast(requireActivity(), response);
-                    btnAddUser.setText(R.string.deleteUser);
-                    btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.black));
-                    btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
-                    // TODO: 8/14/2020 delete request sent
-                    btnAddUser.setOnClickListener(view -> DisplayViewUI.displayToast(requireActivity(), "deleting user"));
+                        // TODO: 8/14/2020 remove request sent
+                        btnAddUser.setOnClickListener(view -> DisplayViewUI.displayToast(requireActivity(), "removing user"));
+                        break;
+                    case "friends":
+                        DisplayViewUI.displayToast(requireActivity(), response);
+                        btnAddUser.setText(R.string.deleteUser);
+                        btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.black));
+                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
+                        // TODO: 8/14/2020 delete request sent
+                        btnAddUser.setOnClickListener(view -> DisplayViewUI.displayToast(requireActivity(), "deleting user"));
 
-                } else if (response.equals("received")) {
-                    DisplayViewUI.displayToast(requireActivity(), response);
-                    Log.i(TAG, "Response: " + response);
-                    btnAddUser.setText(R.string.delete);
-                    btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
-                    btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
-                    // TODO: 8/14/2020 remove request received
-                    btnAddUser.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            DisplayViewUI.displayToast(requireActivity(), "removing user");
-
-                        }
-                    });
+                        break;
+                    case "received":
+                        DisplayViewUI.displayToast(requireActivity(), response);
+                        Log.i(TAG, "Response: " + response);
+                        btnAddUser.setText(R.string.delete);
+                        btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
+                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
+                        // TODO: 8/14/2020 remove request received
+                        btnAddUser.setOnClickListener(view -> DisplayViewUI.displayToast(requireActivity(), "removing user"));
+                        break;
                 }
 
             }

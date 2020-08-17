@@ -17,11 +17,11 @@ public class FirebaseManager {
     private static final String USER_PATH = "root/user";
     private static final String IMAGE_PATH = "root/images";
     private static FirebaseManager instance = new FirebaseManager();
-    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference root = firebaseDatabase.getReference("root");
+    private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private final DatabaseReference root = firebaseDatabase.getReference("root");
     private DatabaseReference users = firebaseDatabase.getReference(USER_PATH);
-    private DatabaseReference pointsOfInterest = firebaseDatabase.getReference(POI_PATH);
-    private DatabaseReference images = firebaseDatabase.getReference(IMAGE_PATH);
+    private final DatabaseReference pointsOfInterest = firebaseDatabase.getReference(POI_PATH);
+    private final DatabaseReference images = firebaseDatabase.getReference(IMAGE_PATH);
 
     public FirebaseManager() {
 

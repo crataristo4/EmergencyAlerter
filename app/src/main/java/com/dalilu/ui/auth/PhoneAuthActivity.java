@@ -35,8 +35,8 @@ import java.util.concurrent.TimeUnit;
 public class PhoneAuthActivity extends BaseActivity {
 
     ActivityPhoneAuthBinding activityPhoneAuthBinding;
-    String phoneNumber = "+16505554572";
-    String smsCode = "123456";
+    final String phoneNumber = "+16505554572";
+    final String smsCode = "123456";
     Button btnDone, btnVerify;
     private String mVerificationCode;
     private PhoneAuthProvider.ForceResendingToken mToken;

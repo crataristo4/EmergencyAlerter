@@ -1,7 +1,6 @@
 package com.dalilu;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -48,7 +48,6 @@ public class CameraActivity extends AppCompatActivity {
     private TextView txtDescription;
     private ImageView imgPreview;
     private VideoView videoPreview;
-    private Button btnCapturePicture, btnRecordVideo;
 
 
     @Override
@@ -69,36 +68,22 @@ public class CameraActivity extends AppCompatActivity {
         txtDescription = findViewById(R.id.txt_desc);
         imgPreview = findViewById(R.id.imgPreview);
         videoPreview = findViewById(R.id.videoPreview);
-        btnCapturePicture = findViewById(R.id.btnCapturePicture);
-        btnRecordVideo = findViewById(R.id.btnRecordVideo);
+        Button btnCapturePicture = findViewById(R.id.btnCapturePicture);
+        Button btnRecordVideo = findViewById(R.id.btnRecordVideo);
 
-        /**
-         * Capture image on button click
-         */
-        btnCapturePicture.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (CameraUtils.checkPermissions(getApplicationContext())) {
-                    captureImage();
-                } else {
-                    requestCameraPermission(MEDIA_TYPE_IMAGE);
-                }
+        btnCapturePicture.setOnClickListener(v -> {
+            if (CameraUtils.checkPermissions(getApplicationContext())) {
+                captureImage();
+            } else {
+                requestCameraPermission(MEDIA_TYPE_IMAGE);
             }
         });
 
-        /**
-         * Record video on button click
-         */
-        btnRecordVideo.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (CameraUtils.checkPermissions(getApplicationContext())) {
-                    captureVideo();
-                } else {
-                    requestCameraPermission(MEDIA_TYPE_VIDEO);
-                }
+        btnRecordVideo.setOnClickListener(v -> {
+            if (CameraUtils.checkPermissions(getApplicationContext())) {
+                captureVideo();
+            } else {
+                requestCameraPermission(MEDIA_TYPE_VIDEO);
             }
         });
 
@@ -181,7 +166,7 @@ public class CameraActivity extends AppCompatActivity {
      * Saving stored image path to saved instance state
      */
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         // save file url in bundle as it will be null on screen orientation
@@ -193,7 +178,7 @@ public class CameraActivity extends AppCompatActivity {
      * Restoring image path from saved instance state
      */
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
         // get the file url
@@ -316,15 +301,9 @@ public class CameraActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Permissions required!")
                 .setMessage("Camera needs few permissions to work properly. Grant them in settings.")
-                .setPositiveButton("GOTO SETTINGS", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        CameraUtils.openSettings(CameraActivity.this);
-                    }
-                })
-                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+                .setPositiveButton("GOTO SETTINGS", (dialog, which) -> CameraUtils.openSettings(CameraActivity.this))
+                .setNegativeButton("CANCEL", (dialog, which) -> {
 
-                    }
                 }).show();
     }
 }

@@ -54,9 +54,8 @@ public class ReportActivity extends AppCompatActivity {
     private static final String TAG = "ReportActivity";
     private static String imageStoragePath;
     ActivityReportBinding activityReportBinding;
-    private StorageReference imageStorageRef, filePath;
+    private StorageReference filePath;
     private Uri uri = null;
-    private DatabaseReference dbRef;
     private ProgressDialog pd;
     private CollectionReference alertCollectionReference;
     private String knownName, state, country, phoneNumber, userId, userName, userPhotoUrl;
@@ -73,9 +72,9 @@ public class ReportActivity extends AppCompatActivity {
         setSupportActionBar(activityReportBinding.toolBarReport);
 
 
-        imageStorageRef = FirebaseStorage.getInstance().getReference().child("alerts");
+        StorageReference imageStorageRef = FirebaseStorage.getInstance().getReference().child("alerts");
         filePath = imageStorageRef.child(UUID.randomUUID().toString());
-        dbRef = FirebaseDatabase.getInstance().getReference().child("alerts");
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("alerts");
         alertCollectionReference = FirebaseFirestore.getInstance().collection("Alerts");
         imgPhoto = activityReportBinding.imgAlertPhoto;
         videoView = activityReportBinding.videoView;

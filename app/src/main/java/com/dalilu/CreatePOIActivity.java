@@ -19,6 +19,7 @@ import com.dalilu.services.PointOfInterest;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Objects;
 
 public class CreatePOIActivity extends AppCompatActivity {
 
@@ -56,7 +57,7 @@ public class CreatePOIActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Intent intent = getIntent();
         LatLng location = intent.getParcelableExtra("location");
-        final double lat = location.latitude;
+        final double lat = Objects.requireNonNull(location).latitude;
         final double lng = location.longitude;
 
         nameEditText = findViewById(R.id.name_edit_text);
@@ -106,10 +107,10 @@ public class CreatePOIActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap capturedImage = (Bitmap) extras.get("data");
+            Bitmap capturedImage = (Bitmap) Objects.requireNonNull(extras).get("data");
             picture = capturedImage;
             cameraPhotoView.setImageBitmap(capturedImage);
-            encodedImage = encodeBitmap(capturedImage);
+            encodedImage = encodeBitmap(Objects.requireNonNull(capturedImage));
         }
     }
 

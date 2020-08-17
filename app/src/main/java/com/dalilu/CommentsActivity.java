@@ -56,9 +56,7 @@ import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 
 public class CommentsActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
     private String getAlertItemId, getAlertPhotoUrl, getAddress, getDatePosted;
-    private LinearLayoutManager layoutManager;
     private CommentsAdapter adapter;
     private DatabaseReference databaseReference;
     private EmojiconEditText emojiconEditText;
@@ -67,16 +65,15 @@ public class CommentsActivity extends AppCompatActivity {
     private static final String[] RECORD_AUDIO_PERMISSION = new String[]{Manifest.permission.RECORD_AUDIO};
     private static final int RECORD_AUDIO = 3;
     String randomId;
-    String name = MainActivity.userName;
+    final String name = MainActivity.userName;
     String dateTime;
     String userId = MainActivity.userId;
     private MediaRecorder mediaRecorder;
     private boolean recording;
     private String recordPath;
-    private String recordUrl;
     private ImageView btnRecord;
     private ProgressDialog pd;
-    private StorageReference audioFilePath, filePath;
+    private StorageReference filePath;
     private static final String TAG = "CommentsActivity";
     private ListenerRegistration registration;
     private DocumentSnapshot mLastResult;
@@ -176,7 +173,7 @@ public class CommentsActivity extends AppCompatActivity {
 
         });
 
-        audioFilePath = FirebaseStorage.getInstance().getReference().child("audio");
+        StorageReference audioFilePath = FirebaseStorage.getInstance().getReference().child("audio");
         filePath = audioFilePath.child(UUID.randomUUID().toString());
 
         ConstraintLayout activity_comment = findViewById(R.id.activity_comment);
@@ -201,19 +198,17 @@ public class CommentsActivity extends AppCompatActivity {
                 .centerCrop()
                 .into(imgItemImage);
 
-        findViewById(R.id.btnComment).setOnClickListener(v -> {
-            addComment();
-        });
+        findViewById(R.id.btnComment).setOnClickListener(v -> addComment());
 
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM HH:mm", Locale.ENGLISH);
         dateTime = simpleDateFormat.format(calendar.getTime());
 
-        recyclerView = findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
 
-        layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         commentList = new ArrayList<>();
 
@@ -356,7 +351,7 @@ public class CommentsActivity extends AppCompatActivity {
 
     private void startRecordingAudio() {
         File audioFile = FileUtils.createFileWithExtension("3gpp");
-        recordUrl = null;
+        String recordUrl = null;
         recordPath = Objects.requireNonNull(audioFile).getAbsolutePath();
         mediaRecorder.setOutputFile(recordPath);
 

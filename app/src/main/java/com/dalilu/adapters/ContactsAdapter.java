@@ -178,9 +178,9 @@ public class ContactsAdapter extends FirestoreRecyclerAdapter<RequestModel, Cont
 
     public static class RequestViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        LayoutAddUserBinding layoutAddUserBinding;
-        ImageView imageView;
-        Button btnAdd;
+        final LayoutAddUserBinding layoutAddUserBinding;
+        final ImageView imageView;
+        final Button btnAdd;
 
 
         public RequestViewHolder(@NonNull LayoutAddUserBinding layoutAddUserBinding) {

@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 public class ContactsActivity extends AppCompatActivity {
     private static final String TAG = "ContactsActivity";
-    public static ArrayList<String> names = new ArrayList<>();
-    public static ArrayList<String> phones = new ArrayList<>();
+    public static final ArrayList<String> names = new ArrayList<>();
+    public static final ArrayList<String> phones = new ArrayList<>();
     ListView listView;
     ArrayList<String> contactsModels;
     ArrayAdapter<String> arrayAdapter;

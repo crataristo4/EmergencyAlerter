@@ -10,7 +10,6 @@ import android.view.animation.AnimationUtils;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
-import com.dalilu.databinding.ActivitySplashScreenBinding;
 import com.dalilu.ui.auth.RegisterPhoneNumberActivity;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
@@ -27,7 +26,6 @@ import java.util.Objects;
 
 public class SplashScreenActivity extends AppCompatActivity {
     Intent intent;
-    private ActivitySplashScreenBinding activitySplashScreenBinding;
     private DatabaseReference usersDbRef, usersDetails;
     private CollectionReference usersCollectionRef;
     private String uid, phoneNumber, userName, userPhotoUrl;
@@ -39,7 +37,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
-        activitySplashScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash_screen);
+        com.dalilu.databinding.ActivitySplashScreenBinding activitySplashScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash_screen);
         // activitySplashScreenBinding.txtAppName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.from_top));
         activitySplashScreenBinding.txtAppName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fadein));
 

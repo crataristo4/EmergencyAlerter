@@ -1,5 +1,6 @@
 package com.dalilu.adapters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dalilu.R;
 import com.dalilu.databinding.LayoutLocationSharingBinding;
 import com.dalilu.model.ShareLocation;
@@ -42,6 +44,7 @@ public class LocationSharingAdapter extends FirestoreRecyclerAdapter<ShareLocati
         super(options);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onBindViewHolder(@NonNull LocationSharingViewHolder holder, int i, @NonNull ShareLocation shareLocation) {
 
@@ -49,7 +52,9 @@ public class LocationSharingAdapter extends FirestoreRecyclerAdapter<ShareLocati
         holder.txtTime.setText(GetTimeAgo.getTimeAgo(shareLocation.getTimeStamp()));
         Glide.with(holder.layoutLocationSharingBinding.getRoot())
                 .load(shareLocation.getPhoto())
-                .error(holder.layoutLocationSharingBinding.getRoot().getResources().getDrawable(R.drawable.defaultavatar))
+                .thumbnail(0.5f)
+                .error(holder.layoutLocationSharingBinding.getRoot().getResources().getDrawable(R.drawable.boy))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.imgPhoto);
 
 
@@ -64,9 +69,9 @@ public class LocationSharingAdapter extends FirestoreRecyclerAdapter<ShareLocati
 
     public static class LocationSharingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        LayoutLocationSharingBinding layoutLocationSharingBinding;
-        CircleImageView imgPhoto;
-        TextView txtTime;
+        final LayoutLocationSharingBinding layoutLocationSharingBinding;
+        final CircleImageView imgPhoto;
+        final TextView txtTime;
 
         public LocationSharingViewHolder(@NonNull LayoutLocationSharingBinding layoutLocationSharingBinding) {
             super(layoutLocationSharingBinding.getRoot());

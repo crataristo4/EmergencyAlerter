@@ -68,9 +68,11 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
 
     public static class RequestViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        LayoutRequestReceivedBinding layoutRequestReceivedBinding;
-        Button btnAccept, btnDecline, btnSendLocation;
-        CircleImageView imgPhoto;
+        final LayoutRequestReceivedBinding layoutRequestReceivedBinding;
+        final Button btnAccept;
+        final Button btnDecline;
+        final Button btnSendLocation;
+        final CircleImageView imgPhoto;
 
         public RequestViewHolder(@NonNull LayoutRequestReceivedBinding layoutRequestReceivedBinding) {
             super(layoutRequestReceivedBinding.getRoot());
@@ -91,33 +93,38 @@ public class RequestAdapter extends FirebaseRecyclerAdapter<RequestModel, Reques
         //display the response details
         void showResponse(String response) {
 
-            if (response.equals("friends")) {
+            switch (response) {
+                case "friends":
 
-                btnAccept.setText(R.string.frnds);
-                btnAccept.setEnabled(false);
-                btnDecline.setVisibility(View.GONE);
-                btnSendLocation.setVisibility(View.VISIBLE);
-
-
-            } else if (response.equals("received")) {
-
-                btnAccept.setVisibility(View.VISIBLE);
-                btnDecline.setVisibility(View.VISIBLE);
-                btnSendLocation.setVisibility(View.GONE);
+                    btnAccept.setText(R.string.frnds);
+                    btnAccept.setEnabled(false);
+                    btnDecline.setVisibility(View.GONE);
+                    btnSendLocation.setVisibility(View.VISIBLE);
 
 
-            } else if (response.equals("sent")) {
+                    break;
+                case "received":
 
-                btnAccept.setText(R.string.Pending);
-                btnDecline.setText(R.string.cancelRequest);
-                btnSendLocation.setVisibility(View.GONE);
+                    btnAccept.setVisibility(View.VISIBLE);
+                    btnDecline.setVisibility(View.VISIBLE);
+                    btnSendLocation.setVisibility(View.GONE);
 
 
-            } else if (response.equals("declined")) {
-                btnAccept.setText(R.string.Pending);
-                btnSendLocation.setVisibility(View.GONE);
-                btnAccept.setEnabled(false);
+                    break;
+                case "sent":
 
+                    btnAccept.setText(R.string.Pending);
+                    btnDecline.setText(R.string.cancelRequest);
+                    btnSendLocation.setVisibility(View.GONE);
+
+
+                    break;
+                case "declined":
+                    btnAccept.setText(R.string.Pending);
+                    btnSendLocation.setVisibility(View.GONE);
+                    btnAccept.setEnabled(false);
+
+                    break;
             }
 
             // TODO: 8/7/2020 do same if request is declined...

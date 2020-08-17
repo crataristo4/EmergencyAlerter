@@ -13,7 +13,6 @@ import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.dalilu.databinding.ActivityEditProfileBinding;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.google.android.material.textfield.TextInputLayout;
@@ -32,19 +31,21 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditProfileActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
-    private ActivityEditProfileBinding activityEditProfileBinding;
     private CircleImageView imgUserPhoto;
     private StorageReference mStorageReference;
     private DatabaseReference usersDbRef;
     private CollectionReference usersCollection;
-    private String uid, getImageUri, phoneNumber, userName, userPhotoUrl;
+    private String uid;
+    private String getImageUri;
+    private String phoneNumber;
+    private String userPhotoUrl;
     private Uri uri;
     private TextInputLayout txtUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityEditProfileBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile);
+        com.dalilu.databinding.ActivityEditProfileBinding activityEditProfileBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile);
         setSupportActionBar(activityEditProfileBinding.toolBarCompleteProfile);
 
         imgUserPhoto = activityEditProfileBinding.imgUploadPhoto;
@@ -52,7 +53,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         Intent getUserDetailsIntent = getIntent();
         if (getUserDetailsIntent != null) {
-            userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
+            String userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
             userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
             uid = getUserDetailsIntent.getStringExtra(AppConstants.UID);
             phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);

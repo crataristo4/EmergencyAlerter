@@ -44,6 +44,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, GoogleMap.OnMapLoadedCallback {
@@ -51,7 +52,7 @@ public class MapsActivity extends FragmentActivity
     //Map object
     private GoogleMap mMap = null;
     //Permission request code for COARSE and FINE location permissions
-    private int PERMISSION_REQUEST_LOCATION = 1337;
+    private final int PERMISSION_REQUEST_LOCATION = 1337;
     //The marker of the user's position
     private Marker userMarker = null;
     //The marker used for the user's location
@@ -61,8 +62,8 @@ public class MapsActivity extends FragmentActivity
     //First location of the user after the app has been launched
     private LatLng firstLocation = null;
     //Map of markers mapped to points of interest
-    private Map<Marker, PointOfInterest> mMarkerMap = new HashMap<>();
-    public BroadcastReceiver broadcastReceiverPois = new BroadcastReceiver() {
+    private final Map<Marker, PointOfInterest> mMarkerMap = new HashMap<>();
+    public final BroadcastReceiver broadcastReceiverPois = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -71,9 +72,9 @@ public class MapsActivity extends FragmentActivity
             String action = intent.getStringExtra("action");
 
 
-            if (action.equals("add")) {
+            if (Objects.requireNonNull(action).equals("add")) {
                 //Add the marker to the map and put it in the hashmap
-                Marker mark = mMap.addMarker(new MarkerOptions().position(poi.coordinatesToLatLng()).title(poi.getName()).visible(false));
+                Marker mark = mMap.addMarker(new MarkerOptions().position(Objects.requireNonNull(poi).coordinatesToLatLng()).title(poi.getName()).visible(false));
                 mMarkerMap.put(mark, poi);
                 checkProximity(mark);
             } else {
@@ -97,13 +98,11 @@ public class MapsActivity extends FragmentActivity
     private Intent poiService;
     //Visual representation of the area that the user can discover points of interest
     private Circle userProximity;
-    //The fragment that is used in landscape mode to show the points of interest
-    private DetailsFragment detailsFragment;
     //Boolean flag
     private boolean queryForPois = true;
-    private Context cont = this;
+    private final Context cont = this;
     //BroadcastReceiver that get's location updates from LocationService
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             //New location
@@ -117,7 +116,7 @@ public class MapsActivity extends FragmentActivity
             //If the marker is not empty (app just launched)
             float[] distance = new float[1];
 
-            Location.distanceBetween(userLocation.latitude, userLocation.longitude, firstLocation.latitude, firstLocation.longitude, distance);
+            Location.distanceBetween(Objects.requireNonNull(userLocation).latitude, userLocation.longitude, firstLocation.latitude, firstLocation.longitude, distance);
             //If the distance is greater that 70-100km (roughly 1.0 in lng)
             if (distance[0] >= 70000.0) {
                 stopService(poiService);
@@ -183,7 +182,8 @@ public class MapsActivity extends FragmentActivity
 
 
         //get the fragment
-        detailsFragment = (DetailsFragment) getSupportFragmentManager().findFragmentById(R.id.details_fragment);
+        //The fragment that is used in landscape mode to show the points of interest
+        DetailsFragment detailsFragment = (DetailsFragment) getSupportFragmentManager().findFragmentById(R.id.details_fragment);
 
         //Create a bitmap of the user's marker from drawable vector graphic
         Bitmap userMarkerStyle = BitmapFactory.decodeResource(this.getResources(), R.drawable.blue_user_marker);
@@ -242,8 +242,8 @@ public class MapsActivity extends FragmentActivity
             if (marker.equals(userMarker)) {
                 return;
             }
-            if (mMarkerMap.get(marker) != null && mMarkerMap.get(marker).getUser().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0])) {
-                FirebaseManager.getInstance().deletePOI(mMarkerMap.get(marker));
+            if (mMarkerMap.get(marker) != null && Objects.requireNonNull(mMarkerMap.get(marker)).getUser().equals(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()).split("@")[0])) {
+                FirebaseManager.getInstance().deletePOI(Objects.requireNonNull(mMarkerMap.get(marker)));
             } else {
                 Toast.makeText(cont, "Cannot delete other user's markers", Toast.LENGTH_SHORT).show();
             }
@@ -278,13 +278,10 @@ public class MapsActivity extends FragmentActivity
             }
         });
         //Set the click listener for the markers
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                //If the user marker is clicked show the info window
-                marker.showInfoWindow();
-                return true;
-            }
+        mMap.setOnMarkerClickListener(marker -> {
+            //If the user marker is clicked show the info window
+            marker.showInfoWindow();
+            return true;
         });
     }
 

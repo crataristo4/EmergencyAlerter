@@ -29,9 +29,9 @@ import java.util.List;
 
 public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Message> commentList;
-    Context context;
-    private MediaPlayer mediaPlayer;
+    final Context context;
+    private final List<Message> commentList;
+    private final MediaPlayer mediaPlayer;
 
     public CommentsAdapter(ArrayList<Message> commentList, Context context) {
         this.commentList = commentList;
@@ -168,8 +168,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     static class CommentsViewHolder extends RecyclerView.ViewHolder {
 
-        LayoutCommentBinding layoutCommentBinding;
-        TextView txtDateTime;
+        final LayoutCommentBinding layoutCommentBinding;
+        final TextView txtDateTime;
 
         CommentsViewHolder(@NonNull LayoutCommentBinding layoutCommentBinding) {
             super(layoutCommentBinding.getRoot());
@@ -183,10 +183,10 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     static class AudioViewHolder extends RecyclerView.ViewHolder {
 
-        LayoutPlayAudioBinding layoutPlayAudioBinding;
-        ImageView playAudio;
-        TextView txtDateTime;
-        SeekBar audioSeekBar;
+        final LayoutPlayAudioBinding layoutPlayAudioBinding;
+        final ImageView playAudio;
+        final TextView txtDateTime;
+        final SeekBar audioSeekBar;
 
         AudioViewHolder(@NonNull LayoutPlayAudioBinding layoutPlayAudioBinding) {
             super(layoutPlayAudioBinding.getRoot());

@@ -1,5 +1,6 @@
 package com.dalilu.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -45,13 +46,11 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 
 public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private ArrayList<AlertItems> dataSet;
-    private Context mContext;
+    private final ArrayList<AlertItems> dataSet;
 
 
     public HomeRecyclerAdapter(ArrayList<AlertItems> data, Context context) {
         this.dataSet = data;
-        this.mContext = context;
 
     }
 
@@ -78,6 +77,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     }
 
+    @SuppressLint({"CheckResult", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int listPosition) {
         //  String uid = MainActivity.uid;
@@ -146,7 +146,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
 
                                     if (isFirstResource) {
-                                        ((ImageTypeViewHolder) holder).imageTypeBinding.progressBar.setVisibility(View.INVISIBLE);
+                                        ((ImageTypeViewHolder) holder).imageTypeBinding.progressBar.setVisibility(View.GONE);
 
                                     }
                                     ((ImageTypeViewHolder) holder).imageTypeBinding.progressBar.setVisibility(View.VISIBLE);
@@ -218,10 +218,10 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     //view holder for videos
     static class VideoTypeViewHolder extends RecyclerView.ViewHolder {
-        VideoTypeBinding videoTypeBinding;
-        TextView txtComments;
-        VideoView videoView;
-        FrameLayout frameLayout;
+        final VideoTypeBinding videoTypeBinding;
+        final TextView txtComments;
+        final VideoView videoView;
+        final FrameLayout frameLayout;
 
 
         VideoTypeViewHolder(@NonNull VideoTypeBinding videoTypeBinding) {
@@ -239,9 +239,9 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     //view holder for images
     static class ImageTypeViewHolder extends RecyclerView.ViewHolder {
-        ImageTypeBinding imageTypeBinding;
-        ImageView imageView;
-        TextView txtComments;
+        final ImageTypeBinding imageTypeBinding;
+        final ImageView imageView;
+        final TextView txtComments;
 
         ImageTypeViewHolder(@NonNull ImageTypeBinding imageTypeBinding) {
             super(imageTypeBinding.getRoot());
@@ -295,8 +295,8 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     //loading view holder
     static class LoadingViewHolder extends RecyclerView.ViewHolder {
 
-        ProgressBar progressBar;
-        ItemLoadingBinding itemLoadingBinding;
+        final ProgressBar progressBar;
+        final ItemLoadingBinding itemLoadingBinding;
 
         LoadingViewHolder(@NonNull ItemLoadingBinding itemLoadingBinding) {
             super(itemLoadingBinding.getRoot());

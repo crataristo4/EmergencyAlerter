@@ -129,6 +129,7 @@
             android:layout_marginTop="7dp"
             android:padding="4dp"
             app:backgroundTint="@color/colorAsh"
+            android:contentDescription="TODO"
             app:srcCompat="@drawable/ic_send" />
     </LinearLayout>
 

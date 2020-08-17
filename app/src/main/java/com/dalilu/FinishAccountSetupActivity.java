@@ -14,7 +14,6 @@ import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.dalilu.databinding.ActivityFinishAccountSetupBinding;
 import com.dalilu.ui.bottomsheets.WelcomeNoticeBottomSheet;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
@@ -34,28 +33,25 @@ import java.util.Objects;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FinishAccountSetupActivity extends AppCompatActivity {
-    private ActivityFinishAccountSetupBinding activityFinishAccountSetupBinding;
     private CircleImageView imgUserPhoto;
     private StorageReference mStorageReference;
     private CollectionReference usersCollection;
     private String uid, getImageUri, phoneNumber;
     private Uri uri;
     private TextInputLayout txtUserName;
-    private FirebaseAuth mAuth;
-    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityFinishAccountSetupBinding = DataBindingUtil.setContentView(this, R.layout.activity_finish_account_setup);
+        com.dalilu.databinding.ActivityFinishAccountSetupBinding activityFinishAccountSetupBinding = DataBindingUtil.setContentView(this, R.layout.activity_finish_account_setup);
 
         imgUserPhoto = activityFinishAccountSetupBinding.imgUploadPhoto;
         txtUserName = activityFinishAccountSetupBinding.txtUserName;
 
         Intent getUserData = getIntent();
         if (getUserData != null) {
-            mAuth = FirebaseAuth.getInstance();
-            user = mAuth.getCurrentUser();
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = mAuth.getCurrentUser();
             assert user != null;
             uid = user.getUid();
 

@@ -55,7 +55,7 @@ public class DisplayViewUI {
     }
 
 
-    private static ColorDrawable[] vibrantLightColorList =
+    private static final ColorDrawable[] vibrantLightColorList =
             {
                     new ColorDrawable(Color.parseColor("#ffeead")),
                     new ColorDrawable(Color.parseColor("#93cfb3")),

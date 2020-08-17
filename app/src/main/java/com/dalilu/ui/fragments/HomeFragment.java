@@ -38,15 +38,14 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding fragmentHomeBinding;
     private RecyclerView recyclerView;
     private HomeRecyclerAdapter adapter;
-    private ArrayList<AlertItems> arrayList = new ArrayList<>();
+    private final ArrayList<AlertItems> arrayList = new ArrayList<>();
     private LinearLayoutManager layoutManager;
     private Parcelable mState;
-    private ListenerRegistration registration;
     private DocumentSnapshot mLastResult;
     ProgressBar pbHomeLoading;
     private boolean isScrolling = false;
     private boolean isLastItemReached = false;
-    private CollectionReference collectionReference = FirebaseFirestore
+    private final CollectionReference collectionReference = FirebaseFirestore
             .getInstance()
             .collection("Alerts");
 
@@ -124,7 +123,11 @@ public class HomeFragment extends Fragment {
             adapter.notifyDataSetChanged();
         });*/
 
-        registration = query.addSnapshotListener((queryDocumentSnapshots, e) -> {
+        // arrayList.clear();
+        //get data from model
+        //group data by images
+        //group data by Videos
+        ListenerRegistration registration = query.addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (e != null) {
                 Log.w(TAG, "Listen failed.", e);
                 return;

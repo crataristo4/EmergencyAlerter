@@ -17,7 +17,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_marginBottom="@dimen/eightDp"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -37,6 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
+                android:contentDescription="TODO"
                 android:visibility="gone" />
 
             <!-- To preview video recorded -->
@@ -59,24 +60,26 @@
                 android:id="@+id/btnCapturePicture"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/eightDp"
+                android:layout_marginEnd="@dimen/eightDp"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:foreground="?attr/selectableItemBackground"
                 android:text="@string/btn_take_picture"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                tools:targetApi="m" />
 
             <!-- Record video button -->
             <Button
                 android:id="@+id/btnRecordVideo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/eightDp"
+                android:layout_marginStart="@dimen/eightDp"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:foreground="?attr/selectableItemBackground"
                 android:text="@string/btn_record_video"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                tools:targetApi="m" />
         </LinearLayout>
     </LinearLayout>
 
