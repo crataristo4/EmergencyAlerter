@@ -1,6 +1,7 @@
 package com.dalilu.adapters;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -19,7 +20,17 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class LocationSharingAdapter extends FirestoreRecyclerAdapter<ShareLocation, LocationSharingAdapter.LocationSharingViewHolder> {
+    private static LocationSharingAdapter.OnLocationItemClick onLocationItemClick;
 
+    public void setOnLocationItemClick(LocationSharingAdapter.OnLocationItemClick onLocationItemClick) {
+        LocationSharingAdapter.onLocationItemClick = onLocationItemClick;
+    }
+
+
+    public interface OnLocationItemClick {
+
+        void onclick(View view, int position);
+    }
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -50,7 +61,7 @@ public class LocationSharingAdapter extends FirestoreRecyclerAdapter<ShareLocati
 
     }
 
-    public static class LocationSharingViewHolder extends RecyclerView.ViewHolder {
+    public static class LocationSharingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         LayoutLocationSharingBinding layoutLocationSharingBinding;
         CircleImageView imgPhoto;
@@ -59,12 +70,20 @@ public class LocationSharingAdapter extends FirestoreRecyclerAdapter<ShareLocati
         public LocationSharingViewHolder(@NonNull LayoutLocationSharingBinding layoutLocationSharingBinding) {
             super(layoutLocationSharingBinding.getRoot());
             this.layoutLocationSharingBinding = layoutLocationSharingBinding;
+
+            layoutLocationSharingBinding.getRoot().setOnClickListener(this);
             imgPhoto = layoutLocationSharingBinding.imgPhoto;
             txtTime = layoutLocationSharingBinding.txtTime;
 
 
         }
 
+        @Override
+        public void onClick(View view) {
+
+            onLocationItemClick.onclick(layoutLocationSharingBinding.getRoot(), getAdapterPosition());
+
+        }
     }
 
 }

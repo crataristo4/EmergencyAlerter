@@ -159,4 +159,6 @@
     <string name="addedUser">user added</string>
     <string name="xcvv">You will be logged out from this account.Do you want to proceed? </string>
     <string name="logMeOut">Yes, log me out</string>
+    <string name="location">Location</string>
+    <string name="title_activity_maps2">Map</string>
 </resources>

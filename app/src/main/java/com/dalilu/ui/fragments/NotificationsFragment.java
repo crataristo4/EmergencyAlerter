@@ -1,5 +1,6 @@
 package com.dalilu.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dalilu.MainActivity;
 import com.dalilu.R;
+import com.dalilu.ViewUserLocationActivity;
 import com.dalilu.adapters.LocationSharingAdapter;
 import com.dalilu.databinding.FragmentNotificationsBinding;
 import com.dalilu.model.ShareLocation;
+import com.dalilu.utils.AppConstants;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
@@ -47,7 +50,6 @@ public class NotificationsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initViews();
-
         loadData();
 
 
@@ -79,6 +81,27 @@ public class NotificationsFragment extends Fragment {
             rv.setLayoutManager(new LinearLayoutManager(requireContext()));
             adapter = new LocationSharingAdapter(options);
             rv.setAdapter(adapter);
+
+            adapter.setOnLocationItemClick((view, position) -> {
+                String name = adapter.getItem(position).getUserName();
+                long timeStamp = adapter.getItem(position).getTimeStamp();
+                String knownLocation = adapter.getItem(position).getKnownName();
+                String userPhoto = adapter.getItem(position).getPhoto();
+                double lat = adapter.getItem(position).getLatitude();
+                double lng = adapter.getItem(position).getLongitude();
+
+                Intent viewUserData = new Intent(requireContext(), ViewUserLocationActivity.class);
+                viewUserData.putExtra(AppConstants.USER_NAME, name);
+                viewUserData.putExtra(AppConstants.KNOWN_LOCATION, knownLocation);
+                viewUserData.putExtra(AppConstants.USER_PHOTO_URL, userPhoto);
+                viewUserData.putExtra(AppConstants.TIMESTAMP, timeStamp);
+                viewUserData.putExtra(AppConstants.LATITUDE, lat);
+                viewUserData.putExtra(AppConstants.LONGITUDE, lng);
+
+                startActivity(viewUserData);
+            });
+
+
         });
 
     }

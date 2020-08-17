@@ -25,6 +25,7 @@ public final class AppConstants {
     public static final String STATE = "state";
     public static final String COUNTRY = "country";
     public static final String KNOWN_LOCATION = "known location";
+    public static final String TIMESTAMP = "timeStamp";
     public static final String USER_PHOTO_URL = "userPhotoUrl";
     public static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     public static final String CACHE_UTILS = "CacheUtils";

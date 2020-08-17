@@ -109,6 +109,8 @@ public class ContactsFragment extends Fragment {
                                 fromUser.put("date", dateSent);
                                 fromUser.put("userName", name);
                                 fromUser.put("photo", getUserPhoto);
+                                fromUser.put("latitude", latitude);
+                                fromUser.put("longitude", longitude);
                                 fromUser.put("timeStamp", GetTimeAgo.getTimeInMillis());
 
                                 //..location sent to ..(user who sent  will view this) //
@@ -118,6 +120,8 @@ public class ContactsFragment extends Fragment {
                                 toReceiver.put("url", url);
                                 toReceiver.put("date", dateSent);
                                 toReceiver.put("userName", getUserName);
+                                toReceiver.put("latitude", latitude);
+                                toReceiver.put("longitude", longitude);
                                 toReceiver.put("timeStamp", GetTimeAgo.getTimeInMillis());
                                 toReceiver.put("photo", photo);
 
