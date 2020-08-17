@@ -115,11 +115,12 @@ public class MainActivity extends BaseActivity {
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
 
+        locationDbRef = FirebaseDatabase.getInstance().getReference().child("Locations");
+        alertsCollectionReference = FirebaseFirestore.getInstance().collection("Alerts");
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mSettingsClient = LocationServices.getSettingsClient(this);
         geocoder = new Geocoder(this, Locale.getDefault());
-
 
 
         createLocationCallback();
@@ -136,11 +137,11 @@ public class MainActivity extends BaseActivity {
         BottomNavigationView navView = activityMainBinding.navView;
         Menu menu = navView.getMenu();
         MenuItem menuItemHome = menu.findItem(R.id.navigation_home);
-        MenuItem menuItemFriends = menu.findItem(R.id.navigation_contacts);
+        MenuItem menuItemFriends = menu.findItem(R.id.navigation_contactsList);
         MenuItem menuItemNotification = menu.findItem(R.id.navigation_alerts);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_alerts, R.id.navigation_home, R.id.navigation_contacts, R.id.navigation_contactsList)
+                R.id.navigation_alerts, R.id.navigation_home, R.id.navigation_contactsList)
                 .build();
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -164,72 +165,77 @@ public class MainActivity extends BaseActivity {
 
         });
 
-        activityMainBinding.contacts.setOnClickListener(view -> {
-
-            startActivity(new Intent(view.getContext(), ContactsActivity.class));
-
-        });
-
-        activityMainBinding.editProfile.setOnClickListener(view -> startActivity(new Intent(view.getContext(), EditProfileActivity.class)));
 
         Intent getUserDetailsIntent = getIntent();
         if (getUserDetailsIntent != null) {
-
             userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
             userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
             userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
             phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
 
-            locationDbRef = FirebaseDatabase.getInstance().getReference().child("Locations").child(userId);
-            locationDbRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
+        }
 
-                    if (snapshot.exists() && snapshot.hasChildren()) {
+        locationDbRef.child(MainActivity.userId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        int numberOfItems = (int) snapshot.getChildrenCount();
+                if (snapshot.exists() && snapshot.hasChildren()) {
 
-                        if (numberOfItems > 0) {
+                    int numberOfItems = (int) snapshot.getChildrenCount();
 
-                            badgeDrawableNotification.setNumber(numberOfItems);
+                    if (numberOfItems > 0) {
 
-
-                        }
+                        badgeDrawableNotification.setNumber(numberOfItems);
 
 
                     }
 
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    DisplayViewUI.displayToast(MainActivity.this, error.getMessage());
 
                 }
-            });
 
-            alertsCollectionReference = FirebaseFirestore.getInstance().collection("Alerts");
-            alertsCollectionReference.get().addOnCompleteListener(task -> {
+            }
 
-                if (task.getResult().size() > 0)
-                    badgeDrawableHome.setNumber(task.getResult().size());
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                DisplayViewUI.displayToast(MainActivity.this, error.getMessage());
 
-            });
+            }
+        });
 
-        }
 
-        activityMainBinding.report.setOnClickListener(v -> {
-            Intent reportIntent = new Intent(v.getContext(), ReportActivity.class);
-            reportIntent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
-            reportIntent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
-            reportIntent.putExtra(AppConstants.USER_NAME, userName);
-            reportIntent.putExtra(AppConstants.STATE, state);
-            reportIntent.putExtra(AppConstants.COUNTRY, country);
-            reportIntent.putExtra(AppConstants.KNOWN_LOCATION, knownName);
+        alertsCollectionReference.get().addOnCompleteListener(task -> {
 
-            startActivity(reportIntent);
+            if (task.getResult().size() > 0)
+                badgeDrawableHome.setNumber(task.getResult().size());
 
         });
+
+
+        activityMainBinding.report.setOnClickListener(v -> {
+            myIntent(ReportActivity.class);
+
+        });
+
+        activityMainBinding.editProfile.setOnClickListener(view -> myIntent(EditProfileActivity.class));
+
+
+    }
+
+
+    void myIntent(@NonNull Class ctx) {
+
+        Intent intent = new Intent(this, ctx);
+        intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
+        intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
+        intent.putExtra(AppConstants.USER_NAME, userName);
+        intent.putExtra(AppConstants.STATE, state);
+        intent.putExtra(AppConstants.COUNTRY, country);
+        intent.putExtra(AppConstants.KNOWN_LOCATION, knownName);
+        intent.putExtra(AppConstants.LATITUDE, latitude);
+        intent.putExtra(AppConstants.LONGITUDE, longitude);
+
+
+        startActivity(intent);
 
 
     }
@@ -486,6 +492,13 @@ public class MainActivity extends BaseActivity {
 
                     //updateUI();
                 });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
     }
 
     @Override

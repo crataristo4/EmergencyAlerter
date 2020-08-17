@@ -14,14 +14,14 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_contacts"
+        android:id="@+id/navigation_contactsList"
         android:icon="@drawable/ic_baseline_emoji_people_24"
         android:title="@string/title_contacts" />
 
-    <item
-        android:id="@+id/navigation_contactsList"
-        android:icon="@drawable/emoji_recent_focus"
-        android:title="@string/title_contacts" />
+    <!-- <item
+         android:id="@+id/navigation_contactsList"
+         android:icon="@drawable/emoji_recent_focus"
+         android:title="@string/title_contacts" />-->
 
 
 </menu>

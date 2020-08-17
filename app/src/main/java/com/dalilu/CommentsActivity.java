@@ -67,7 +67,7 @@ public class CommentsActivity extends AppCompatActivity {
     private static final String[] RECORD_AUDIO_PERMISSION = new String[]{Manifest.permission.RECORD_AUDIO};
     private static final int RECORD_AUDIO = 3;
     String randomId;
-    String name = MainActivity.userName;
+    String name;
     String dateTime;
     String userId = MainActivity.userId;
     private MediaRecorder mediaRecorder;
@@ -160,24 +160,11 @@ public class CommentsActivity extends AppCompatActivity {
         }
 
         commentsRef = FirebaseFirestore.getInstance().collection("Comments").document(getAlertItemId).collection(getAlertItemId);
-
-        commentsRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                int count = 0;
-                Log.i(TAG, "Num of items: " + task.getResult().size());
-                for (DocumentSnapshot ds : task.getResult()) {
-                    count++;
-
-
-                }
-
-
-            }
-
-        });
-
         audioFilePath = FirebaseStorage.getInstance().getReference().child("audio");
         filePath = audioFilePath.child(UUID.randomUUID().toString());
+
+        name = MainActivity.userName;
+
 
         ConstraintLayout activity_comment = findViewById(R.id.activity_comment);
         ImageView emojiButton = findViewById(R.id.emoticonButton);
@@ -219,8 +206,6 @@ public class CommentsActivity extends AppCompatActivity {
 
         adapter = new CommentsAdapter(commentList, CommentsActivity.this);
         recyclerView.setAdapter(adapter);
-
-
 
 
     }

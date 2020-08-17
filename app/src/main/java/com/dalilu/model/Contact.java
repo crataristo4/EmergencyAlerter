@@ -19,15 +19,18 @@ public class Contact extends BaseObservable implements Parcelable {
             return new Contact[size];
         }
     };
+
+
     public String userName;
     public String phoneNumber;
     public String userPhotoUrl;
+    public String userId;
 
-   /* public Contact(String userName, String phoneNumber, String photoUrl){
+    public Contact(String userName, String phoneNumber, String userPhotoUrl) {
         this.userName = userName;
         this.phoneNumber = phoneNumber;
-        this.photoUrl = photoUrl;
-    }*/
+        this.userPhotoUrl = userPhotoUrl;
+    }
 
     public Contact() {
     }
@@ -42,6 +45,15 @@ public class Contact extends BaseObservable implements Parcelable {
         userName = in.readString();
         phoneNumber = in.readString();
         userPhotoUrl = in.readString();
+        userId = in.readString();
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Bindable
@@ -80,5 +92,6 @@ public class Contact extends BaseObservable implements Parcelable {
         dest.writeString(userName);
         dest.writeString(phoneNumber);
         dest.writeString(userPhotoUrl);
+        dest.writeString(userId);
     }
 }

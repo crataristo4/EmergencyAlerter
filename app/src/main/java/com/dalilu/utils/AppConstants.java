@@ -28,6 +28,8 @@ public final class AppConstants {
     public static final String USER_PHOTO_URL = "userPhotoUrl";
     public static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     public static final String CACHE_UTILS = "CacheUtils";
+    public static final String LATITUDE = "lat";
+    public static final String LONGITUDE = "lng";
 
     /**
      * Constant used in the location settings dialog.

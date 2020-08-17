@@ -3,6 +3,7 @@ package com.dalilu.adapters;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -13,14 +14,19 @@ import androidx.recyclerview.widget.SortedListAdapterCallback;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dalilu.R;
+import com.dalilu.databinding.LayoutTestContactsBinding;
 import com.dalilu.model.Contact;
 
-public class TestSortedContactsAdapter extends RecyclerView.Adapter<TestSortedContactsViewHolder> {
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class SortContactsAdapter extends RecyclerView.Adapter<SortContactsAdapter.ContactsViewHolder> {
     final LayoutInflater mLayoutInflater;
     SortedList<Contact> mContacts;
     private Context mContext;
+    private static SortContactsAdapter.onItemClickListener onItemClickListener;
 
-    public TestSortedContactsAdapter(Context context, LayoutInflater layoutInflater, Contact... items) {
+
+    public SortContactsAdapter(Context context, LayoutInflater layoutInflater, Contact... items) {
         mContext = context;
 
         mLayoutInflater = layoutInflater;
@@ -49,13 +55,19 @@ public class TestSortedContactsAdapter extends RecyclerView.Adapter<TestSortedCo
         }
     }
 
+    public void setOnItemClickListener(SortContactsAdapter.onItemClickListener onItemClickListener) {
+        SortContactsAdapter.onItemClickListener = onItemClickListener;
+
+    }
 
     @NonNull
     @Override
-    public TestSortedContactsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new TestSortedContactsViewHolder((DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+    public ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ContactsViewHolder((DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                 R.layout.layout_test_contacts, parent,
                 false))) {
+
+
             @Override
             void onDoneChanged(boolean isDone) {
                 int adapterPosition = getAdapterPosition();
@@ -69,8 +81,7 @@ public class TestSortedContactsAdapter extends RecyclerView.Adapter<TestSortedCo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TestSortedContactsViewHolder holder, int position) {
-
+    public void onBindViewHolder(@NonNull ContactsViewHolder holder, int position) {
         Contact contact = mContacts.get(position);
         holder.layoutTestContactsBinding.setContacts(contact);
         //load user photos
@@ -81,7 +92,26 @@ public class TestSortedContactsAdapter extends RecyclerView.Adapter<TestSortedCo
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.imgUserPhoto);
 
+        holder.btnSentLocation.setOnClickListener(view -> onItemClickListener.onClick(holder, contact, position));
+
     }
+
+
+    public interface onItemClickListener {
+        void onClick(RecyclerView.ViewHolder vh, Contact contact, int position);
+    }
+
+    public interface GenericItemClick<T, VH extends RecyclerView.ViewHolder> {
+        void onClick(VH vh, T item, int position);
+    }
+
+   /* @Override
+    public void onBindViewHolder(@NonNull SortContactsViewHolder holder, int position) {
+
+
+
+
+    }*/
 
     public void addItem(Contact item) {
         mContacts.add(item);
@@ -91,4 +121,27 @@ public class TestSortedContactsAdapter extends RecyclerView.Adapter<TestSortedCo
     public int getItemCount() {
         return mContacts == null ? 0 : mContacts.size();
     }
+
+    public abstract static class ContactsViewHolder extends RecyclerView.ViewHolder {
+        public LayoutTestContactsBinding layoutTestContactsBinding;
+        public CircleImageView imgUserPhoto;
+        public Button btnSentLocation;
+
+        public ContactsViewHolder(@NonNull LayoutTestContactsBinding layoutTestContactsBinding) {
+            super(layoutTestContactsBinding.getRoot());
+            this.layoutTestContactsBinding = layoutTestContactsBinding;
+            imgUserPhoto = layoutTestContactsBinding.userImage;
+            btnSentLocation = layoutTestContactsBinding.btnSendLocation;
+
+
+        }
+
+        abstract void onDoneChanged(boolean isDone);
+    }
+
 }
+
+
+
+
+
