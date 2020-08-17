@@ -17,34 +17,34 @@ import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.GetTimeAgo;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class ViewUserLocationActivity extends FragmentActivity {
+import java.util.Objects;
+
+public class ViewUserLocationActivity extends FragmentActivity implements OnMapReadyCallback {
     ActivityViewUserLocationBinding activityViewUserLocationBinding;
     TextView txtName, txtTime, txtKnownName;
     String name, location, photoUrl;
     long timeStamp;
     double lat, lng;
-    private SupportMapFragment fragment;
     private GoogleMap map;
-    private float mapZoomLevel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityViewUserLocationBinding = DataBindingUtil.setContentView(this, R.layout.activity_view_user_location);
-        mapZoomLevel = 13;
         txtKnownName = activityViewUserLocationBinding.txtLocation;
         txtName = activityViewUserLocationBinding.txtName;
         txtTime = activityViewUserLocationBinding.txtTime;
 
         //Reference of the MapFragment
         FragmentManager fm = getSupportFragmentManager();
-        //  fragment = (SupportMapFragment) fm.findFragmentById(R.id.map_fragment);
+        SupportMapFragment fragment = (SupportMapFragment) fm.findFragmentById(R.id.map_fragment);
         //Get the GoogleMap object
-//        Objects.requireNonNull(fragment).getMapAsync(this);
+        Objects.requireNonNull(fragment).getMapAsync(this);
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -67,36 +67,26 @@ public class ViewUserLocationActivity extends FragmentActivity {
 
         }
 
-        //  showLocationOnMap();
+
 
     }
 
-    private void showLocationOnMap() {
-        if (map != null) {
 
-            LatLng latlng = new LatLng(lat, lng);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, mapZoomLevel));
-
-            map.clear();
-            map.addMarker(new MarkerOptions()
-                    .title(name + "'s location")
-                    .snippet("at " + location)
-                    .position(latlng)).showInfoWindow();
-        }
-    }
-
-    /*@Override
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
 
-        map.setOnCameraMoveListener(() -> mapZoomLevel = map.getCameraPosition().zoom);
+        LatLng latLng = new LatLng(lat, lng);
+        map.clear();
+        map.addMarker(new MarkerOptions()
+                .title(name + "'s location")
+                .snippet("at " + location)
+                .position(latLng)).showInfoWindow();
+        map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
         map.setMyLocationEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
         map.getUiSettings().setZoomGesturesEnabled(true);
@@ -105,6 +95,5 @@ public class ViewUserLocationActivity extends FragmentActivity {
         map.getUiSettings().setRotateGesturesEnabled(true);
 
     }
-*/
 
 }

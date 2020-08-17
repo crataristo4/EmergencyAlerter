@@ -26,15 +26,17 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgPhoto"
-                android:layout_width="@dimen/imageIconSize"
-                android:layout_height="@dimen/imageIconSize"
-                android:layout_marginTop="16dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/applogo"
                 app:civ_border_color="@color/black"
                 app:civ_border_overlay="true"
                 app:civ_border_width="1dp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,8 +44,7 @@
                 android:id="@+id/txtName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
                 android:gravity="center"
                 android:text="@{location.location}"
@@ -51,18 +52,30 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imgPhoto" />
+                app:layout_constraintStart_toEndOf="@+id/imgPhoto"
+                app:layout_constraintTop_toTopOf="@+id/imgPhoto" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/txtTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_baseline_access_time_24"
+                android:drawablePadding="@dimen/eightDp"
+                android:padding="@dimen/eightDp"
+                app:layout_constraintStart_toStartOf="@+id/txtName"
+                app:layout_constraintTop_toBottomOf="@+id/txtName" />
+
+            <!-- <LinearLayout
+                android:id="@+id/linearLayout3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="27dp"
                 android:orientation="vertical"
                 android:padding="@dimen/sixteenDp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtName">
+                app:layout_constraintTop_toBottomOf="@+id/imgPhoto">
 
                 <TextView
                     android:id="@+id/txtKnownName"
@@ -74,19 +87,10 @@
                     android:text="@{location.knownName}" />
 
                 <TextView
-                    android:id="@+id/txtTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_baseline_access_time_24"
-                    android:drawablePadding="@dimen/eightDp"
-                    android:padding="@dimen/eightDp" />
-
-                <TextView
                     android:id="@+id/txtUrl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autoLink="web|map"
-                    android:autoText="false"
                     android:clickable="true"
                     android:drawableStart="@drawable/ic_baseline_map_24"
                     android:drawablePadding="@dimen/eightDp"
@@ -108,7 +112,7 @@
                     android:text="@{location.date}" />
 
 
-            </LinearLayout>
+            </LinearLayout>-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

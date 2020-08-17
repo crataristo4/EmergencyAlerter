@@ -44,6 +44,7 @@ public class LocationSharingAdapter extends FirestoreRecyclerAdapter<ShareLocati
 
     @Override
     protected void onBindViewHolder(@NonNull LocationSharingViewHolder holder, int i, @NonNull ShareLocation shareLocation) {
+
         holder.layoutLocationSharingBinding.setLocation(shareLocation);
         holder.txtTime.setText(GetTimeAgo.getTimeAgo(shareLocation.getTimeStamp()));
         Glide.with(holder.layoutLocationSharingBinding.getRoot())

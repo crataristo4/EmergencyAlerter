@@ -97,8 +97,8 @@ public class ContactsFragment extends Fragment {
                                 String locationReceived = getString(R.string.urLoc) + " " + getString(R.string.isShared) + " " + getUserName;
 
                                 //get location coordinates
-                                String latitude = Double.toString(MainActivity.latitude);
-                                String longitude = Double.toString(MainActivity.longitude);
+                                double latitude = Double.parseDouble(Double.toString(MainActivity.latitude));
+                                double longitude = Double.parseDouble(Double.toString(MainActivity.longitude));
                                 String url = "http://maps.google.com/maps?q=loc:" + latitude + "," + longitude + "&z=15";
 
                                 //..location received from another user ..//
@@ -107,7 +107,7 @@ public class ContactsFragment extends Fragment {
                                 fromUser.put("knownName", yourLocation);
                                 fromUser.put("url", url);
                                 fromUser.put("date", dateSent);
-                                fromUser.put("userName", name);
+                                fromUser.put("userName", "You");
                                 fromUser.put("photo", getUserPhoto);
                                 fromUser.put("latitude", latitude);
                                 fromUser.put("longitude", longitude);
@@ -119,7 +119,7 @@ public class ContactsFragment extends Fragment {
                                 toReceiver.put("knownName", yourLocation);
                                 toReceiver.put("url", url);
                                 toReceiver.put("date", dateSent);
-                                toReceiver.put("userName", getUserName);
+                                toReceiver.put("userName", name);
                                 toReceiver.put("latitude", latitude);
                                 toReceiver.put("longitude", longitude);
                                 toReceiver.put("timeStamp", GetTimeAgo.getTimeInMillis());
