@@ -1,10 +1,8 @@
 package com.dalilu.ui.auth;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,17 +17,16 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.dalilu.R;
+import com.dalilu.clickhandler.ItemClickHandler;
 import com.dalilu.databinding.ActivityRegisterPhoneNumberBinding;
-import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.LanguageManager;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
 
-import java.util.Objects;
-
 public class RegisterPhoneNumberActivity extends AppCompatActivity {
     private static final String TAG = "Register Phone";
     ActivityRegisterPhoneNumberBinding activityRegisterPhoneNumberBinding;
+    ItemClickHandler itemClickHandler;
     Spinner languageSelectSpinner;
     TextInputLayout txtNumber;
     CountryCodePicker countryCodePicker;
@@ -42,32 +39,27 @@ public class RegisterPhoneNumberActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityRegisterPhoneNumberBinding = DataBindingUtil.setContentView(this, R.layout.activity_register_phone_number);
-
-        languageSelectSpinner = activityRegisterPhoneNumberBinding.spinner;
-        txtNumber = activityRegisterPhoneNumberBinding.textInputLayoutPhone;
-        loading = activityRegisterPhoneNumberBinding.pbLoading;
-        loading.setVisibility(View.GONE);
-
-        btnNext = activityRegisterPhoneNumberBinding.btnNext;
-        countryCodePicker = activityRegisterPhoneNumberBinding.ccp;
-        countryCodePicker.registerCarrierNumberEditText(txtNumber.getEditText());
-        countryCodePicker.setNumberAutoFormattingEnabled(true);
+        itemClickHandler = new ItemClickHandler(this,
+                activityRegisterPhoneNumberBinding.textInputLayoutPhone,
+                activityRegisterPhoneNumberBinding.ccp,
+                activityRegisterPhoneNumberBinding.pbLoading,
+                activityRegisterPhoneNumberBinding.btnNext);
 
         activityRegisterPhoneNumberBinding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
                     // DisplayViewUI.displayToast(RegisterPhoneNumberActivity.this, getString(R.string.selectLanguage));
-                    btnNext.setEnabled(false);
+                    activityRegisterPhoneNumberBinding.btnNext.setEnabled(false);
 
                 } else if (position == 1) {//english is selected
-                    btnNext.setEnabled(true);
+                    activityRegisterPhoneNumberBinding.btnNext.setEnabled(true);
                     LanguageManager.setNewLocale(RegisterPhoneNumberActivity.this, LanguageManager.LANGUAGE_KEY_ENGLISH);
                     // TODO: 7/31/2020  fix app language
                     // recreate();
 
                 } else if (position == 2) {//french is selected
-                    btnNext.setEnabled(true);
+                    activityRegisterPhoneNumberBinding.btnNext.setEnabled(true);
                     LanguageManager.setNewLocale(RegisterPhoneNumberActivity.this, LanguageManager.LANGUAGE_KEY_FRENCH);
                     // recreate();
 
@@ -80,6 +72,21 @@ public class RegisterPhoneNumberActivity extends AppCompatActivity {
             }
         });
 
+        activityRegisterPhoneNumberBinding.setValidateNumber(itemClickHandler);
+/*
+
+        languageSelectSpinner = activityRegisterPhoneNumberBinding.spinner;
+        txtNumber = activityRegisterPhoneNumberBinding.textInputLayoutPhone;
+        loading = activityRegisterPhoneNumberBinding.pbLoading;
+        loading.setVisibility(View.GONE);
+
+        btnNext = activityRegisterPhoneNumberBinding.btnNext;
+        countryCodePicker = activityRegisterPhoneNumberBinding.ccp;
+        countryCodePicker.registerCarrierNumberEditText(txtNumber.getEditText());
+        countryCodePicker.setNumberAutoFormattingEnabled(true);
+
+
+
         if (btnNext.isEnabled()) {
             btnNext.setOnClickListener(view -> {
                 loading.setVisibility(View.VISIBLE);
@@ -91,6 +98,7 @@ public class RegisterPhoneNumberActivity extends AppCompatActivity {
 
 
         }
+*/
 
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
@@ -111,7 +119,7 @@ public class RegisterPhoneNumberActivity extends AppCompatActivity {
         }
     }
 
-    private void getPhoneNumber() {
+   /* private void getPhoneNumber() {
 
         String getPhoneNumber = Objects.requireNonNull(txtNumber.getEditText()).getText().toString();
         if (!getPhoneNumber.trim().isEmpty()) {
@@ -127,5 +135,5 @@ public class RegisterPhoneNumberActivity extends AppCompatActivity {
         } else {
             txtNumber.setErrorEnabled(false);
         }
-    }
+    }*/
 }

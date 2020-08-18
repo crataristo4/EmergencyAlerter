@@ -19,8 +19,6 @@ import com.dalilu.ui.bottomsheets.WelcomeNoticeBottomSheet;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -51,10 +49,10 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
 
         Intent getUserData = getIntent();
         if (getUserData != null) {
-            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+           /* FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
             assert user != null;
-            uid = user.getUid();
+            uid = user.getUid();*/
 
             uid = getUserData.getStringExtra(AppConstants.UID);
             phoneNumber = getUserData.getStringExtra(AppConstants.PHONE_NUMBER);
@@ -151,6 +149,10 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
                             progressDialog.dismiss();
                             DisplayViewUI.displayToast(FinishAccountSetupActivity.this, getString(R.string.successFull));
                             Intent intent = new Intent(FinishAccountSetupActivity.this, MainActivity.class);
+                            intent.putExtra(AppConstants.UID, uid);
+                            intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
+                            intent.putExtra(AppConstants.USER_NAME, finalUserName);
+                            intent.putExtra(AppConstants.USER_PHOTO_URL, getImageUri);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                             FinishAccountSetupActivity.this.finishAffinity();

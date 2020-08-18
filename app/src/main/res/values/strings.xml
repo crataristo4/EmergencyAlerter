@@ -41,7 +41,7 @@
     <string name="phoneRequired">phone number might be required for follow up</string>
     <string name="selectLanguage">Please select language</string>
     <string name="plsWait">verifying please wait</string>
-    <string name="noInternet">No internet connection is needed to continue.If problem still exist contact your service provider</string>
+    <string name="noInternet">Internet connection is needed to continue</string>
     <string name="resend_code">Resend code</string>
     <string name="codeShort">code too short</string>
     <string name="phoneReq">phone number is required</string>
@@ -161,4 +161,5 @@
     <string name="logMeOut">Yes, log me out</string>
     <string name="location">Location</string>
     <string name="title_activity_maps2">Map</string>
+    <string name="invalidPhone">Invalid phone number</string>
 </resources>

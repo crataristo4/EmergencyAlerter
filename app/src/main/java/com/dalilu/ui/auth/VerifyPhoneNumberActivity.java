@@ -137,9 +137,9 @@ public class VerifyPhoneNumberActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        this.finishAffinity();
+        /*this.finishAffinity();
         startActivity(new Intent(this, RegisterPhoneNumberActivity.class)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
-
+*/
     }
 }

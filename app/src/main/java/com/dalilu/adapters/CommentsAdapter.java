@@ -11,6 +11,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -79,14 +80,14 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         if (!mediaPlayer.isPlaying()) {
 
                             try {
-                                ((AudioViewHolder) holder).playAudio.setImageDrawable(((AudioViewHolder) holder).layoutPlayAudioBinding.getRoot().getResources().getDrawable(R.drawable.ic_baseline_pause_24));
+                                ((AudioViewHolder) holder).playAudio.setImageDrawable((ContextCompat.getDrawable(context, R.drawable.ic_baseline_pause_24)));
 
                                 mediaPlayer.reset();
                                 mediaPlayer.setDataSource(proxyUrl);
                                 mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                                 mediaPlayer.prepare();
                                 mediaPlayer.start();
-                                mediaPlayer.setOnCompletionListener(mediaPlayer -> ((AudioViewHolder) holder).playAudio.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_play_arrow_24)));
+                                mediaPlayer.setOnCompletionListener(mediaPlayer -> ((AudioViewHolder) holder).playAudio.setImageDrawable((ContextCompat.getDrawable(context, R.drawable.ic_baseline_play_arrow_24))));
 
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -95,9 +96,10 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                         } else if (mediaPlayer.isPlaying()) {
 
-                            mediaPlayer.stop();
+                            mediaPlayer.pause();
                             mediaPlayer.release();
-                            ((AudioViewHolder) holder).playAudio.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_play_arrow_24));
+
+                            ((AudioViewHolder) holder).playAudio.setImageDrawable((ContextCompat.getDrawable(context, R.drawable.ic_baseline_play_arrow_24)));
                             ((AudioViewHolder) holder).playAudio.setVisibility(View.VISIBLE);
                         }
                     });

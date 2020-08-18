@@ -168,7 +168,9 @@ public class MainActivity extends BaseActivity {
                     if (i == -1) {
 
                         FirebaseAuth.getInstance().signOut();
-                        startActivity(new Intent(view.getContext(), SplashScreenActivity.class));
+                        startActivity(new Intent(view.getContext(), SplashScreenActivity.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        finish();
                     } else if (i == -2) {
                         dialogInterface.dismiss();
                     }
