@@ -1,4 +1,4 @@
-package com.dalilu;
+package com.dalilu.ui.activities;
 
 import android.content.Context;
 import android.os.Bundle;

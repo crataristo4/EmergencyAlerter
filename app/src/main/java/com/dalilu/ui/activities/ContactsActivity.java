@@ -1,4 +1,4 @@
-package com.dalilu;
+package com.dalilu.ui.activities;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.dalilu.R;
 
 import java.util.ArrayList;
 

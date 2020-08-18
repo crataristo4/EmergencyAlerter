@@ -1,4 +1,4 @@
-package com.dalilu;
+package com.dalilu.ui.activities;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dalilu.R;
 import com.dalilu.adapters.ContactsAdapter;
 import com.dalilu.model.RequestModel;
 import com.dalilu.ui.bottomsheets.PopUpAlerter;

@@ -17,10 +17,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
 import com.bumptech.glide.Glide;
-import com.dalilu.MainActivity;
 import com.dalilu.R;
 import com.dalilu.databinding.PopUpAlerterBottomSheetBinding;
 import com.dalilu.model.RequestModel;
+import com.dalilu.ui.activities.MainActivity;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;

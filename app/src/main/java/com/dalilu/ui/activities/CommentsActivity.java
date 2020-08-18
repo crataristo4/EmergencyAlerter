@@ -1,4 +1,4 @@
-package com.dalilu;
+package com.dalilu.ui.activities;
 
 
 import android.Manifest;
@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.dalilu.R;
 import com.dalilu.adapters.CommentsAdapter;
 import com.dalilu.model.Message;
 import com.dalilu.utils.AppConstants;

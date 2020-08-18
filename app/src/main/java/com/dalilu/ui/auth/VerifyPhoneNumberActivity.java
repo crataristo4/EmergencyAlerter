@@ -11,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.databinding.DataBindingUtil;
 
-import com.dalilu.FinishAccountSetupActivity;
 import com.dalilu.R;
 import com.dalilu.databinding.ActivityVerifyPhoneNumberBinding;
+import com.dalilu.ui.activities.FinishAccountSetupActivity;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.google.firebase.FirebaseException;

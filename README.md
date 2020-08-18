@@ -26,42 +26,42 @@ This app is available in both English and French
 
 ### Phone number registration
 <p align="middle">
-  <img src="../bugBounty/screenshots/register.png"/>
+  <img src="../bugBounty/screenshots/register.png" height = "600" width="300"/>
 </p>
 
 ### Sms Code verification
 <p align="middle">
-  <img src="../bugBounty/screenshots/verify.png"/>
+  <img src="../bugBounty/screenshots/verify.png" height = "600" width="300"/>
 </p>
 
 ### Reporting crimes by photo or video
 <p align="middle">
-  <img src="../bugBounty/screenshots/report.png"/>
+  <img src="../bugBounty/screenshots/report.png" height = "600" width="300"/>
 </p>
 
 ### Commenting on crimes
 <p align="middle">
-  <img src="../bugBounty/screenshots/comment.png"/>
+  <img src="../bugBounty/screenshots/comment.png" height = "600" width="300"/>
 </p>
 
 
 ### Searching friends
 <p align="middle">
-  <img src="../bugBounty/screenshots/search.png"/>
+  <img src="../bugBounty/screenshots/search.png" height = "600" width="300"/>
 </p>
 
 ### Adding friends
 <p align="middle">
-  <img src="../bugBounty/screenshots/add.png"/>
+  <img src="../bugBounty/screenshots/add.png" height = "600" width="300"/>
 </p>
 
 ### Sharing location
 <p align="middle">
-  <img src="../bugBounty/screenshots/locations_shared.png"/>
+  <img src="../bugBounty/screenshots/locations_shared.png" height = "600" width="300"/>
 </p>
 
 ### Viewing locations shared
 <p align="middle">
-  <img src="../bugBounty/screenshots/view_location.png"/>
+  <img src="../bugBounty/screenshots/view_location.png" height = "600" width="300"/>
 </p>
 

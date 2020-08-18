@@ -1,4 +1,4 @@
-package com.dalilu;
+package com.dalilu.ui.activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dalilu.R;
 import com.dalilu.utils.CameraUtils;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;

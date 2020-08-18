@@ -1,4 +1,4 @@
-package com.dalilu;
+package com.dalilu.ui.activities;
 
 import android.Manifest;
 import android.content.Context;
@@ -22,6 +22,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.dalilu.R;
 import com.dalilu.databinding.ActivityMainBinding;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;

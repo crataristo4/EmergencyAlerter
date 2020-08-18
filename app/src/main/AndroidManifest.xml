@@ -57,13 +57,13 @@
             android:name=".MapsActivity2"
             android:label="@string/title_activity_maps2" />
         <activity
-            android:name=".ViewUserLocationActivity"
+            android:name=".ui.activities.ViewUserLocationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
         <activity
-            android:name=".ContactsActivity"
+            android:name=".ui.activities.ContactsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -75,27 +75,27 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".EditProfileActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".ui.activities.EditProfileActivity"
+            android:parentActivityName=".ui.activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SearchContactActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".ui.activities.SearchContactActivity"
+            android:parentActivityName=".ui.activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ReportActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".ui.activities.ReportActivity"
+            android:parentActivityName=".ui.activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".FinishAccountSetupActivity"
+            android:name=".ui.activities.FinishAccountSetupActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.PointOfInterestActivity" />
         <activity
-            android:name=".SplashScreenActivity"
+            android:name=".ui.activities.SplashScreenActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -112,12 +112,12 @@
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CommentsActivity"
+            android:name=".ui.activities.CommentsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".CameraActivity" />
+        <activity android:name=".ui.activities.CameraActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity

@@ -1,4 +1,4 @@
-package com.dalilu;
+package com.dalilu.ui.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
+import com.dalilu.R;
 import com.dalilu.databinding.ActivityReportBinding;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.CameraUtils;

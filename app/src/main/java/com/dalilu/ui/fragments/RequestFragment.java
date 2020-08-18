@@ -12,11 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dalilu.MainActivity;
 import com.dalilu.R;
 import com.dalilu.adapters.RequestAdapter;
 import com.dalilu.databinding.FragmentRequestBinding;
 import com.dalilu.model.RequestModel;
+import com.dalilu.ui.activities.MainActivity;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

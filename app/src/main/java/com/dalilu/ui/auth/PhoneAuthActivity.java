@@ -11,10 +11,10 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 
-import com.dalilu.BaseActivity;
-import com.dalilu.FinishAccountSetupActivity;
 import com.dalilu.R;
 import com.dalilu.databinding.ActivityPhoneAuthBinding;
+import com.dalilu.ui.activities.BaseActivity;
+import com.dalilu.ui.activities.FinishAccountSetupActivity;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.dalilu.utils.LanguageManager;

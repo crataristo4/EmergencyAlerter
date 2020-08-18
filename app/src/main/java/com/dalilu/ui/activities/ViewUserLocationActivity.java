@@ -1,4 +1,4 @@
-package com.dalilu;
+package com.dalilu.ui.activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
+import com.dalilu.R;
 import com.dalilu.databinding.ActivityViewUserLocationBinding;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.GetTimeAgo;

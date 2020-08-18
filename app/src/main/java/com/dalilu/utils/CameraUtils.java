@@ -16,8 +16,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import com.dalilu.BuildConfig;
-import com.dalilu.CameraActivity;
 import com.dalilu.R;
+import com.dalilu.ui.activities.CameraActivity;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

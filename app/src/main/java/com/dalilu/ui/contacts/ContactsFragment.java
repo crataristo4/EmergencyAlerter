@@ -1,4 +1,4 @@
-package com.dalilu.ui.fragments;
+package com.dalilu.ui.contacts;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -16,11 +16,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dalilu.MainActivity;
 import com.dalilu.R;
 import com.dalilu.adapters.FriendRequestAdapter;
 import com.dalilu.databinding.FragmentContactsBinding;
 import com.dalilu.model.RequestModel;
+import com.dalilu.ui.activities.MainActivity;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.dalilu.utils.GetTimeAgo;

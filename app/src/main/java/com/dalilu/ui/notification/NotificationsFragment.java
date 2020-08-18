@@ -1,4 +1,4 @@
-package com.dalilu.ui.fragments;
+package com.dalilu.ui.notification;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,12 +13,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dalilu.MainActivity;
 import com.dalilu.R;
-import com.dalilu.ViewUserLocationActivity;
 import com.dalilu.adapters.LocationSharingAdapter;
 import com.dalilu.databinding.FragmentNotificationsBinding;
 import com.dalilu.model.ShareLocation;
+import com.dalilu.ui.activities.MainActivity;
+import com.dalilu.ui.activities.ViewUserLocationActivity;
 import com.dalilu.utils.AppConstants;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;

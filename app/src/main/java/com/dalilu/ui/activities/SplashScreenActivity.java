@@ -1,4 +1,4 @@
-package com.dalilu;
+package com.dalilu.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.view.animation.AnimationUtils;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import com.dalilu.R;
 import com.dalilu.ui.auth.RegisterPhoneNumberActivity;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
@@ -36,7 +37,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         //overridePendingTransition(R.anim.fadein, R.anim.explode);
         super.onCreate(savedInstanceState);
 
-
         com.dalilu.databinding.ActivitySplashScreenBinding activitySplashScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash_screen);
         // activitySplashScreenBinding.txtAppName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.from_top));
         activitySplashScreenBinding.txtAppName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fadein));
@@ -48,6 +48,13 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        runOnUiThread(this::startSplash);
+
+
+    }
+
+
+    void startSplash() {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
@@ -124,7 +131,5 @@ public class SplashScreenActivity extends AppCompatActivity {
             }
 
         }, 2000);
-
-
     }
 }
