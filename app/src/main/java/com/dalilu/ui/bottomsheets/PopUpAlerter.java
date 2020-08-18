@@ -7,12 +7,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
@@ -41,7 +41,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
     private String id;
     private String phoneNumber;
     private String photoUrl;
-    private Button btnAddUser;
+    private AppCompatButton btnAddUser;
     private CollectionReference friendsCollectionReference;
 
 

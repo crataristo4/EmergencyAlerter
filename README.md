@@ -34,6 +34,15 @@ This app is available in both English and French
   <img src="../bugBounty/screenshots/verify.png" height = "600" width="300"/>
 </p>
 
+### Main Page
+<p align="middle">
+  <img src="../bugBounty/screenshots/home.png" height = "600" width="300"/>
+</p>
+
+### Functions
+<p align="middle">
+  <img src="../bugBounty/screenshots/other.png" height = "600" width="300"/>
+</p>
 
 ### Reporting crimes by photo or video
 <p align="middle">
