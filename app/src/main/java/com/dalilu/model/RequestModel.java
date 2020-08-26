@@ -10,6 +10,7 @@ public class RequestModel extends BaseObservable {
     private String phoneNumber;
     private String photo;
     private String response;
+    private boolean isSharingLocation;
 
 
     public RequestModel() {
@@ -80,5 +81,13 @@ public class RequestModel extends BaseObservable {
 
     public void setResponse(String response) {
         this.response = response;
+    }
+
+    public boolean isSharingLocation() {
+        return isSharingLocation;
+    }
+
+    public void setSharingLocation(boolean sharingLocation) {
+        isSharingLocation = sharingLocation;
     }
 }

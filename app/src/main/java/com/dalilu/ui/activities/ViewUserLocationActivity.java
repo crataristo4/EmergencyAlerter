@@ -114,6 +114,7 @@ public class ViewUserLocationActivity extends AppCompatActivity implements OnMap
             map.getUiSettings().setMyLocationButtonEnabled(true);
             map.getUiSettings().setRotateGesturesEnabled(true);
 
+
             LatLng latLng = new LatLng(lat, lng);
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, mapZoomLevel));
 

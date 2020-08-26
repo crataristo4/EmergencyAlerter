@@ -57,69 +57,20 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="@dimen/fourDp"
                 android:text="@{requests.phoneNumber}"
+                app:layout_constraintBottom_toBottomOf="@+id/userImage"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/userImage"
                 app:layout_constraintTop_toBottomOf="@+id/txtName" />
 
-            <Button
-                android:id="@+id/accept"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="@color/colorAccent"
-                android:clickable="true"
-                android:elevation="5dp"
-                android:focusable="true"
-                android:text="@string/acpt"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white"
-                app:layout_constraintEnd_toStartOf="@+id/decline"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/userImage" />
-
-            <Button
-                android:id="@+id/btnSendLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/bottomsheetbg"
-                android:drawableEnd="@drawable/ic_gps"
-                android:drawablePadding="@dimen/eightDp"
-                android:padding="@dimen/eightDp"
-                android:text="@string/sendLocation"
-                android:textAllCaps="false"
-                android:textColor="@color/black"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/decline"
-                app:layout_constraintTop_toBottomOf="@+id/userImage" />
-
-            <Button
-                android:id="@+id/decline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="@color/colorRed"
-                android:clickable="true"
-                android:elevation="5dp"
-                android:focusable="true"
-                android:text="@string/dcln"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white"
-                app:layout_constraintEnd_toStartOf="@+id/btnSendLocation"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/accept"
-                app:layout_constraintTop_toBottomOf="@+id/userImage" />
-
             <ImageView
                 android:id="@+id/imgDeleteUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:contentDescription="@string/delete"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_delete" />
@@ -144,6 +95,70 @@
                 app:layout_constraintEnd_toEndOf="@+id/userImage"
                 app:layout_constraintStart_toStartOf="@+id/userImage"
                 app:layout_constraintTop_toTopOf="@+id/userImage" />
+
+            <ImageView
+                android:id="@+id/imgIsSharingLocation"
+                android:layout_width="@dimen/twentyFourDp"
+                android:layout_height="@dimen/twentyFourDp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="@string/shareLocation"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgDeleteUser"
+                app:srcCompat="@drawable/redoffline" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/userImage">
+
+                <Button
+                    android:id="@+id/accept"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorAccent"
+                    android:clickable="true"
+                    android:elevation="5dp"
+                    android:focusable="true"
+                    android:text="@string/acpt"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/decline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/colorRed"
+                    android:clickable="true"
+                    android:elevation="5dp"
+                    android:focusable="true"
+                    android:text="@string/dcln"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/btnSendLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bottomsheetbg"
+                    android:drawableEnd="@drawable/ic_gps"
+                    android:drawablePadding="@dimen/eightDp"
+                    android:padding="@dimen/fourDp"
+                    android:text="@string/sendLocation"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:visibility="visible" />
+            </LinearLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

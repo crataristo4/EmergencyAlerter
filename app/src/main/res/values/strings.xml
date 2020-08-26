@@ -145,6 +145,8 @@
     <string name="uploadingImage">uploading image please wait…</string>
     <string name="uploadingVideo">uploading video please wait…</string>
     <string name="declineRequest">Decline request</string>
+    <string name="qstCancel">Do you want to stop sharing location details to {0}</string>
+    <string name="cancelloc">Stop sharing location</string>
     <string name="stdVoiceRecordind">Started voice recording</string>
     <string name="stpdVoiceRecording">Stopped voice recording</string>
     <string name="rcAud">Recording audio , press stop to upload</string>
@@ -162,4 +164,5 @@
     <string name="location">Location</string>
     <string name="title_activity_maps2">Map</string>
     <string name="invalidPhone">Invalid phone number</string>
+    <string name="stpLocSharing">Stop location sharing</string>
 </resources>

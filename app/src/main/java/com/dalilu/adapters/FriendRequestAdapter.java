@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +26,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.MessageFormat;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -52,6 +55,7 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
     protected void onBindViewHolder(@NonNull FriendRequestAdapter.RequestViewHolder holder, int position, @NonNull RequestModel users) {
         holder.layoutRequestReceivedBinding.setRequests(users);
         holder.showResponse(users.getResponse());
+        holder.isSharingLocation(users.isSharingLocation());
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.placeholder(DisplayViewUI.getRandomDrawableColor());
@@ -119,13 +123,31 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
 
         }
 
+        if (holder.btnSendLocation.getText().toString().equals(holder.layoutRequestReceivedBinding.getRoot().getResources().getString(R.string.stpLocSharing))) {
+            holder.btnSendLocation.setOnClickListener(view -> DisplayViewUI.displayAlertDialog(view.getContext(),
+                    holder.layoutRequestReceivedBinding.getRoot().getResources().getString(R.string.cancelloc),
+                    MessageFormat.format(holder.layoutRequestReceivedBinding.getRoot().getResources().getString(R.string.qstCancel), users.getName()),
+                    holder.layoutRequestReceivedBinding.getRoot().getResources().getString(R.string.yes),
+                    holder.layoutRequestReceivedBinding.getRoot().getResources().getString(R.string.no),
+                    (dialogInterface, i) -> {
+                        if (i == -1) {
+
+
+                        } else if (i == -2) {
+                            dialogInterface.dismiss();
+
+
+                        }
+                    }));
+        }
 
     }
 
     @NonNull
     @Override
     public FriendRequestAdapter.RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new FriendRequestAdapter.RequestViewHolder((DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_request_received, parent, false)));
+        return new FriendRequestAdapter.RequestViewHolder((DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                R.layout.layout_request_received, parent, false)));
 
     }
 
@@ -140,7 +162,7 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
         final Button btnDecline;
         final Button btnSendLocation;
         final CircleImageView imgPhoto;
-        final ImageView imgDelete;
+        final ImageView imgDelete, imgIsSharingLocation;
         final TextView txtRequestDes;
         final ProgressBar pbImageLoading;
 
@@ -152,9 +174,11 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
             btnDecline = layoutRequestReceivedBinding.decline;
             btnSendLocation = layoutRequestReceivedBinding.btnSendLocation;
             imgPhoto = layoutRequestReceivedBinding.userImage;
+            imgIsSharingLocation = layoutRequestReceivedBinding.imgIsSharingLocation;
             imgDelete = layoutRequestReceivedBinding.imgDeleteUser;
             txtRequestDes = layoutRequestReceivedBinding.txtRequestDes;
             pbImageLoading = layoutRequestReceivedBinding.pbImageLoading;
+            imgIsSharingLocation.setVisibility(View.GONE);
 
             btnSendLocation.setOnClickListener(this);
 
@@ -174,11 +198,13 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
                     imgDelete.setVisibility(View.VISIBLE);
                     btnSendLocation.setVisibility(View.VISIBLE);
                     txtRequestDes.setVisibility(View.GONE);
+                    imgIsSharingLocation.setVisibility(View.VISIBLE);
 
 
                     break;
                 case "received":
 
+                    imgIsSharingLocation.setVisibility(View.GONE);
                     btnAccept.setVisibility(View.VISIBLE);
                     btnDecline.setVisibility(View.VISIBLE);
                     btnSendLocation.setVisibility(View.GONE);
@@ -192,6 +218,7 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
                 case "sent":
 
                     btnAccept.setVisibility(View.GONE);
+                    imgIsSharingLocation.setVisibility(View.GONE);
                     btnDecline.setText(R.string.cancelRequest);
                     btnSendLocation.setVisibility(View.GONE);
                     imgDelete.setVisibility(View.GONE);
@@ -212,6 +239,26 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
                     break;
             }
 
+
+        }
+
+        void isSharingLocation(boolean isSharing) {
+            if (!isSharing) {
+
+                imgIsSharingLocation.setVisibility(View.VISIBLE);
+                imgIsSharingLocation.setImageDrawable(ContextCompat.getDrawable(layoutRequestReceivedBinding.getRoot().getContext(), R.drawable.redoffline));
+                btnSendLocation.setText(R.string.sendLocation);
+
+            } else {
+
+
+                imgIsSharingLocation.setVisibility(View.VISIBLE);
+                imgIsSharingLocation.setImageDrawable(ContextCompat.getDrawable(layoutRequestReceivedBinding.getRoot().getContext(), R.drawable.green));
+                btnSendLocation.setText(R.string.stpLocSharing);
+                btnSendLocation.setTextColor(layoutRequestReceivedBinding.getRoot().getContext().getResources().getColor(R.color.white));
+
+
+            }
 
         }
 

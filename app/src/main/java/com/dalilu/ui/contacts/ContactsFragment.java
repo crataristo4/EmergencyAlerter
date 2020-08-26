@@ -110,6 +110,7 @@ public class ContactsFragment extends Fragment {
                             fromUser.put("latitude", latitude);
                             fromUser.put("longitude", longitude);
                             fromUser.put("timeStamp", GetTimeAgo.getTimeInMillis());
+                            fromUser.put("isSharingLocation", true);
 
                             //..location sent to ..(user who sent  will view this) //
                             Map<String, Object> toReceiver = new HashMap<>();
@@ -122,14 +123,15 @@ public class ContactsFragment extends Fragment {
                             toReceiver.put("longitude", longitude);
                             toReceiver.put("timeStamp", GetTimeAgo.getTimeInMillis());
                             toReceiver.put("photo", photo);
+                            toReceiver.put("isSharingLocation", true);
 
 
                             String locationDbId = locationDbRef.push().getKey();
                             assert locationDbId != null;
 
-                            locationDbRef.child(senderId).child(locationDbId).setValue(fromUser);
+                           /* locationDbRef.child(senderId).child(locationDbId).setValue(fromUser);
                             locationDbRef.child(getUserId).child(locationDbId).setValue(toReceiver);
-
+*/
                             //to cloud server
                             locationCollectionReference.document(senderId).collection(senderId).document(getUserId).set(fromUser);
                             locationCollectionReference.document(getUserId).collection(getUserId).document(senderId).set(toReceiver);

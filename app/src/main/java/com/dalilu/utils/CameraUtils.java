@@ -17,7 +17,6 @@ import androidx.core.content.FileProvider;
 
 import com.dalilu.BuildConfig;
 import com.dalilu.R;
-import com.dalilu.ui.activities.CameraActivity;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -93,13 +92,13 @@ public class CameraUtils {
         File mediaStorageDir = new File(
                 Environment
                         .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                CameraActivity.GALLERY_DIRECTORY_NAME);
+                AppConstants.GALLERY_DIRECTORY_NAME);
 
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.e(CameraActivity.GALLERY_DIRECTORY_NAME, R.string.oops
-                        + CameraActivity.GALLERY_DIRECTORY_NAME + R.string.directory);
+                Log.e(AppConstants.GALLERY_DIRECTORY_NAME, R.string.oops
+                        + AppConstants.GALLERY_DIRECTORY_NAME + R.string.directory);
                 return null;
             }
         }
@@ -109,12 +108,12 @@ public class CameraUtils {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
                 Locale.getDefault()).format(new Date());
         File mediaFile;
-        if (type == CameraActivity.MEDIA_TYPE_IMAGE) {
+        if (type == AppConstants.MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "IMG_" + timeStamp + "." + CameraActivity.IMAGE_EXTENSION);
-        } else if (type == CameraActivity.MEDIA_TYPE_VIDEO) {
+                    + "IMG_" + timeStamp + "." + AppConstants.IMAGE_EXTENSION);
+        } else if (type == AppConstants.MEDIA_TYPE_VIDEO) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "VID_" + timeStamp + "." + CameraActivity.VIDEO_EXTENSION);
+                    + "VID_" + timeStamp + "." + AppConstants.VIDEO_EXTENSION);
         } else {
             return null;
         }

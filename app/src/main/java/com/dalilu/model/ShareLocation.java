@@ -12,6 +12,7 @@ public class ShareLocation extends BaseObservable {
     public String date;
     public Object timeStamp;
     public double latitude, longitude;
+    private boolean isSharingLocation;
 
 
     public ShareLocation() {
@@ -93,5 +94,14 @@ public class ShareLocation extends BaseObservable {
 
     public void setTimeStamp(long time) {
         this.timeStamp = time;
+    }
+
+
+    public boolean isSharingLocation() {
+        return isSharingLocation;
+    }
+
+    public void setSharingLocation(boolean sharingLocation) {
+        isSharingLocation = sharingLocation;
     }
 }

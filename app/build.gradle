@@ -95,5 +95,8 @@ dependencies {
     //permission
     implementation 'com.karumi:dexter:6.2.1'
 
+    //exo player
+    implementation 'com.google.android.exoplayer:exoplayer:2.11.7'
+
 
 }

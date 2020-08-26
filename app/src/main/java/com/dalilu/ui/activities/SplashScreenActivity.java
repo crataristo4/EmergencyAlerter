@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.dalilu.R;
+import com.dalilu.databinding.ActivitySplashScreenBinding;
 import com.dalilu.ui.auth.RegisterPhoneNumberActivity;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
@@ -37,9 +38,16 @@ public class SplashScreenActivity extends AppCompatActivity {
         //overridePendingTransition(R.anim.fadein, R.anim.explode);
         super.onCreate(savedInstanceState);
 
-        com.dalilu.databinding.ActivitySplashScreenBinding activitySplashScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash_screen);
-        // activitySplashScreenBinding.txtAppName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.from_top));
-        activitySplashScreenBinding.txtAppName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fadein));
+        ActivitySplashScreenBinding activitySplashScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash_screen);
+        activitySplashScreenBinding.txtAppName.post(new Runnable() {
+            @Override
+            public void run() {
+                activitySplashScreenBinding.txtAppName.startAnimation(AnimationUtils.loadAnimation(SplashScreenActivity.this, R.anim.fadein));
+
+                activitySplashScreenBinding.txtAppName.startAnimation(AnimationUtils.loadAnimation(SplashScreenActivity.this, R.anim.from_top));
+
+            }
+        });
 
 
     }

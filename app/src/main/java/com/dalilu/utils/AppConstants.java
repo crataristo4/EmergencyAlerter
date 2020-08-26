@@ -32,6 +32,7 @@ public final class AppConstants {
     public static final String LATITUDE = "lat";
     public static final String LONGITUDE = "lng";
 
+
     /**
      * Constant used in the location settings dialog.
      */
