@@ -25,7 +25,7 @@ This app is available in both English and French
 ## USER INTERFACES
 ### All in One
 <p align="middle">
-  <img src="../bugBounty/screenshots/appgif.gif" height = "600" width="300"/>
+  <img src="../bugBounty/screenshots/dalilugif.gif" height = "600" width="300"/>
 </p>
 
 
