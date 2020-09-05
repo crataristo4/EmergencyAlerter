@@ -118,7 +118,7 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
             progressDialog.show();
 
             //  file path for the itemImage
-            final StorageReference fileReference = mStorageReference.child(uid + "." + uri.getLastPathSegment());
+            final StorageReference fileReference = mStorageReference.child(uid);
 
             String finalUserName = userName;
             fileReference.putFile(uri).continueWithTask(task -> {
