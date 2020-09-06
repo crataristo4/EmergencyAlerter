@@ -165,26 +165,6 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
 
                     });
 
-/*
-                    usersDbRef.setValue(accountInfo).addOnCompleteListener(task12 -> {
-                        if (task12.isSuccessful()) {
-                            progressDialog.dismiss();
-                            DisplayViewUI.displayToast(FinishAccountSetupActivity.this, getString(R.string.successFull));
-                            Intent intent = new Intent(FinishAccountSetupActivity.this, MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            FinishAccountSetupActivity.this.finishAffinity();
-
-
-                        } else {
-                            progressDialog.dismiss();
-                            DisplayViewUI.displayToast(FinishAccountSetupActivity.this, Objects.requireNonNull(task12.getException()).getMessage());
-
-                        }
-                    });
-*/
-
-
                 } else {
                     progressDialog.dismiss();
                     DisplayViewUI.displayToast(FinishAccountSetupActivity.this, Objects.requireNonNull(task.getException()).getMessage());

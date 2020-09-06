@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "974479079573-fqt7rtm76i95gil8sc67do01thv017cd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dalilu",
+            "certificate_hash": "d0923ca1937f2b4cf355a6b339784c3aa4f52511"
+          }
+        },
+        {
           "client_id": "974479079573-kkmcb7vmqtgdckmantl3uivf13s88n1s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -32,7 +40,7 @@
           "current_key": "AIzaSyCP95iTxOgEBu0LUIZKH6W0Ka0Sidie-rU"
         },
         {
-          "current_key": "AIzaSyCGpjB9VD94943d9kuQiZWzi4bCB35PBb0"
+          "current_key": "AIzaSyBJWNxgZgwnMqBUQ9U0NFFMD1W1g21QvwY"
         }
       ],
       "services": {
@@ -48,18 +56,26 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:974479079573:android:830275247494ff418a039c",
+        "mobilesdk_app_id": "1:974479079573:android:7dbcf990db3c0ded8a039c",
         "android_client_info": {
-          "package_name": "com.dalilu.police"
+          "package_name": "com.dalilu.commandCenter"
         }
       },
       "oauth_client": [
         {
-          "client_id": "974479079573-8t8afhhcpve7pk8lpruvafajice7is0a.apps.googleusercontent.com",
+          "client_id": "974479079573-3gjqh9kgph1j7ilkhv1tpfeim88hjj54.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.dalilu.police",
-            "certificate_hash": "391c446debad8e0268a66c30ed06ebf08df6b30c"
+            "package_name": "com.dalilu.commandCenter",
+            "certificate_hash": "d0923ca1937f2b4cf355a6b339784c3aa4f52511"
+          }
+        },
+        {
+          "client_id": "974479079573-rpkd6rmukshc9dg9lv53u8u9n3oksl6r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dalilu.commandCenter",
+            "certificate_hash": "da7561b20f26adaa23112ff0f75e340ff9f217a1"
           }
         },
         {
@@ -72,7 +88,7 @@
           "current_key": "AIzaSyCP95iTxOgEBu0LUIZKH6W0Ka0Sidie-rU"
         },
         {
-          "current_key": "AIzaSyCGpjB9VD94943d9kuQiZWzi4bCB35PBb0"
+          "current_key": "AIzaSyBJWNxgZgwnMqBUQ9U0NFFMD1W1g21QvwY"
         }
       ],
       "services": {
