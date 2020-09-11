@@ -47,10 +47,12 @@ import java.util.ArrayList;
 
 public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final ArrayList<AlertItems> dataSet;
+    Context context;
 
 
     public HomeRecyclerAdapter(ArrayList<AlertItems> data, Context context) {
         this.dataSet = data;
+        this.context = context;
 
     }
 
@@ -77,113 +79,20 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     }
 
-    @SuppressLint({"CheckResult", "UseCompatLoadingForDrawables"})
-    @Override
-    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int listPosition) {
-        //  String uid = MainActivity.uid;
+    public static void numOfComments(TextView txtComments, String postId) {
 
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(DisplayViewUI.getRandomDrawableColor());
-        requestOptions.error(DisplayViewUI.getRandomDrawableColor());
-        requestOptions.centerCrop();
+        CollectionReference commentsCf = FirebaseFirestore.getInstance().collection("Comments").document(postId).collection(postId);
 
-        AlertItems object = dataSet.get(listPosition);
-        if (object != null) {
+        commentsCf.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
 
-            switch (object.type) {
-                case AppConstants.VIDEO_TYPE:
+                txtComments.setText(MessageFormat.format("{0} Comments", task.getResult().size()));
 
-                    //bind data in xml
-                    ((VideoTypeViewHolder) holder).videoTypeBinding.setVideoType(object);
-                    //show time
-                    ((VideoTypeViewHolder) holder).videoTypeBinding.txtTime.setText(GetTimeAgo.getTimeAgo(object.getTimeStamp()));
-                    //load users images into views
-                    Glide.with(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getContext())
-                            .load(object.getUserPhotoUrl())
-                            .thumbnail(0.5f)
-                            .error(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getResources().getDrawable(R.drawable.photo))
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(((VideoTypeViewHolder) holder).videoTypeBinding.imgUserPhoto);
-
-                    HttpProxyCacheServer proxy = Dalilu.getProxy(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getContext());
-                    String proxyUrl = proxy.getProxyUrl(object.getUrl());
-
-
-                    ((VideoTypeViewHolder) holder).videoView.setVideoPath(proxyUrl);
-                    //   ((VideoTypeViewHolder) holder).videoView.requestFocusFromTouch();
-
-                    MediaController mediaController = new MediaController(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getContext());
-                    ((VideoTypeViewHolder) holder).videoView.setMediaController(mediaController);
-                    mediaController.setAnchorView(((VideoTypeViewHolder) holder).videoView);
-                    FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-                    lp.gravity = Gravity.BOTTOM;
-                    mediaController.setLayoutParams(lp);
-                    ((ViewGroup) mediaController.getParent()).removeView(mediaController);
-
-                    ((VideoTypeViewHolder) holder).frameLayout.addView(mediaController);
-
-
-                    break;
-                case AppConstants.IMAGE_TYPE:
-                    //bind data in xml
-                    ((ImageTypeViewHolder) holder).imageTypeBinding.setImageType(object);
-                    ((ImageTypeViewHolder) holder).imageTypeBinding.txtTime.setText(GetTimeAgo.getTimeAgo(object.getTimeStamp()));
-                    //load user photo
-                    Glide.with(((ImageTypeViewHolder) holder).imageTypeBinding.getRoot().getContext())
-                            .load(object.getUserPhotoUrl())
-                            .thumbnail(0.5f)
-                            .error(((ImageTypeViewHolder) holder).imageTypeBinding.getRoot().getResources().getDrawable(R.drawable.photo))
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(((ImageTypeViewHolder) holder).imageTypeBinding.imgUserPhoto);
-
-                    //load images
-                    Glide.with(((ImageTypeViewHolder) holder).imageTypeBinding.getRoot().getContext())
-                            .load(object.getUrl())
-                            .thumbnail(0.5f)
-                            .apply(requestOptions)
-                            .listener(new RequestListener<Drawable>() {
-                                @Override
-                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-
-                                    if (isFirstResource) {
-                                        ((ImageTypeViewHolder) holder).imageTypeBinding.progressBar.setVisibility(View.GONE);
-
-                                    }
-                                    ((ImageTypeViewHolder) holder).imageTypeBinding.progressBar.setVisibility(View.VISIBLE);
-
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                    ((ImageTypeViewHolder) holder).imageTypeBinding.progressBar.setVisibility(View.INVISIBLE);
-                                    return false;
-                                }
-                            }).transition(DrawableTransitionOptions.withCrossFade()).optionalCenterCrop()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into((((ImageTypeViewHolder) holder).imageTypeBinding.imgContentPhoto));
-
-
-                    ((ImageTypeViewHolder) holder).numOfComments(((ImageTypeViewHolder) holder).txtComments, object.getId());
-
-                    ((ImageTypeViewHolder) holder).txtComments.setOnClickListener(view -> {
-
-                        Intent commentsIntent = new Intent(view.getContext(), CommentsActivity.class);
-                        commentsIntent.putExtra("alertItemId", object.getId());
-                        commentsIntent.putExtra("alertPhotoUrl", object.getUrl());
-                        commentsIntent.putExtra("address", object.address);
-                        commentsIntent.putExtra("datePosted", object.getDateReported());
-
-                        view.getContext().startActivity(commentsIntent);
-
-
-                    });
-
-
-                    break;
 
             }
-        }
+
+        });
+
 
     }
 
@@ -237,6 +146,142 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     }
 
+    @SuppressLint({"CheckResult", "UseCompatLoadingForDrawables"})
+    @Override
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int listPosition) {
+        //  String uid = MainActivity.uid;
+
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.placeholder(DisplayViewUI.getRandomDrawableColor());
+        requestOptions.error(DisplayViewUI.getRandomDrawableColor());
+        requestOptions.centerCrop();
+
+
+        Intent commentsIntent = new Intent(context, CommentsActivity.class);
+
+
+        AlertItems object = dataSet.get(listPosition);
+        if (object != null) {
+
+
+            commentsIntent.putExtra("id", object.getId());
+            commentsIntent.putExtra("url", object.getUrl());
+            commentsIntent.putExtra("address", object.address);
+            commentsIntent.putExtra("datePosted", object.getDateReported());
+
+
+            switch (object.type) {
+                case AppConstants.VIDEO_TYPE:
+
+                    //bind data in xml
+                    ((VideoTypeViewHolder) holder).videoTypeBinding.setVideoType(object);
+                    //show time
+                    ((VideoTypeViewHolder) holder).videoTypeBinding.txtTime.setText(GetTimeAgo.getTimeAgo(object.getTimeStamp()));
+                    //load users images into views
+                    Glide.with(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getContext())
+                            .load(object.getUserPhotoUrl())
+                            .thumbnail(0.5f)
+                            .error(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getResources().getDrawable(R.drawable.photo))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(((VideoTypeViewHolder) holder).videoTypeBinding.imgUserPhoto);
+
+                    HttpProxyCacheServer proxy = Dalilu.getProxy(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getContext());
+                    String proxyUrl = proxy.getProxyUrl(object.getUrl());
+
+
+                    ((VideoTypeViewHolder) holder).videoView.setVideoPath(proxyUrl);
+                    //   ((VideoTypeViewHolder) holder).videoView.requestFocusFromTouch();
+
+                    MediaController mediaController = new MediaController(((VideoTypeViewHolder) holder).videoTypeBinding.getRoot().getContext());
+                    ((VideoTypeViewHolder) holder).videoView.setMediaController(mediaController);
+                    mediaController.setAnchorView(((VideoTypeViewHolder) holder).videoView);
+                    FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                    lp.gravity = Gravity.BOTTOM;
+                    mediaController.setLayoutParams(lp);
+                    ((ViewGroup) mediaController.getParent()).removeView(mediaController);
+
+                    numOfComments(((VideoTypeViewHolder) holder).txtComments, object.getId());
+
+                    ((VideoTypeViewHolder) holder).txtComments.setOnClickListener(view -> {
+                                commentsIntent.putExtra("type", AppConstants.VIDEO_EXTENSION);
+                                view.getContext().startActivity(commentsIntent);
+
+                            }
+
+
+                    );
+
+                    ((VideoTypeViewHolder) holder).frameLayout.addView(mediaController);
+
+
+                    break;
+                case AppConstants.IMAGE_TYPE:
+                    //bind data in xml
+                    ((ImageTypeViewHolder) holder).imageTypeBinding.setImageType(object);
+                    ((ImageTypeViewHolder) holder).imageTypeBinding.txtTime.setText(GetTimeAgo.getTimeAgo(object.getTimeStamp()));
+                    //load user photo
+                    Glide.with(((ImageTypeViewHolder) holder).imageTypeBinding.getRoot().getContext())
+                            .load(object.getUserPhotoUrl())
+                            .thumbnail(0.5f)
+                            .error(((ImageTypeViewHolder) holder).imageTypeBinding.getRoot().getResources().getDrawable(R.drawable.photo))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(((ImageTypeViewHolder) holder).imageTypeBinding.imgUserPhoto);
+
+                    //load images
+                    Glide.with(((ImageTypeViewHolder) holder).imageTypeBinding.getRoot().getContext())
+                            .load(object.getUrl())
+                            .thumbnail(0.5f)
+                            .apply(requestOptions)
+                            .listener(new RequestListener<Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+
+                                    if (isFirstResource) {
+                                        ((ImageTypeViewHolder) holder).imageTypeBinding.progressBar.setVisibility(View.GONE);
+
+                                    }
+                                    ((ImageTypeViewHolder) holder).imageTypeBinding.progressBar.setVisibility(View.VISIBLE);
+
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    ((ImageTypeViewHolder) holder).imageTypeBinding.progressBar.setVisibility(View.INVISIBLE);
+                                    return false;
+                                }
+                            }).transition(DrawableTransitionOptions.withCrossFade()).optionalCenterCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into((((ImageTypeViewHolder) holder).imageTypeBinding.imgContentPhoto));
+
+
+                    numOfComments(((ImageTypeViewHolder) holder).txtComments, object.getId());
+
+                    ((ImageTypeViewHolder) holder).txtComments.setOnClickListener(view -> {
+
+                        commentsIntent.putExtra("type", AppConstants.IMAGE_EXTENSION);
+
+
+                       /* Intent commentsIntent = new Intent(view.getContext(), CommentsActivity.class);
+                        commentsIntent.putExtra("id", object.getId());
+                        commentsIntent.putExtra("type", AppConstants.IMAGE_TYPE);
+                        commentsIntent.putExtra("url", object.getUrl());
+                        commentsIntent.putExtra("address", object.address);
+                        commentsIntent.putExtra("datePosted", object.getDateReported());*/
+
+                        view.getContext().startActivity(commentsIntent);
+
+
+                    });
+
+
+                    break;
+
+            }
+        }
+
+    }
+
     //view holder for images
     static class ImageTypeViewHolder extends RecyclerView.ViewHolder {
         final ImageTypeBinding imageTypeBinding;
@@ -252,6 +297,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         }
 
+/*
         private void numOfComments(TextView txtComments, String postId) {
 
             CollectionReference commentsCf = FirebaseFirestore.getInstance().collection("Comments").document(postId).collection(postId);
@@ -268,6 +314,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
         }
+*/
 
 
       /*  private void numOfComments(TextView txtComments, String postId) {
@@ -291,6 +338,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
     }
+
 
     //loading view holder
     static class LoadingViewHolder extends RecyclerView.ViewHolder {

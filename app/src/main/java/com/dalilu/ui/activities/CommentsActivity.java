@@ -11,17 +11,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.dalilu.R;
 import com.dalilu.adapters.CommentsAdapter;
 import com.dalilu.model.Message;
@@ -43,7 +42,6 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -188,16 +186,6 @@ public class CommentsActivity extends AppCompatActivity {
         btnRecord.setOnClickListener(v -> voiceRecordingAction());
         pd = DisplayViewUI.displayProgress(this, getResources().getString(R.string.uploadingPleaseWait));
 
-        TextView txtItemDes = findViewById(R.id.txtItemDescription);
-        TextView txtDatePosted = findViewById(R.id.txtDatePosted);
-        ImageView imgItemImage = findViewById(R.id.imgItemImage);
-
-        txtItemDes.setText(MessageFormat.format("{0}{1}", getString(R.string.loc), getAddress));
-        txtDatePosted.setText(MessageFormat.format("{0}{1}", getString(R.string.dt), getDatePosted));
-        Glide.with(this)
-                .load(getAlertPhotoUrl).thumbnail(0.5f)
-                .centerCrop()
-                .into(imgItemImage);
 
         findViewById(R.id.btnComment).setOnClickListener(v -> addComment());
 
@@ -215,8 +203,6 @@ public class CommentsActivity extends AppCompatActivity {
 
         adapter = new CommentsAdapter(commentList, CommentsActivity.this);
         recyclerView.setAdapter(adapter);
-
-
 
 
     }
@@ -245,7 +231,7 @@ public class CommentsActivity extends AppCompatActivity {
                 emojiconEditText.setHint(R.string.rcAud);
                 emojiconEditText.setHintTextColor(getResources().getColor(R.color.colorRed));
                 emojiconEditText.setEnabled(false);
-                btnRecord.setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_black_24px));
+                btnRecord.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_stop_black_24px));
 
 
                 initializeMediaRecord();
@@ -255,7 +241,7 @@ public class CommentsActivity extends AppCompatActivity {
                 emojiconEditText.setHint(getResources().getString(R.string.type_your_comments_here));
                 emojiconEditText.setHintTextColor(getResources().getColor(R.color.black));
                 emojiconEditText.setEnabled(true);
-                btnRecord.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_keyboard_voice_24));
+                btnRecord.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_keyboard_voice_24));
                 stopRecordingAudio();
                 uploadAudioRecording(Uri.fromFile(new File(recordPath)));
             }
@@ -295,55 +281,29 @@ public class CommentsActivity extends AppCompatActivity {
             }
             return filePath.getDownloadUrl();
 
-        }).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
+        }).addOnSuccessListener(this, uri1 -> {
+                    pd.dismiss();
+                    DisplayViewUI.displayToast(CommentsActivity.this, getString(R.string.successFull));
 
+                    Uri downLoadUri = Uri.parse(uri1.toString());
+                    assert downLoadUri != null;
+                    String url = downLoadUri.toString();
 
-                Uri downLoadUri = task.getResult();
-                assert downLoadUri != null;
-                String url = downLoadUri.toString();
+                    Map<String, Object> uploadAudio = new HashMap<>();
+                    uploadAudio.put("userName", name);
+                    uploadAudio.put("url", url);
+                    uploadAudio.put("audio", "audio");
+                    uploadAudio.put("timeStamp", GetTimeAgo.getTimeInMillis());
+                    uploadAudio.put("messageDateTime", dateTime);
 
-                Map<String, Object> uploadAudio = new HashMap<>();
-                uploadAudio.put("userName", name);
-                uploadAudio.put("url", url);
-                uploadAudio.put("audio", "audio");
-                uploadAudio.put("timeStamp", GetTimeAgo.getTimeInMillis());
-                uploadAudio.put("messageDateTime", dateTime);
+                    commentsRef.add(uploadAudio);
 
-                commentsRef.add(uploadAudio).addOnCompleteListener(task1 -> {
+                }
 
-                    if (task1.isSuccessful()) {
-                        pd.dismiss();
-                        DisplayViewUI.displayToast(CommentsActivity.this, getString(R.string.successFull));
-                    } else {
-                        pd.dismiss();
-                        DisplayViewUI.displayToast(CommentsActivity.this, Objects.requireNonNull(task.getException()).getMessage());
+        ).addOnFailureListener(this, e -> {
 
-                    }
-                });
-
-               /* databaseReference.child(randomId).setValue(uploadAudio).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-
-                        if (task.isSuccessful()) {
-                            pd.dismiss();
-                            DisplayViewUI.displayToast(CommentsActivity.this, getString(R.string.successFull));
-                        } else {
-                            pd.dismiss();
-                            DisplayViewUI.displayToast(CommentsActivity.this, Objects.requireNonNull(task.getException()).getMessage());
-
-
-                        }
-                    }
-                });
-*/
-
-            } else {
-                pd.dismiss();
-                DisplayViewUI.displayToast(CommentsActivity.this, Objects.requireNonNull(task.getException()).getMessage());
-
-            }
+            pd.dismiss();
+            DisplayViewUI.displayToast(CommentsActivity.this, Objects.requireNonNull(e.getMessage()));
 
         });
 

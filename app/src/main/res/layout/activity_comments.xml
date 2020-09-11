@@ -33,28 +33,6 @@
         app:layout_constraintTop_toBottomOf="@+id/commentsToolBar">
 
 
-        <TextView
-            android:id="@+id/txtItemDescription"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:padding="@dimen/eightDp"
-            android:textColor="@color/colorRed"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imgItemImage"
-            app:layout_constraintTop_toTopOf="@+id/imgItemImage" />
-
-
-        <ImageView
-            android:id="@+id/imgItemImage"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/comments"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="0dp"
@@ -62,20 +40,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imgItemImage" />
-
-        <TextView
-            android:id="@+id/txtDatePosted"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="@+id/imgItemImage"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imgItemImage"
-            app:layout_constraintTop_toBottomOf="@+id/txtItemDescription" />
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
