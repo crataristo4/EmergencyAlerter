@@ -39,8 +39,6 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -113,7 +111,6 @@ public class MainActivity extends BaseActivity {
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
 
-        DatabaseReference locationDbRef = FirebaseDatabase.getInstance().getReference().child("Locations");
         alertsCollectionReference = FirebaseFirestore.getInstance().collection("Alerts");
         locationCollectionDbRef = FirebaseFirestore.getInstance().collection("Locations");
 
@@ -252,7 +249,6 @@ public class MainActivity extends BaseActivity {
         intent.putExtra(AppConstants.LATITUDE, latitude);
         intent.putExtra(AppConstants.LONGITUDE, longitude);
         intent.putExtra(AppConstants.UID, userId);
-
 
         startActivity(intent);
 

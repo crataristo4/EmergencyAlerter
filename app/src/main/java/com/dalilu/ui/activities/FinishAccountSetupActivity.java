@@ -49,11 +49,6 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
 
         Intent getUserData = getIntent();
         if (getUserData != null) {
-           /* FirebaseAuth mAuth = FirebaseAuth.getInstance();
-            FirebaseUser user = mAuth.getCurrentUser();
-            assert user != null;
-            uid = user.getUid();*/
-
             uid = getUserData.getStringExtra(AppConstants.UID);
             phoneNumber = getUserData.getStringExtra(AppConstants.PHONE_NUMBER);
         }

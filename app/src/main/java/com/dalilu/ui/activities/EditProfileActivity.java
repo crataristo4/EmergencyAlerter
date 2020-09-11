@@ -3,8 +3,10 @@ package com.dalilu.ui.activities;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -17,31 +19,35 @@ import com.dalilu.R;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.graphics.Bitmap.CompressFormat;
+
 public class EditProfileActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     private CircleImageView imgUserPhoto;
     private StorageReference mStorageReference;
-    private DatabaseReference usersDbRef;
     private CollectionReference usersCollection;
     private String uid;
     private String getImageUri;
     private String phoneNumber;
     private String userPhotoUrl;
+    private static final String TAG = "EditProfileActivity";
     private Uri uri;
     private TextInputLayout txtUserName;
+    String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +67,13 @@ public class EditProfileActivity extends AppCompatActivity {
 
             Objects.requireNonNull(txtUserName.getEditText()).setText(userName);
             Objects.requireNonNull(activityEditProfileBinding.txtPhone.getEditText()).setText(phoneNumber);
-            Glide.with(this).load(userPhotoUrl)
-                    .error(R.drawable.photo).into(imgUserPhoto);
+
+            runOnUiThread(() -> Glide.with(EditProfileActivity.this)
+                    .load(userPhotoUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.photo)
+                    .into(imgUserPhoto));
+
         }
 
 
@@ -74,8 +85,6 @@ public class EditProfileActivity extends AppCompatActivity {
         imgUserPhoto.setOnClickListener(view -> DisplayViewUI.openGallery(EditProfileActivity.this));
 
         usersCollection = FirebaseFirestore.getInstance().collection("Users");
-
-
         //storage reference
         mStorageReference = FirebaseStorage.getInstance().getReference("user photos");
 
@@ -99,7 +108,11 @@ public class EditProfileActivity extends AppCompatActivity {
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(imgUserPhoto);
 
-                uploadFile();
+                try {
+                    uploadFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 assert result != null;
@@ -111,38 +124,86 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
     private void updateName(View view) {
-        String userName = Objects.requireNonNull(txtUserName.getEditText()).getText().toString();
-        progressDialog.show();
+        userName = Objects.requireNonNull(txtUserName.getEditText()).getText().toString();
+        //  progressDialog.show();
         //validations for user name
         if (!userName.trim().isEmpty()) {
+            runOnUiThread(() -> {
+                DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.successFull));
+                Map<String, Object> accountInfo = new HashMap<>();
+                accountInfo.put("userName", userName);
+                usersCollection.document(uid).update(accountInfo);
+            });
 
-            Map<String, Object> accountInfo = new HashMap<>();
-            accountInfo.put("userName", userName);
-            usersCollection.document(uid).update(accountInfo);
-            DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.successFull));
-            Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
-            intent.putExtra(AppConstants.UID, uid);
-            intent.putExtra(AppConstants.USER_NAME, userName);
-            intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
-            intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
-            startActivity(intent);
-            EditProfileActivity.this.finishAffinity();
+
+            //  onUpdateDone();
+
 
         }
     }
 
 
-    private void uploadFile() {
+    void onUpdateDone() {
+        Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
+        intent.putExtra(AppConstants.UID, uid);
+        intent.putExtra(AppConstants.USER_NAME, userName);
+        intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
+        intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
+        startActivity(intent);
+        EditProfileActivity.this.finishAffinity();
 
+    }
+
+
+    private void uploadFile() throws IOException {
+        progressDialog.show();
+
+        Bitmap bitmap;
         //push to db
         if (uri != null) {
 
-            progressDialog.show();
+            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(CompressFormat.JPEG, 75, byteArrayOutputStream);
+
+            byte[] fileInBytes = byteArrayOutputStream.toByteArray();
+
+            final StorageReference fileReference = mStorageReference.child(uid);
+            fileReference.putBytes(fileInBytes).continueWithTask(task -> {
+                if (!task.isSuccessful()) {
+                    progressDialog.dismiss();
+                    DisplayViewUI.displayToast(EditProfileActivity.this, Objects.requireNonNull(task.getException()).getMessage());
+
+                }
+                return fileReference.getDownloadUrl();
+
+            }).addOnSuccessListener(uri -> {
+                progressDialog.dismiss();
+
+                Uri downLoadUri = Uri.parse(uri.toString());
+                assert downLoadUri != null;
+                getImageUri = downLoadUri.toString();
+
+                Map<String, Object> accountInfo = new HashMap<>();
+                accountInfo.put("userPhotoUrl", getImageUri);
+
+                usersCollection.document(uid).update(accountInfo);
+
+                DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.successFull));
+                //  onUpdateDone();
+
+
+            }).addOnFailureListener(this, e -> {
+                progressDialog.dismiss();
+                DisplayViewUI.displayToast(EditProfileActivity.this, Objects.requireNonNull(e.getMessage()));
+
+            });
+
 
             //  file path for the itemImage
-            final StorageReference fileReference = mStorageReference.child(uid + "." + uri.getLastPathSegment());
+            // final StorageReference fileReference = mStorageReference.child(uid + "." + uri.getLastPathSegment());
 
-            fileReference.putFile(uri).continueWithTask(task -> {
+          /*  fileReference.putFile(uri).continueWithTask(task -> {
                 if (!task.isSuccessful()) {
                     progressDialog.dismiss();
                     DisplayViewUI.displayToast(EditProfileActivity.this, Objects.requireNonNull(task.getException()).getMessage());
@@ -185,7 +246,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 }
 
-            });
+            });*/
         } else {
             DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.plsSlct));
         }

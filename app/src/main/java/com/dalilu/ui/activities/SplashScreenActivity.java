@@ -79,10 +79,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                                 if (task1.isSuccessful()) {
                                     DocumentSnapshot document = task1.getResult();
                                     if (document != null && document.exists()) {
-                                        //Log.d("userName", Objects.requireNonNull(document.getString("userName")));
-                                        //Log.d("phone", Objects.requireNonNull(document.getString("phoneNumber")));
-                                        //Log.d("photo", Objects.requireNonNull(document.getString("userPhotoUrl")));
-
                                         userPhotoUrl = Objects.requireNonNull(document.getString("userPhotoUrl"));
                                         userName = Objects.requireNonNull(document.getString("userName"));
                                         phoneNumber = Objects.requireNonNull(document.getString("phoneNumber"));
