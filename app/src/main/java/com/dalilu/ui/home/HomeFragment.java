@@ -48,7 +48,14 @@ public class HomeFragment extends Fragment {
     private final CollectionReference collectionReference = FirebaseFirestore
             .getInstance()
             .collection("Alerts");
+    ListenerRegistration registration;
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -83,51 +90,7 @@ public class HomeFragment extends Fragment {
         // Create a query against the collection.
         Query query = collectionReference.orderBy("timeStamp", Query.Direction.DESCENDING).limit(INITIAL_LOAD);
 
-      /*  query.get().addOnSuccessListener(queryDocumentSnapshots -> {
-            // arrayList.clear();
-            assert queryDocumentSnapshots != null;
-            for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
-
-                AlertItems alertItems = ds.toObject(AlertItems.class);
-                //get data from model
-                String address = alertItems.getAddress();
-                String userName = alertItems.getUserName();
-                String phoneNumber = alertItems.getPhoneNumber();
-                long timeStamp = alertItems.getTimeStamp();
-                String userPhotoUrl = alertItems.getUserPhotoUrl();
-                String url = alertItems.getUrl();
-
-                String id = ds.getId();
-                String dateReported = alertItems.getDateReported();
-//group data by images
-                if (ds.getData().containsKey("image")) {
-                    arrayList.add(new AlertItems(AppConstants.IMAGE_TYPE,
-                            userName, userPhotoUrl, url, timeStamp, address, id, dateReported));
-
-                }
-                //group data by Videos
-                else if (ds.getData().containsKey("video")) {
-                    arrayList.add(new AlertItems(AppConstants.VIDEO_TYPE,
-                            userName,
-                            url,
-                            userPhotoUrl,
-                            timeStamp,
-                            address
-                    ));
-                }
-
-
-
-            }
-
-            adapter.notifyDataSetChanged();
-        });*/
-
-        // arrayList.clear();
-        //get data from model
-        //group data by images
-        //group data by Videos
-        ListenerRegistration registration = query.addSnapshotListener((queryDocumentSnapshots, e) -> {
+        registration = query.addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (e != null) {
                 Log.w(TAG, "Listen failed.", e);
                 return;
@@ -152,14 +115,19 @@ public class HomeFragment extends Fragment {
 
 
                     arrayList.add(new AlertItems(AppConstants.IMAGE_TYPE,
-                            userName, userPhotoUrl, url, timeStamp, address, id, dateReported));
+                            userName,
+                            userPhotoUrl,
+                            url,
+                            timeStamp,
+                            address,
+                            id, dateReported));
 
                 }
                 //group data by Videos
                 else if (ds.getData().containsKey("video")) {
 
-
                     arrayList.add(new AlertItems(AppConstants.VIDEO_TYPE,
+                            id,
                             userName,
                             url,
                             userPhotoUrl,
@@ -181,7 +149,7 @@ public class HomeFragment extends Fragment {
     public void onStop() {
         super.onStop();
         //activityItemAdapter.stopListening();
-        //registration.remove();
+        registration.remove();
     }
 
     @Override

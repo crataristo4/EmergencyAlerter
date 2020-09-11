@@ -31,7 +31,6 @@ import com.dalilu.utils.GetTimeAgo;
 import com.dalilu.utils.PermissionUtils;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -55,7 +54,7 @@ import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 
 public class CommentsActivity extends AppCompatActivity {
-    private String getAlertItemId, getAlertPhotoUrl, getAddress, getDatePosted;
+    private String id, getAlertPhotoUrl, getAddress, getDatePosted;
     private CommentsAdapter adapter;
     private DatabaseReference databaseReference;
     private EmojiconEditText emojiconEditText;
@@ -79,7 +78,6 @@ public class CommentsActivity extends AppCompatActivity {
     private boolean isScrolling = false;
     private boolean isLastItemReached = false;
     private CollectionReference commentsRef;
-    private DocumentReference documentReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,19 +86,15 @@ public class CommentsActivity extends AppCompatActivity {
 
         Toolbar commentToolBar = findViewById(R.id.commentsToolBar);
         setSupportActionBar(commentToolBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-
 
         initViews();
-        // loadData();
-        //   runOnUiThread(this::fetchCommentsData);
-        fetchCommentsData();
+        runOnUiThread(this::fetchCommentsData);
+        // fetchCommentsData();
 
 
     }
 
     private void fetchCommentsData() {
-
 
         // Create a query against the collection.
         Query query = commentsRef.orderBy("timeStamp", Query.Direction.DESCENDING);
@@ -149,28 +143,14 @@ public class CommentsActivity extends AppCompatActivity {
         Intent getCommentsIntent = getIntent();
         if (getCommentsIntent != null) {
 
-            getAlertItemId = getCommentsIntent.getStringExtra("alertItemId");
+            id = getCommentsIntent.getStringExtra("id");
             getAddress = getCommentsIntent.getStringExtra("address");
             getDatePosted = getCommentsIntent.getStringExtra("datePosted");
-            getAlertPhotoUrl = getCommentsIntent.getStringExtra("alertPhotoUrl");
+
         }
 
-        commentsRef = FirebaseFirestore.getInstance().collection("Comments").document(getAlertItemId).collection(getAlertItemId);
+        commentsRef = FirebaseFirestore.getInstance().collection("Comments").document(id).collection(id);
 
-        commentsRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                int count = 0;
-                Log.i(TAG, "Num of items: " + task.getResult().size());
-                for (DocumentSnapshot ds : task.getResult()) {
-                    count++;
-
-
-                }
-
-
-            }
-
-        });
 
         StorageReference audioFilePath = FirebaseStorage.getInstance().getReference().child("audio");
         filePath = audioFilePath.child(UUID.randomUUID().toString());
@@ -183,7 +163,13 @@ public class CommentsActivity extends AppCompatActivity {
 
         recording = false;
         btnRecord = findViewById(R.id.imgRecordAudio);
-        btnRecord.setOnClickListener(v -> voiceRecordingAction());
+        btnRecord.setOnClickListener(v -> {
+            try {
+                voiceRecordingAction();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         pd = DisplayViewUI.displayProgress(this, getResources().getString(R.string.uploadingPleaseWait));
 
 
@@ -214,7 +200,7 @@ public class CommentsActivity extends AppCompatActivity {
         mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
     }
 
-    private void voiceRecordingAction() {
+    private void voiceRecordingAction() throws IOException {
 
         boolean isAndroidVersionNew = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1;
         if (isAndroidVersionNew) {
@@ -271,40 +257,47 @@ public class CommentsActivity extends AppCompatActivity {
 
     }
 
-    private void uploadAudioRecording(Uri uri) {
-        pd.show();
-        //upload audio to server
-        filePath.putFile(uri).continueWithTask(task -> {
-            if (!task.isSuccessful()) {
-                pd.dismiss();
+    private void uploadAudioRecording(Uri uri) throws IOException {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                pd.show();
+                //upload audio to server
+                filePath.putFile(uri).continueWithTask(task -> {
+                    if (!task.isSuccessful()) {
+                        pd.dismiss();
+
+                    }
+                    return filePath.getDownloadUrl();
+
+                }).addOnSuccessListener(CommentsActivity.this, uri1 -> {
+                            pd.dismiss();
+                            DisplayViewUI.displayToast(CommentsActivity.this, getString(R.string.successFull));
+
+                            Uri downLoadUri = Uri.parse(uri1.toString());
+                            assert downLoadUri != null;
+                            String url = downLoadUri.toString();
+
+                            Map<String, Object> uploadAudio = new HashMap<>();
+                            uploadAudio.put("userName", name);
+                            uploadAudio.put("url", url);
+                            uploadAudio.put("audio", "audio");
+                            uploadAudio.put("timeStamp", GetTimeAgo.getTimeInMillis());
+                            uploadAudio.put("messageDateTime", dateTime);
+
+                            commentsRef.add(uploadAudio);
+
+                        }
+
+                ).addOnFailureListener(CommentsActivity.this, e -> {
+
+                    pd.dismiss();
+                    DisplayViewUI.displayToast(CommentsActivity.this, Objects.requireNonNull(e.getMessage()));
+
+                });
 
             }
-            return filePath.getDownloadUrl();
-
-        }).addOnSuccessListener(this, uri1 -> {
-                    pd.dismiss();
-                    DisplayViewUI.displayToast(CommentsActivity.this, getString(R.string.successFull));
-
-                    Uri downLoadUri = Uri.parse(uri1.toString());
-                    assert downLoadUri != null;
-                    String url = downLoadUri.toString();
-
-                    Map<String, Object> uploadAudio = new HashMap<>();
-                    uploadAudio.put("userName", name);
-                    uploadAudio.put("url", url);
-                    uploadAudio.put("audio", "audio");
-                    uploadAudio.put("timeStamp", GetTimeAgo.getTimeInMillis());
-                    uploadAudio.put("messageDateTime", dateTime);
-
-                    commentsRef.add(uploadAudio);
-
-                }
-
-        ).addOnFailureListener(this, e -> {
-
-            pd.dismiss();
-            DisplayViewUI.displayToast(CommentsActivity.this, Objects.requireNonNull(e.getMessage()));
-
         });
 
 
@@ -341,7 +334,11 @@ public class CommentsActivity extends AppCompatActivity {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                voiceRecordingAction();
+                try {
+                    voiceRecordingAction();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
                 DisplayViewUI.displayToast(this, "Audio recording DENIED!!!");
 

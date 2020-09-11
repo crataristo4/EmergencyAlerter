@@ -159,16 +159,13 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         Intent commentsIntent = new Intent(context, CommentsActivity.class);
 
-
         AlertItems object = dataSet.get(listPosition);
         if (object != null) {
-
 
             commentsIntent.putExtra("id", object.getId());
             commentsIntent.putExtra("url", object.getUrl());
             commentsIntent.putExtra("address", object.address);
             commentsIntent.putExtra("datePosted", object.getDateReported());
-
 
             switch (object.type) {
                 case AppConstants.VIDEO_TYPE:
