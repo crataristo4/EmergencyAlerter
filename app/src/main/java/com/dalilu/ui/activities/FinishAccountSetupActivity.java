@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +27,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -53,7 +57,13 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
             phoneNumber = getUserData.getStringExtra(AppConstants.PHONE_NUMBER);
         }
 
-        activityFinishAccountSetupBinding.btnSave.setOnClickListener(view -> uploadFile());
+        activityFinishAccountSetupBinding.btnSave.setOnClickListener(view -> {
+            try {
+                uploadFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
 //select or capture photo
         activityFinishAccountSetupBinding.fabUploadPhoto.setOnClickListener(view -> DisplayViewUI.openGallery(FinishAccountSetupActivity.this));
@@ -94,7 +104,7 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
     }
 
 
-    private void uploadFile() {
+    private void uploadFile() throws IOException {
         String userName = Objects.requireNonNull(txtUserName.getEditText()).getText().toString();
         //validations for user name
         if (userName.trim().isEmpty()) {
@@ -105,6 +115,7 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
 
         }
 
+        Bitmap bitmap;
 
         //push to db
         if (uri != null) {
@@ -112,11 +123,15 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
             ProgressDialog progressDialog = DisplayViewUI.displayProgress(this, getString(R.string.saveDetails));
             progressDialog.show();
 
-            //  file path for the itemImage
-            final StorageReference fileReference = mStorageReference.child(uid);
+            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 75, byteArrayOutputStream);
 
+            byte[] fileInBytes = byteArrayOutputStream.toByteArray();
+
+            final StorageReference fileReference = mStorageReference.child(uid);
             String finalUserName = userName;
-            fileReference.putFile(uri).continueWithTask(task -> {
+            fileReference.putBytes(fileInBytes).continueWithTask(task -> {
                 if (!task.isSuccessful()) {
                     progressDialog.dismiss();
                     DisplayViewUI.displayToast(FinishAccountSetupActivity.this, Objects.requireNonNull(task.getException()).getMessage());
@@ -124,49 +139,39 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
                 }
                 return fileReference.getDownloadUrl();
 
-            }).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
+            }).addOnSuccessListener(uri -> {
+                progressDialog.dismiss();
 
-                    Uri downLoadUri = task.getResult();
-                    assert downLoadUri != null;
-                    getImageUri = downLoadUri.toString();
+                Uri downLoadUri = Uri.parse(uri.toString());
+                assert downLoadUri != null;
+                getImageUri = downLoadUri.toString();
 
-                    Map<String, Object> accountInfo = new HashMap<>();
-                    accountInfo.put("userPhotoUrl", getImageUri);
-                    accountInfo.put("userName", finalUserName);
-                    accountInfo.put("phoneNumber", phoneNumber);
-                    accountInfo.put("userId", uid);
+                Map<String, Object> accountInfo = new HashMap<>();
+                accountInfo.put("userPhotoUrl", getImageUri);
+                accountInfo.put("userName", finalUserName);
+                accountInfo.put("phoneNumber", phoneNumber);
+                accountInfo.put("userId", uid);
+
+                usersCollection.document(uid).set(accountInfo);
 
 
-                    usersCollection.document(uid).set(accountInfo).addOnCompleteListener(task1 -> {
+                DisplayViewUI.displayToast(FinishAccountSetupActivity.this, getString(R.string.successFull));
+                Intent intent = new Intent(FinishAccountSetupActivity.this, MainActivity.class);
+                intent.putExtra(AppConstants.UID, uid);
+                intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
+                intent.putExtra(AppConstants.USER_NAME, finalUserName);
+                intent.putExtra(AppConstants.USER_PHOTO_URL, getImageUri);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                FinishAccountSetupActivity.this.finishAffinity();
 
-                        if (task1.isSuccessful()) {
-                            progressDialog.dismiss();
-                            DisplayViewUI.displayToast(FinishAccountSetupActivity.this, getString(R.string.successFull));
-                            Intent intent = new Intent(FinishAccountSetupActivity.this, MainActivity.class);
-                            intent.putExtra(AppConstants.UID, uid);
-                            intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
-                            intent.putExtra(AppConstants.USER_NAME, finalUserName);
-                            intent.putExtra(AppConstants.USER_PHOTO_URL, getImageUri);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            FinishAccountSetupActivity.this.finishAffinity();
 
-                        } else {
-                            progressDialog.dismiss();
-                            DisplayViewUI.displayToast(FinishAccountSetupActivity.this, Objects.requireNonNull(task1.getException()).getMessage());
-
-                        }
-
-                    });
-
-                } else {
-                    progressDialog.dismiss();
-                    DisplayViewUI.displayToast(FinishAccountSetupActivity.this, Objects.requireNonNull(task.getException()).getMessage());
-
-                }
+            }).addOnFailureListener(this, e -> {
+                progressDialog.dismiss();
+                DisplayViewUI.displayToast(FinishAccountSetupActivity.this, Objects.requireNonNull(e.getMessage()));
 
             });
+
         } else {
             DisplayViewUI.displayToast(FinishAccountSetupActivity.this, getString(R.string.plsSlct));
         }
