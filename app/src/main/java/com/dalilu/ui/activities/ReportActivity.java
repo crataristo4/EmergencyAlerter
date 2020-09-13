@@ -90,17 +90,24 @@ public class ReportActivity extends AppCompatActivity {
             userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
             userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
             phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
-            state = getUserDetailsIntent.getStringExtra(AppConstants.STATE);
-            country = getUserDetailsIntent.getStringExtra(AppConstants.COUNTRY);
-            knownName = getUserDetailsIntent.getStringExtra(AppConstants.KNOWN_LOCATION);
-            latitude = getUserDetailsIntent.getDoubleExtra(AppConstants.LATITUDE, 0);
-            longitude = getUserDetailsIntent.getDoubleExtra(AppConstants.LONGITUDE, 0);
+            state = BaseActivity.state;
+            country = BaseActivity.country;
+            knownName = BaseActivity.state;
+            latitude = BaseActivity.latitude;
+            longitude = BaseActivity.longitude;
 
         }
 
         activityReportBinding.fabCamera.setOnClickListener(v -> {
             if (CameraUtils.checkPermissions(v.getContext())) {
-                captureImage();
+                if (String.valueOf(latitude) == null && String.valueOf(longitude) == null) {
+
+                    DisplayViewUI.displayToast(v.getContext(), "Sorry you cant report now.Try again");
+
+                } else {
+                    captureImage();
+
+                }
             } else {
                 requestCameraPermission(AppConstants.MEDIA_TYPE_IMAGE);
             }
@@ -220,7 +227,7 @@ public class ReportActivity extends AppCompatActivity {
         Bitmap bitmap;
         bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 75, byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream);
 
         byte[] fileInBytes = byteArrayOutputStream.toByteArray();
         //upload photo to server
