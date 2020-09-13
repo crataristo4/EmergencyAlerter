@@ -56,7 +56,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initViews() {
-        faBsMenu = activityMainBinding.fabsMenu;
+       // faBsMenu = activityMainBinding.fabsMenu;
         BottomNavigationView navView = activityMainBinding.navView;
         Menu menu = navView.getMenu();
         MenuItem menuItemHome = menu.findItem(R.id.navigation_home);
@@ -83,9 +83,11 @@ public class MainActivity extends BaseActivity {
         BadgeDrawable badgeDrawableFriends = navView.getOrCreateBadge(menuItemFriends.getItemId());
         badgeDrawableFriends.setBackgroundColor(getResources().getColor(R.color.black));
 
+/*
         activityMainBinding.searchContact.setOnClickListener(view -> startActivity(new Intent(view.getContext(), SearchContactActivity.class)));
+*/
 
-        activityMainBinding.logOut.setOnClickListener(view -> DisplayViewUI.displayAlertDialog(view.getContext(),
+    /*    activityMainBinding.logOut.setOnClickListener(view -> DisplayViewUI.displayAlertDialog(view.getContext(),
                 getString(R.string.logOut), getString(R.string.xcvv),
                 getString(R.string.logMeOut), getString(R.string.cancel),
                 (dialogInterface, i) -> {
@@ -101,7 +103,7 @@ public class MainActivity extends BaseActivity {
 
 
                 }));
-
+*/
         locationCollectionDbRef.document(userId).collection(userId).get().addOnCompleteListener(task -> {
             int numberOfItems = task.getResult().size();
             if (numberOfItems > 0)
@@ -117,13 +119,61 @@ public class MainActivity extends BaseActivity {
 
                 }));
 
-        activityMainBinding.report.setOnClickListener(v -> myIntent(ReportActivity.class));
+       /* activityMainBinding.report.setOnClickListener(v -> myIntent(ReportActivity.class));
 
         activityMainBinding.editProfile.setOnClickListener(view -> myIntent(EditProfileActivity.class));
-
+*/
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.menu_report:
+                myIntent(ReportActivity.class);
+                break;
+            case R.id.menu_search:
+                startActivity(new Intent(this, SearchContactActivity.class));
+                break;
+            case R.id.menu_edit_profile:
+                myIntent(EditProfileActivity.class);
+
+                break;
+
+            case R.id.menu_logout:
+                DisplayViewUI.displayAlertDialog(this,
+                        getString(R.string.logOut), getString(R.string.xcvv),
+                        getString(R.string.logMeOut), getString(R.string.cancel),
+                        (dialogInterface, i) -> {
+                            if (i == -1) {
+
+                                FirebaseAuth.getInstance().signOut();
+                                startActivity(new Intent(this, SplashScreenActivity.class)
+                                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                finish();
+                            } else if (i == -2) {
+                                dialogInterface.dismiss();
+                            }
+
+
+                        });
+
+                break;
+
+
+        }
+
+
+        return true;
+    }
 
     void myIntent(@NonNull Class ctx) {
 
@@ -139,7 +189,7 @@ public class MainActivity extends BaseActivity {
         intent.putExtra(AppConstants.LONGITUDE, BaseActivity.longitude);*/
 
         startActivity(intent);
-        finish();
+        // finish();
 
 
     }
@@ -148,9 +198,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (faBsMenu.isExpanded()) {
-            faBsMenu.collapse();
-        }
 
 
     }

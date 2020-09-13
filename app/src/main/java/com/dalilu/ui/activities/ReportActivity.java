@@ -473,13 +473,8 @@ public class ReportActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        // super.onBackPressed();
-        startActivity(new Intent(ReportActivity.this, MainActivity.class)
-                .putExtra(AppConstants.PHONE_NUMBER, phoneNumber)
-                .putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl)
-                .putExtra(AppConstants.USER_NAME, userName)
-                .putExtra(AppConstants.UID, userId));
-        finish();
+        super.onBackPressed();
+
     }
 
     /**
