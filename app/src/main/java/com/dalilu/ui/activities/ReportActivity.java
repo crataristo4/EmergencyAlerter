@@ -6,30 +6,30 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Address;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
-import com.bumptech.glide.Glide;
 import com.dalilu.R;
 import com.dalilu.databinding.ActivityReportBinding;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.CameraUtils;
 import com.dalilu.utils.DisplayViewUI;
 import com.dalilu.utils.GetTimeAgo;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -55,7 +55,7 @@ import java.util.UUID;
 
 import static android.provider.MediaStore.Images.Media.getBitmap;
 
-public class ReportActivity extends AppCompatActivity {
+public class ReportActivity extends BaseActivity {
 
     private static final String TAG = "ReportActivity";
     private static String imageStoragePath;
@@ -64,12 +64,15 @@ public class ReportActivity extends AppCompatActivity {
     private Uri uri = null;
     private ProgressDialog pd;
     private CollectionReference alertCollectionReference;
-    private String knownName, state, country, phoneNumber, userId, userName, userPhotoUrl;
+    // key to store image path in savedInstance state
+    public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
     private double latitude, longitude;
     private ImageView imgPhoto;
     private VideoView videoView;
     private Button btnUpload;
-
+    // Bitmap sampling size
+    public static final int BITMAP_SAMPLE_SIZE = 8;
+    private String knownName, state, address, country, phoneNumber, userId, userName, userPhotoUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,44 +80,44 @@ public class ReportActivity extends AppCompatActivity {
         activityReportBinding = DataBindingUtil.setContentView(this, R.layout.activity_report);
         setSupportActionBar(activityReportBinding.toolBarReport);
 
-
-        StorageReference imageStorageRef = FirebaseStorage.getInstance().getReference().child("alerts");
-        filePath = imageStorageRef.child(UUID.randomUUID().toString());
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("alerts");
-        alertCollectionReference = FirebaseFirestore.getInstance().collection("Alerts");
-        imgPhoto = activityReportBinding.imgAlertPhoto;
-        videoView = activityReportBinding.videoView;
-        btnUpload = activityReportBinding.btnUpload;
-
         Intent getUserDetailsIntent = getIntent();
         if (getUserDetailsIntent != null) {
             userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
             userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
             userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
             phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
+
+            address = BaseActivity.address;
             state = BaseActivity.state;
             country = BaseActivity.country;
-            knownName = BaseActivity.state;
+            knownName = BaseActivity.knownName;
             latitude = BaseActivity.latitude;
             longitude = BaseActivity.longitude;
 
+            Log.i(TAG, "---: " + userName + phoneNumber + userPhotoUrl + latitude + longitude + address + "--" + state + "__" + knownName);
+
         }
+
+
+        updateAddress();
+
+
+        StorageReference imageStorageRef = FirebaseStorage.getInstance().getReference().child("alerts");
+        filePath = imageStorageRef.child(UUID.randomUUID().toString());
+        alertCollectionReference = FirebaseFirestore.getInstance().collection("Alerts");
+        imgPhoto = activityReportBinding.imgAlertPhoto;
+        videoView = activityReportBinding.videoView;
+        btnUpload = activityReportBinding.btnUpload;
 
         activityReportBinding.fabCamera.setOnClickListener(v -> {
             if (CameraUtils.checkPermissions(v.getContext())) {
-                if (String.valueOf(latitude) == null && String.valueOf(longitude) == null) {
 
-                    DisplayViewUI.displayToast(v.getContext(), "Sorry you cant report now.Try again");
+                captureImage();
 
-                } else {
-                    captureImage();
-
-                }
             } else {
                 requestCameraPermission(AppConstants.MEDIA_TYPE_IMAGE);
             }
         });
-
 
         activityReportBinding.fabVideo.setOnClickListener(v -> {
             if (CameraUtils.checkPermissions(v.getContext())) {
@@ -123,6 +126,10 @@ public class ReportActivity extends AppCompatActivity {
                 requestCameraPermission(AppConstants.MEDIA_TYPE_VIDEO);
             }
         });
+
+        // restoring storage image path from saved instance state
+        // otherwise the path will be null on device rotation
+        restoreFromBundle(savedInstanceState);
 
 
     }
@@ -218,12 +225,43 @@ public class ReportActivity extends AppCompatActivity {
                 }).show();
     }
 
+
+    void updateAddress() {
+
+        if (address == null && knownName == null && state == null && country == null) {
+            try {
+                List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
+
+                if (addressList != null) {
+                    address = addressList.get(0).getAddressLine(0);
+                    state = addressList.get(0).getAdminArea();
+                    country = addressList.get(0).getCountryName();
+                    knownName = addressList.get(0).getFeatureName();
+
+                    Log.i(TAG, "Location: " + address + " --" + state + " --" + country + " --" + knownName);
+
+
+                }
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
     private void uploadToServer(Uri imageUri, String type) throws IOException {
         pd.show();
-        StringBuilder address = new StringBuilder();
-        address.append(knownName).append(",").append(state).append(",").append(country);
+        StringBuilder addressBuilder = new StringBuilder();
         @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:MM a");
         String dateReported = dateFormat.format(Calendar.getInstance().getTime());
+
+        updateAddress();
+
+        addressBuilder.append(knownName).append(",").append(state).append(",").append(country);
+
 
         if (type.equals("image")) {
 
@@ -256,16 +294,23 @@ public class ReportActivity extends AppCompatActivity {
                 alertItems.put("url", url);
                 alertItems.put(type, type);
                 alertItems.put("coordinates", new GeoPoint(latitude, longitude));
-                alertItems.put("address", address.toString());
+                alertItems.put("address", addressBuilder.toString());
                 alertItems.put("userId", userId);
                 alertItems.put("phoneNumber", phoneNumber);
                 alertItems.put("timeStamp", GetTimeAgo.getTimeInMillis());
                 alertItems.put("dateReported", dateReported);
+                alertItems.put("isSolved", false);
+
 
                 alertCollectionReference.add(alertItems);
                 String id = MainActivity.userId;
+                Log.i(TAG, "uploadToServer: " + addressBuilder.toString());
 
-                // startActivity(new Intent(ReportActivity.this, MainActivity.class));
+                startActivity(new Intent(ReportActivity.this, MainActivity.class)
+                        .putExtra(AppConstants.PHONE_NUMBER, phoneNumber)
+                        .putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl)
+                        .putExtra(AppConstants.USER_NAME, userName)
+                        .putExtra(AppConstants.UID, userId));
                 finish();
 
 
@@ -292,14 +337,13 @@ public class ReportActivity extends AppCompatActivity {
                     assert downLoadUri != null;
                     String url = downLoadUri.toString();
 
-
                     Map<String, Object> alertItems = new HashMap<>();
                     alertItems.put("userName", userName);
                     alertItems.put("userPhotoUrl", userPhotoUrl);
                     alertItems.put("url", url);
                     alertItems.put(type, type);
                     alertItems.put("coordinates", new GeoPoint(latitude, longitude));
-                    alertItems.put("address", address.toString());
+                    alertItems.put("address", addressBuilder.toString());
                     alertItems.put("userId", userId);
                     alertItems.put("phoneNumber", phoneNumber);
                     alertItems.put("timeStamp", GetTimeAgo.getTimeInMillis());
@@ -311,12 +355,15 @@ public class ReportActivity extends AppCompatActivity {
                     alertCollectionReference.add(alertItems).addOnCompleteListener(task2 -> {
 
                         if (task2.isSuccessful()) {
-                            String id = MainActivity.userId;
 
                             pd.dismiss();
                             DisplayViewUI.displayToast(ReportActivity.this, getString(R.string.reportSuccess));
 
-                            //  startActivity(new Intent(ReportActivity.this, MainActivity.class));
+                            startActivity(new Intent(ReportActivity.this, MainActivity.class)
+                                    .putExtra(AppConstants.PHONE_NUMBER, phoneNumber)
+                                    .putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl)
+                                    .putExtra(AppConstants.USER_NAME, userName)
+                                    .putExtra(AppConstants.UID, userId));
                             finish();
 
 
@@ -354,21 +401,23 @@ public class ReportActivity extends AppCompatActivity {
                 CameraUtils.refreshGallery(ReportActivity.this, imageStoragePath);
                 //CameraUtils.optimizeBitmap(10,imageStoragePath);
                 uri = CameraUtils.getOutputMediaFileUri(ReportActivity.this, new File(imageStoragePath));
-                imgPhoto.setVisibility(View.VISIBLE);
-                videoView.setVisibility(View.GONE);
-                Glide.with(ReportActivity.this).load(uri).into(activityReportBinding.imgAlertPhoto);
-
+                previewCapturedImage();
 
                 btnUpload.setOnClickListener(view -> {
                     //display loading
                     pd = DisplayViewUI.displayProgress(ReportActivity.this, getString(R.string.uploadingImage));
-
-//upload to server
-                    try {
-                        uploadToServer(uri, "image");
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if (address == null && knownName == null && state == null && country == null) {
+                        updateAddress();
+                    } else {
+                        //upload to server
+                        try {
+                            uploadToServer(uri, "image");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
+
+
                 });
 
 
@@ -390,22 +439,21 @@ public class ReportActivity extends AppCompatActivity {
 
                 uri = CameraUtils.getOutputMediaFileUri(ReportActivity.this, new File(imageStoragePath));
 
-                videoView.setVisibility(View.VISIBLE);
-                imgPhoto.setVisibility(View.GONE);
-                videoView.setVideoPath(imageStoragePath);
-                videoView.start();
+                previewVideo();
 
                 btnUpload.setOnClickListener(view -> {
                     //display loading
                     pd = DisplayViewUI.displayProgress(ReportActivity.this, getString(R.string.uploadingVideo));
-
-                    //upload to server
-                    try {
-                        uploadToServer(uri, "video");
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if (address == null && knownName == null && state == null && country == null) {
+                        updateAddress();
+                    } else {
+                        //upload to server
+                        try {
+                            uploadToServer(uri, "video");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
-
                 });
 
 
@@ -425,6 +473,88 @@ public class ReportActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        // super.onBackPressed();
+        startActivity(new Intent(ReportActivity.this, MainActivity.class)
+                .putExtra(AppConstants.PHONE_NUMBER, phoneNumber)
+                .putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl)
+                .putExtra(AppConstants.USER_NAME, userName)
+                .putExtra(AppConstants.UID, userId));
+        finish();
     }
+
+    /**
+     * Display image from gallery
+     */
+    private void previewCapturedImage() {
+        try {
+            // hide video preview
+            imgPhoto.setVisibility(View.VISIBLE);
+            videoView.setVisibility(View.GONE);
+
+            Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
+
+            imgPhoto.setImageBitmap(bitmap);
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Displaying video in VideoView
+     */
+    private void previewVideo() {
+        try {
+            videoView.setVisibility(View.VISIBLE);
+            imgPhoto.setVisibility(View.GONE);
+            videoView.setVideoPath(imageStoragePath);
+            videoView.start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Restoring store image path from saved instance state
+     */
+    private void restoreFromBundle(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(KEY_IMAGE_STORAGE_PATH)) {
+                imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
+                if (!TextUtils.isEmpty(imageStoragePath)) {
+                    if (imageStoragePath.substring(imageStoragePath.lastIndexOf(".")).equals("." + AppConstants.IMAGE_EXTENSION)) {
+                        previewCapturedImage();
+                    } else if (imageStoragePath.substring(imageStoragePath.lastIndexOf(".")).equals("." + AppConstants.VIDEO_EXTENSION)) {
+                        previewVideo();
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Saving stored image path to saved instance state
+     */
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // save file url in bundle as it will be null on screen orientation
+        // changes
+        outState.putString(KEY_IMAGE_STORAGE_PATH, imageStoragePath);
+    }
+
+    /**
+     * Restoring image path from saved instance state
+     */
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // get the file url
+        imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
+    }
+
 }

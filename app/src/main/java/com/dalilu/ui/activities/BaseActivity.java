@@ -40,7 +40,7 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * Time when the location was updated represented as a String.
      */
-    public static String knownName, state, country, phoneNumber, userId;
+    public static String knownName, state, country, phoneNumber, userId, address;
     public static double latitude, longitude;
     private static Object mContext;
     /**
@@ -73,7 +73,7 @@ public class BaseActivity extends AppCompatActivity {
      * Start Updates and Stop Updates buttons.
      */
     private Boolean mRequestingLocationUpdates;
-    private Geocoder geocoder;
+    public static Geocoder geocoder;
 
     public static Context getAppContext() {
         return (Context) mContext;
@@ -173,20 +173,15 @@ public class BaseActivity extends AppCompatActivity {
 
     private void updateLocationUI() {
         if (mCurrentLocation != null) {
-            Log.i(TAG, String.format(Locale.ENGLISH, "%s: %f", "lat",
-                    mCurrentLocation.getLatitude()));
-            Log.i(TAG, String.format(Locale.ENGLISH, "%s: %f", "lng",
-                    mCurrentLocation.getLongitude()));
 
             latitude = mCurrentLocation.getLatitude();
             longitude = mCurrentLocation.getLongitude();
-
 
             try {
                 List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
 
                 if (addressList != null) {
-                    String address = addressList.get(0).getAddressLine(0);
+                    address = addressList.get(0).getAddressLine(0);
                     state = addressList.get(0).getAdminArea();
                     country = addressList.get(0).getCountryName();
                     knownName = addressList.get(0).getFeatureName();
@@ -198,6 +193,22 @@ public class BaseActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
+            Log.i(TAG, String.format(Locale.ENGLISH, "%s: %f", "lat",
+                    mCurrentLocation.getLatitude()));
+            Log.i(TAG, String.format(Locale.ENGLISH, "%s: %f", "lng",
+                    mCurrentLocation.getLongitude()));
+            Log.i(TAG, String.format(Locale.ENGLISH, "%s: %s", "Address",
+                    address));
+            Log.i(TAG, String.format(Locale.ENGLISH, "%s: %s", "State",
+                    state));
+            Log.i(TAG, String.format(Locale.ENGLISH, "%s: %s", "Country",
+                    country));
+
+            Log.i(TAG, String.format(Locale.ENGLISH, "%s: %s", "Known Name",
+                    knownName));
+
 
         }
     }

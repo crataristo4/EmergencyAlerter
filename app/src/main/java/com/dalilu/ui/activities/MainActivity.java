@@ -41,6 +41,16 @@ public class MainActivity extends BaseActivity {
         alertsCollectionReference = FirebaseFirestore.getInstance().collection("Alerts");
         locationCollectionDbRef = FirebaseFirestore.getInstance().collection("Locations");
 
+        Intent getUserDetailsIntent = getIntent();
+        if (getUserDetailsIntent != null) {
+            userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
+            userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
+            userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
+            phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
+
+
+        }
+
         initViews();
 
     }
@@ -92,29 +102,20 @@ public class MainActivity extends BaseActivity {
 
                 }));
 
-
-        Intent getUserDetailsIntent = getIntent();
-        if (getUserDetailsIntent != null) {
-            userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
-            userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
-            userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
-            phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
-
-            locationCollectionDbRef.document(userId).collection(userId).get().addOnCompleteListener(task -> {
-                int numberOfItems = task.getResult().size();
-                if (numberOfItems > 0)
-                    badgeDrawableNotification.setNumber(numberOfItems);
-            });
-
-
-        }
-
-        alertsCollectionReference.get().addOnCompleteListener(task -> {
-
-            if (task.getResult().size() > 0)
-                badgeDrawableHome.setNumber(task.getResult().size());
-
+        locationCollectionDbRef.document(userId).collection(userId).get().addOnCompleteListener(task -> {
+            int numberOfItems = task.getResult().size();
+            if (numberOfItems > 0)
+                badgeDrawableNotification.setNumber(numberOfItems);
         });
+
+        runOnUiThread(() -> alertsCollectionReference
+                .whereEqualTo("isSolved", false)
+                .get().addOnCompleteListener(task -> {
+
+                    if (task.getResult().size() > 0)
+                        badgeDrawableHome.setNumber(task.getResult().size());
+
+                }));
 
         activityMainBinding.report.setOnClickListener(v -> myIntent(ReportActivity.class));
 
@@ -137,8 +138,8 @@ public class MainActivity extends BaseActivity {
         intent.putExtra(AppConstants.LATITUDE, BaseActivity.latitude);
         intent.putExtra(AppConstants.LONGITUDE, BaseActivity.longitude);*/
 
-
         startActivity(intent);
+        finish();
 
 
     }

@@ -17,7 +17,6 @@ import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -28,26 +27,19 @@ import java.util.Objects;
 
 public class SplashScreenActivity extends AppCompatActivity {
     Intent intent;
-    private DatabaseReference usersDbRef, usersDetails;
     private CollectionReference usersCollectionRef;
     private String uid, phoneNumber, userName, userPhotoUrl;
+    private static final String TAG = "SplashScreenActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        //overridePendingTransition(R.anim.fadein, R.anim.explode);
         super.onCreate(savedInstanceState);
 
         ActivitySplashScreenBinding activitySplashScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash_screen);
         activitySplashScreenBinding.txtAppName.startAnimation(AnimationUtils.loadAnimation(SplashScreenActivity.this, R.anim.fadein));
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         runOnUiThread(this::startSplash);
-
 
     }
 
@@ -63,9 +55,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                 uid = firebaseUser.getUid();
                 phoneNumber = firebaseUser.getPhoneNumber();
 
-                Log.i("Id: ", uid);
-
-                // usersDbRef = FirebaseDatabase.getInstance().getReference().child("Users");
                 usersCollectionRef = FirebaseFirestore.getInstance().collection("Users");
 
                 usersCollectionRef.get().addOnCompleteListener(task -> {
@@ -88,6 +77,8 @@ public class SplashScreenActivity extends AppCompatActivity {
                                         intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
                                         intent.putExtra(AppConstants.USER_NAME, userName);
                                         intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
+
+                                        Log.i(TAG, "startSplash: " + userName + phoneNumber + userPhotoUrl);
 
                                     } else {
 
@@ -124,6 +115,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                 finish();
             }
 
-        }, 2000);
+        }, 3000);
     }
 }

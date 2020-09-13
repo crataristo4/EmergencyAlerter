@@ -125,7 +125,7 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
 
             bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 75, byteArrayOutputStream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 25, byteArrayOutputStream);
 
             byte[] fileInBytes = byteArrayOutputStream.toByteArray();
 
@@ -163,7 +163,7 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
                 intent.putExtra(AppConstants.USER_PHOTO_URL, getImageUri);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-                FinishAccountSetupActivity.this.finishAffinity();
+                this.finishAffinity();
 
 
             }).addOnFailureListener(this, e -> {

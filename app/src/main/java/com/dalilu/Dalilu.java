@@ -39,17 +39,15 @@ public class Dalilu extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Dalilu.context = getApplicationContext();
-        // FirebaseApp.initializeApp(this);
-
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        FirebaseDatabase.getInstance().getReference().keepSynced(true);
-
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED)
                 .build();
         FirebaseFirestore.getInstance().setFirestoreSettings(settings);
 
+        Dalilu.context = getApplicationContext();
+
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        FirebaseDatabase.getInstance().getReference().keepSynced(true);
 
     }
 
