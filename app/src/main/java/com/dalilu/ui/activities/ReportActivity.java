@@ -53,6 +53,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import static android.provider.MediaStore.Images.Media.getBitmap;
+
 public class ReportActivity extends AppCompatActivity {
 
     private static final String TAG = "ReportActivity";
@@ -223,109 +225,119 @@ public class ReportActivity extends AppCompatActivity {
         @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:MM a");
         String dateReported = dateFormat.format(Calendar.getInstance().getTime());
 
-        //compress image
-        Bitmap bitmap;
-        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream);
+        if (type.equals("image")) {
 
-        byte[] fileInBytes = byteArrayOutputStream.toByteArray();
-        //upload photo to server
-        filePath.putBytes(fileInBytes).continueWithTask(task -> {
+            //compress image
+            Bitmap bitmap;
+            bitmap = getBitmap(getContentResolver(), imageUri);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream);
 
-            if (!task.isSuccessful()) {
+            byte[] fileInBytes = byteArrayOutputStream.toByteArray();
+            //upload photo to server
+            filePath.putBytes(fileInBytes).continueWithTask(task -> {
+
+                if (!task.isSuccessful()) {
+                    pd.dismiss();
+
+                }
+                return filePath.getDownloadUrl();
+
+            }).addOnSuccessListener(this, o -> {
                 pd.dismiss();
 
-            }
-            return filePath.getDownloadUrl();
+                Uri downLoadUri = Uri.parse(o.toString());
+                assert downLoadUri != null;
+                String url = downLoadUri.toString();
 
-        }).addOnSuccessListener(this, o -> {
-            pd.dismiss();
+                Map<String, Object> alertItems = new HashMap<>();
+                alertItems.put("userName", userName);
+                alertItems.put("userPhotoUrl", userPhotoUrl);
+                alertItems.put("url", url);
+                alertItems.put(type, type);
+                alertItems.put("coordinates", new GeoPoint(latitude, longitude));
+                alertItems.put("address", address.toString());
+                alertItems.put("userId", userId);
+                alertItems.put("phoneNumber", phoneNumber);
+                alertItems.put("timeStamp", GetTimeAgo.getTimeInMillis());
+                alertItems.put("dateReported", dateReported);
 
-            Uri downLoadUri = Uri.parse(o.toString());
-            assert downLoadUri != null;
-            String url = downLoadUri.toString();
+                alertCollectionReference.add(alertItems);
+                String id = MainActivity.userId;
 
-            Map<String, Object> alertItems = new HashMap<>();
-            alertItems.put("userName", userName);
-            alertItems.put("userPhotoUrl", userPhotoUrl);
-            alertItems.put("url", url);
-            alertItems.put(type, type);
-            alertItems.put("coordinates", new GeoPoint(latitude, longitude));
-            alertItems.put("address", address.toString());
-            alertItems.put("userId", userId);
-            alertItems.put("phoneNumber", phoneNumber);
-            alertItems.put("timeStamp", GetTimeAgo.getTimeInMillis());
-            alertItems.put("dateReported", dateReported);
-
-            alertCollectionReference.add(alertItems);
-            String id = MainActivity.userId;
-
-            DisplayViewUI.displayToast(ReportActivity.this, getString(R.string.reportSuccess));
-
-            startActivity(new Intent(ReportActivity.this, MainActivity.class)
-                    .putExtra(AppConstants.UID, id)
-                    .putExtra(AppConstants.USER_NAME, userName)
-                    .putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl)
-                    .putExtra(AppConstants.PHONE_NUMBER, phoneNumber)
+                // startActivity(new Intent(ReportActivity.this, MainActivity.class));
+                finish();
 
 
-            );
-            finish();
-
-
-        }).addOnFailureListener(this, e -> {
-            pd.dismiss();
-            DisplayViewUI.displayToast(this, Objects.requireNonNull(e.getMessage()));
-
-        });
-        
-
-
-       /* filePath.putFile(imageUri).continueWithTask(task -> {
-
-
-        }).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-
-
-
-                //fire store cloud store
-                alertCollectionReference.add(alertItems).addOnCompleteListener(task2 -> {
-
-                    if (task2.isSuccessful()) {
-                        String id = MainActivity.userId;
-
-                        pd.dismiss();
-                        DisplayViewUI.displayToast(ReportActivity.this, getString(R.string.reportSuccess));
-
-                        startActivity(new Intent(ReportActivity.this, MainActivity.class)
-                                .putExtra(AppConstants.UID, id)
-                                .putExtra(AppConstants.USER_NAME, userName)
-                                .putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl)
-                                .putExtra(AppConstants.PHONE_NUMBER, phoneNumber)
-
-
-                        );
-                        finish();
-
-
-                    } else {
-                        pd.dismiss();
-                        DisplayViewUI.displayToast(this, Objects.requireNonNull(task2.getException()).getMessage());
-
-                    }
-
-                });
-
-            } else {
+            }).addOnFailureListener(this, e -> {
                 pd.dismiss();
-                DisplayViewUI.displayToast(ReportActivity.this, Objects.requireNonNull(task.getException()).getMessage());
+                DisplayViewUI.displayToast(this, Objects.requireNonNull(e.getMessage()));
 
-            }
+            });
 
-        });
-*/
+
+        } else if (type.equals("video")) {
+            filePath.putFile(imageUri).continueWithTask(task -> {
+                if (!task.isSuccessful()) {
+                    pd.dismiss();
+
+                }
+
+                return filePath.getDownloadUrl();
+
+            }).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+
+                    Uri downLoadUri = task.getResult();
+                    assert downLoadUri != null;
+                    String url = downLoadUri.toString();
+
+
+                    Map<String, Object> alertItems = new HashMap<>();
+                    alertItems.put("userName", userName);
+                    alertItems.put("userPhotoUrl", userPhotoUrl);
+                    alertItems.put("url", url);
+                    alertItems.put(type, type);
+                    alertItems.put("coordinates", new GeoPoint(latitude, longitude));
+                    alertItems.put("address", address.toString());
+                    alertItems.put("userId", userId);
+                    alertItems.put("phoneNumber", phoneNumber);
+                    alertItems.put("timeStamp", GetTimeAgo.getTimeInMillis());
+                    alertItems.put("dateReported", dateReported);
+                    alertItems.put("isSolved", false);
+
+
+                    //fire store cloud store
+                    alertCollectionReference.add(alertItems).addOnCompleteListener(task2 -> {
+
+                        if (task2.isSuccessful()) {
+                            String id = MainActivity.userId;
+
+                            pd.dismiss();
+                            DisplayViewUI.displayToast(ReportActivity.this, getString(R.string.reportSuccess));
+
+                            //  startActivity(new Intent(ReportActivity.this, MainActivity.class));
+                            finish();
+
+
+                        } else {
+                            pd.dismiss();
+                            DisplayViewUI.displayToast(this, Objects.requireNonNull(task2.getException()).getMessage());
+
+                        }
+
+                    });
+
+                } else {
+                    pd.dismiss();
+                    DisplayViewUI.displayToast(ReportActivity.this, Objects.requireNonNull(task.getException()).getMessage());
+
+                }
+
+            });
+
+        }
+
 
     }
 
