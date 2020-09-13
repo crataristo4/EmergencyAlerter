@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".Dalilu"
@@ -30,13 +31,19 @@
         android:theme="@style/AppTheme"
         tools:targetApi="q">
 
+
+        <!-- Foreground services in Q+ require type. -->
+        <service
+            android:name=".services.LocationUpdatesService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="location" />
+
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".MapsActivity2"
-            android:label="@string/title_activity_maps2" />
         <activity
             android:name=".ui.activities.ViewUserLocationActivity"
             android:screenOrientation="portrait"
@@ -74,7 +81,6 @@
             android:name=".ui.activities.FinishAccountSetupActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.PointOfInterestActivity" />
         <activity
             android:name=".ui.activities.SplashScreenActivity"
             android:screenOrientation="portrait"
@@ -93,10 +99,6 @@
 
 
         </activity>
-        <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activities.CommentsActivity"
             android:screenOrientation="portrait"
@@ -121,31 +123,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <service
-            android:name=".services.LocationService"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="TODO" />
-        <service
-            android:name=".services.PointOfInterestService"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="TODO" />
-        <service
-            android:name=".services.FirebaseManager"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="TODO"
-            tools:ignore="Instantiatable" />
 
-        <activity
-            android:name=".CreatePOIActivity"
-            android:label="@string/title_activity_create_poi"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".PointOfInterestDetailsActivity"
-            android:label="@string/title_activity_point_of_interest_details"
-            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
