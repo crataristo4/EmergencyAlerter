@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.dalilu.R;
@@ -114,7 +115,19 @@ public class DisplayViewUI {
         builder.setMessage(msg);
         builder.setCancelable(false);
         if (btnPos != null) builder.setPositiveButton(btnPos, onClickListener);
-        builder.setIcon(context.getResources().getDrawable(R.drawable.sorry));
+        builder.setIcon(ContextCompat.getDrawable(context, R.drawable.sorry));
+        builder.show();
+    }
+
+    static public void displayAlertDialogMsg(Context context, String title, String msg, String btnNeg, String btnPos, DialogInterface.OnClickListener onClickListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setCancelable(false);
+        // builder.setNegativeButtonIcon(ContextCompat.getDrawable(context,R.drawable.ic_baseline_cancel_24));
+        if (btnNeg != null) builder.setNegativeButton(btnNeg, onClickListener);
+        if (btnPos != null) builder.setPositiveButton(btnPos, onClickListener);
+        builder.setIcon(ContextCompat.getDrawable(context, R.drawable.ic_baseline_check_circle_24));
         builder.show();
     }
 

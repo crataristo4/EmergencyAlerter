@@ -52,7 +52,7 @@ import java.util.Locale;
 public class LocationUpdatesService extends Service {
 
     private static final String PACKAGE_NAME =
-            "com.dalilu.commandCenter";
+            "com.dalilu";
     public static final String ACTION_BROADCAST = PACKAGE_NAME + ".broadcast";
     public static final String EXTRA_LOCATION = PACKAGE_NAME + ".location";
     private static final String TAG = "Location";
