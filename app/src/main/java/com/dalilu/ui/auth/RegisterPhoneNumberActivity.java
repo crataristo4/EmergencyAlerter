@@ -4,15 +4,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.dalilu.R;
 import com.dalilu.clickhandler.ItemClickHandler;
 import com.dalilu.databinding.ActivityRegisterPhoneNumberBinding;
+import com.dalilu.ui.activities.BaseActivity;
 import com.dalilu.utils.LanguageManager;
 
-public class RegisterPhoneNumberActivity extends AppCompatActivity {
+public class RegisterPhoneNumberActivity extends BaseActivity {
     private static final String TAG = "Register Phone";
     ActivityRegisterPhoneNumberBinding activityRegisterPhoneNumberBinding;
     ItemClickHandler itemClickHandler;
