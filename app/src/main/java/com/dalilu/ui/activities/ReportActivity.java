@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.location.Address;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -70,9 +69,9 @@ public class ReportActivity extends BaseActivity {
     private ImageView imgPhoto;
     private VideoView videoView;
     private Button btnUpload;
+    private String knownName, address, state, country, phoneNumber, userId, userName, userPhotoUrl;
     // Bitmap sampling size
     public static final int BITMAP_SAMPLE_SIZE = 8;
-    private String knownName, state, address, country, phoneNumber, userId, userName, userPhotoUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,19 +86,36 @@ public class ReportActivity extends BaseActivity {
             userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
             phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
 
-            address = BaseActivity.address;
-            state = BaseActivity.state;
-            country = BaseActivity.country;
-            knownName = BaseActivity.knownName;
-            latitude = BaseActivity.latitude;
-            longitude = BaseActivity.longitude;
+            Log.i(TAG, "onCreate: " + userName + userPhotoUrl + userId + phoneNumber);
 
-            Log.i(TAG, "---: " + userName + phoneNumber + userPhotoUrl + latitude + longitude + address + "--" + state + "__" + knownName);
+
+//get location details from Main activity
+            address = MainActivity.address;
+            state = MainActivity.state;
+            country = MainActivity.country;
+            knownName = MainActivity.knownName;
+            latitude = MainActivity.latitude;
+            longitude = MainActivity.longitude;
+            Log.i("onCreate: ", "tags from Main::" + state + " " + country + " " + knownName);
+
+
+            // if location details from Main is not found try again and get details from Base
+            if (address == null && state == null && country == null && knownName == null) {
+
+                address = BaseActivity.address;
+                state = BaseActivity.state;
+                country = BaseActivity.country;
+                knownName = BaseActivity.knownName;
+
+                latitude = BaseActivity.latitude;
+                longitude = BaseActivity.longitude;
+                Log.i("onCreate: ", "Tags from Base-- " + longitude + " ... " + latitude + "tags::--" + knownName + " " + country + " " + state);
+
+
+            }
+
 
         }
-
-
-        updateAddress();
 
 
         StorageReference imageStorageRef = FirebaseStorage.getInstance().getReference().child("alerts");
@@ -109,11 +125,19 @@ public class ReportActivity extends BaseActivity {
         videoView = activityReportBinding.videoView;
         btnUpload = activityReportBinding.btnUpload;
 
+
+        // Checking availability of the camera
+        if (!CameraUtils.isDeviceSupportCamera(getApplicationContext())) {
+            Toast.makeText(getApplicationContext(),
+                    "Sorry! Your device doesn't support camera",
+                    Toast.LENGTH_LONG).show();
+            // will close the app if the device doesn't have camera
+            finish();
+        }
+
         activityReportBinding.fabCamera.setOnClickListener(v -> {
             if (CameraUtils.checkPermissions(v.getContext())) {
-
                 captureImage();
-
             } else {
                 requestCameraPermission(AppConstants.MEDIA_TYPE_IMAGE);
             }
@@ -126,6 +150,7 @@ public class ReportActivity extends BaseActivity {
                 requestCameraPermission(AppConstants.MEDIA_TYPE_VIDEO);
             }
         });
+
 
         // restoring storage image path from saved instance state
         // otherwise the path will be null on device rotation
@@ -183,32 +208,55 @@ public class ReportActivity extends BaseActivity {
      */
     private void requestCameraPermission(final int type) {
 
-        Dexter.withContext(ReportActivity.this)
-                .withPermissions(Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.RECORD_AUDIO)
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        if (report.areAllPermissionsGranted()) {
+        if (type == AppConstants.MEDIA_TYPE_IMAGE) {
+            Dexter.withContext(ReportActivity.this)
+                    .withPermissions(Manifest.permission.CAMERA,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .withListener(new MultiplePermissionsListener() {
+                        @Override
+                        public void onPermissionsChecked(MultiplePermissionsReport report) {
+                            if (report.areAllPermissionsGranted()) {
 
-                            if (type == AppConstants.MEDIA_TYPE_IMAGE) {
-                                // capture picture
                                 captureImage();
-                            } else {
-                                captureVideo();
+
+                            } else if (report.isAnyPermissionPermanentlyDenied()) {
+                                showPermissionsAlert();
                             }
-
-                        } else if (report.isAnyPermissionPermanentlyDenied()) {
-                            showPermissionsAlert();
                         }
-                    }
 
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                }).check();
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+                    }).check();
+        } else if (type == AppConstants.MEDIA_TYPE_VIDEO) {
+
+            Dexter.withContext(ReportActivity.this)
+                    .withPermissions(Manifest.permission.CAMERA,
+                            Manifest.permission.RECORD_AUDIO,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .withListener(new MultiplePermissionsListener() {
+                        @Override
+                        public void onPermissionsChecked(MultiplePermissionsReport report) {
+                            if (report.areAllPermissionsGranted()) {
+
+                                captureVideo();
+
+
+                            } else if (report.isAnyPermissionPermanentlyDenied()) {
+                                showPermissionsAlert();
+                            }
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+                    }).check();
+
+        }
+
+
     }
 
     /**
@@ -225,40 +273,12 @@ public class ReportActivity extends BaseActivity {
                 }).show();
     }
 
-
-    void updateAddress() {
-
-        if (address == null && knownName == null && state == null && country == null) {
-            try {
-                List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
-
-                if (addressList != null) {
-                    address = addressList.get(0).getAddressLine(0);
-                    state = addressList.get(0).getAdminArea();
-                    country = addressList.get(0).getCountryName();
-                    knownName = addressList.get(0).getFeatureName();
-
-                    Log.i(TAG, "Location: " + address + " --" + state + " --" + country + " --" + knownName);
-
-
-                }
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-    }
-
     private void uploadToServer(Uri imageUri, String type) throws IOException {
         pd.show();
         StringBuilder addressBuilder = new StringBuilder();
         @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:MM a");
         String dateReported = dateFormat.format(Calendar.getInstance().getTime());
 
-        updateAddress();
 
         addressBuilder.append(knownName).append(",").append(state).append(",").append(country);
 
@@ -399,24 +419,19 @@ public class ReportActivity extends BaseActivity {
 
                 // Refreshing the gallery
                 CameraUtils.refreshGallery(ReportActivity.this, imageStoragePath);
-                //CameraUtils.optimizeBitmap(10,imageStoragePath);
                 uri = CameraUtils.getOutputMediaFileUri(ReportActivity.this, new File(imageStoragePath));
                 previewCapturedImage();
 
                 btnUpload.setOnClickListener(view -> {
                     //display loading
                     pd = DisplayViewUI.displayProgress(ReportActivity.this, getString(R.string.uploadingImage));
-                    if (address == null && knownName == null && state == null && country == null) {
-                        updateAddress();
-                    } else {
-                        //upload to server
-                        try {
-                            uploadToServer(uri, "image");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
 
+                    //upload to server
+                    try {
+                        uploadToServer(uri, "image");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                 });
 
@@ -438,21 +453,17 @@ public class ReportActivity extends BaseActivity {
                 CameraUtils.refreshGallery(ReportActivity.this, imageStoragePath);
 
                 uri = CameraUtils.getOutputMediaFileUri(ReportActivity.this, new File(imageStoragePath));
-
                 previewVideo();
 
                 btnUpload.setOnClickListener(view -> {
                     //display loading
                     pd = DisplayViewUI.displayProgress(ReportActivity.this, getString(R.string.uploadingVideo));
-                    if (address == null && knownName == null && state == null && country == null) {
-                        updateAddress();
-                    } else {
-                        //upload to server
-                        try {
-                            uploadToServer(uri, "video");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+
+                    //upload to server
+                    try {
+                        uploadToServer(uri, "video");
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 });
 
@@ -469,12 +480,6 @@ public class ReportActivity extends BaseActivity {
                         .show();
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
     }
 
     /**
@@ -552,4 +557,8 @@ public class ReportActivity extends BaseActivity {
         imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

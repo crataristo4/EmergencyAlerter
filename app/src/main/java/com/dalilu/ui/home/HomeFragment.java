@@ -33,7 +33,7 @@ import java.util.ArrayList;
 public class HomeFragment extends Fragment {
     private static final String KEY = "key";
     private static final String TAG = "HomeFragment";
-    private static final int INITIAL_LOAD = 15;
+    private static final int INITIAL_LOAD = 50;
     private Bundle mBundleState;
     private FragmentHomeBinding fragmentHomeBinding;
     private RecyclerView recyclerView;

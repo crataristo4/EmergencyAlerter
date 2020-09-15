@@ -248,9 +248,10 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
-    void myIntent(@NonNull Class ctx) {
+    void myIntent(@NonNull Class<?> ctx) {
 
         Intent intent = new Intent(this, ctx);
+
         intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
         intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
         intent.putExtra(AppConstants.USER_NAME, userName);
