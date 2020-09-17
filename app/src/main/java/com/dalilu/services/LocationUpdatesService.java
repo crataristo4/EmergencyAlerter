@@ -78,6 +78,7 @@ public class LocationUpdatesService extends Service {
     private static final int NOTIFICATION_ID = 12345678;
     public static Geocoder geocoder;
     public static String address, knownName, state, country;
+    public static double lat, lng;
     private final IBinder mBinder = new LocalBinder();
     /**
      * Used to check whether the bound activity has really gone away and not unbound as part of an
@@ -296,6 +297,9 @@ public class LocationUpdatesService extends Service {
         Log.i(TAG, "New location: " + location);
 
         mLocation = location;
+        lat = location.getLatitude();
+        lng = location.getLongitude();
+
         getLocation(location);
 
         // Notify anyone listening for broadcasts about the new location.
@@ -315,7 +319,7 @@ public class LocationUpdatesService extends Service {
             List<Address> addressList = geocoder.getFromLocation(mLocation.getLatitude(), mLocation.getLongitude(), 1);
 
             if (addressList != null) {
-                String address = addressList.get(0).getAddressLine(0);
+                address = addressList.get(0).getAddressLine(0);
                 state = addressList.get(0).getAdminArea();
                 country = addressList.get(0).getCountryName();
                 knownName = addressList.get(0).getFeatureName();

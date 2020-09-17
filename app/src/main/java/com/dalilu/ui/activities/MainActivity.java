@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements
                                     loading.dismiss();
                                     myIntent(ReportActivity.class);
 
-                                }, 3000);
+                                }, 1500);
                             }
                         });
                 break;
