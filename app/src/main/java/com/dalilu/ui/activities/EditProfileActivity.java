@@ -254,6 +254,16 @@ public class EditProfileActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        gotoMain();
+    }
+
+    void gotoMain() {
+        startActivity(new Intent(this, MainActivity.class)
+                .putExtra(AppConstants.PHONE_NUMBER, phoneNumber)
+                .putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl)
+                .putExtra(AppConstants.USER_NAME, userName)
+                .putExtra(AppConstants.UID, uid)
+        );
+        finishAffinity();
     }
 }
