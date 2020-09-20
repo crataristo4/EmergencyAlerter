@@ -186,5 +186,6 @@
     <string name="remove_location_updates">Remove location updates</string>
 
     <string name="location_updated">Location Updated: %1$s</string>
+    <string name="NoInternet">No internet, try again</string>
 
 </resources>

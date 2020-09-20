@@ -4,9 +4,12 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaRecorder;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -21,6 +24,7 @@ import android.widget.VideoView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 
 import com.dalilu.R;
@@ -74,14 +78,21 @@ public class ReportActivity extends BaseActivity {
     // Bitmap sampling size
     public static final int BITMAP_SAMPLE_SIZE = 8;
     StringBuilder addressBuilder;
+    ConstraintLayout constraintLayout;
+    ConnectivityManager connectivityManager;
+    NetworkInfo networkInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityReportBinding = DataBindingUtil.setContentView(this, R.layout.activity_report);
         setSupportActionBar(activityReportBinding.toolBarReport);
-        addressBuilder = new StringBuilder();
+        constraintLayout = activityReportBinding.constrainReport;
 
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = (connectivityManager).getActiveNetworkInfo();
+
+        addressBuilder = new StringBuilder();
 
         Intent getUserDetailsIntent = getIntent();
         if (getUserDetailsIntent != null) {
@@ -437,12 +448,18 @@ public class ReportActivity extends BaseActivity {
                 previewCapturedImage();
 
                 btnUpload.setOnClickListener(view -> {
-                    //display loading
-                    pd = DisplayViewUI.displayProgress(ReportActivity.this, getString(R.string.uploadingImage));
 
                     //upload to server
                     try {
+                        //display loading
+                        pd = DisplayViewUI.displayProgress(ReportActivity.this, getString(R.string.uploadingImage));
                         uploadToServer(uri, "image");
+
+                       /* if (networkInfo != null && networkInfo.isConnectedOrConnecting()){
+
+                        }else{
+                            DisplayViewUI.displaySnackBar(constraintLayout,getString(R.string.NoInternet));
+                        }*/
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -452,14 +469,13 @@ public class ReportActivity extends BaseActivity {
 
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // user cancelled Image capture
-                Toast.makeText(ReportActivity.this,
-                        R.string.captureCanceled, Toast.LENGTH_SHORT)
-                        .show();
+                DisplayViewUI.displaySnackBar(constraintLayout, getString(R.string.captureCanceled));
+
             } else {
                 // failed to capture image
-                Toast.makeText(ReportActivity.this,
-                        R.string.failedToCapture, Toast.LENGTH_SHORT)
-                        .show();
+                DisplayViewUI.displaySnackBar(constraintLayout, getString(R.string.failedToCapture));
+
+
             }
         } else if (requestCode == AppConstants.CAMERA_CAPTURE_VIDEO_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
@@ -470,12 +486,20 @@ public class ReportActivity extends BaseActivity {
                 previewVideo();
 
                 btnUpload.setOnClickListener(view -> {
-                    //display loading
-                    pd = DisplayViewUI.displayProgress(ReportActivity.this, getString(R.string.uploadingVideo));
 
                     //upload to server
                     try {
+                        pd = DisplayViewUI.displayProgress(ReportActivity.this, getString(R.string.uploadingVideo));
+
                         uploadToServer(uri, "video");
+
+                     /*   if (networkInfo != null && networkInfo.isConnectedOrConnecting()){
+                            //display loading
+
+
+                        }else  {
+                            DisplayViewUI.displaySnackBar(constraintLayout,getString(R.string.NoInternet));
+                        }*/
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -484,14 +508,12 @@ public class ReportActivity extends BaseActivity {
 
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // user cancelled recording
-                Toast.makeText(ReportActivity.this,
-                        R.string.vidRecCanceled, Toast.LENGTH_SHORT)
-                        .show();
+                DisplayViewUI.displaySnackBar(constraintLayout, getString(R.string.vidRecCanceled));
+
             } else {
                 // failed to record video
-                Toast.makeText(ReportActivity.this,
-                        R.string.sorryVidFailed, Toast.LENGTH_SHORT)
-                        .show();
+                DisplayViewUI.displaySnackBar(constraintLayout, getString(R.string.sorryVidFailed));
+
             }
         }
     }

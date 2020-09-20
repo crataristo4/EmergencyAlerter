@@ -82,19 +82,24 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getApplicationContext();
-        mRequestingLocationUpdates = false;
 
-        // Update values using data stored in the Bundle.
-        updateValuesFromBundle(savedInstanceState);
+        runOnUiThread(() -> {
+            mContext = getApplicationContext();
+            mRequestingLocationUpdates = false;
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mSettingsClient = LocationServices.getSettingsClient(this);
-        geocoder = new Geocoder(this, Locale.getDefault());
+            // Update values using data stored in the Bundle.
+            updateValuesFromBundle(savedInstanceState);
 
-        createLocationCallback();
-        createLocationRequest();
-        requestPermissions();
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            mSettingsClient = LocationServices.getSettingsClient(this);
+            geocoder = new Geocoder(this, Locale.getDefault());
+
+            if (checkPermissions()) {
+                createLocationCallback();
+                createLocationRequest();
+            }
+        });
+
     }
 
     @Override
@@ -337,7 +342,9 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (checkPermissions()) {
+        if (!checkPermissions()) {
+            requestPermissions();
+        } else {
             buildLocationSettingsRequest();
             startLocationUpdates();
         }

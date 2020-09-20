@@ -20,6 +20,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -136,14 +137,19 @@ public class MainActivity extends AppCompatActivity implements
                 R.id.navigation_alerts, R.id.navigation_home, R.id.navigation_contacts)
                 .build();
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
 
+        new Handler().postDelayed(() -> {
+            activityMainBinding.pbLoading.setVisibility(View.GONE);
+            activityMainBinding.navHostFragment.setVisibility(View.VISIBLE);
 
-        navView.setOnNavigationItemReselectedListener(item -> {
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+            NavigationUI.setupWithNavController(navView, navController);
+            navView.setOnNavigationItemReselectedListener(item -> {
 
-        });
+            });
+
+        }, 10000);
 
 
         BadgeDrawable badgeDrawableHome = navView.getOrCreateBadge(menuItemHome.getItemId());

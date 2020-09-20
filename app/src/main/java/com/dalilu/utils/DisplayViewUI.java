@@ -8,14 +8,17 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.dalilu.R;
+import com.google.android.material.snackbar.Snackbar;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -89,6 +92,13 @@ public class DisplayViewUI {
         return loading;
     }
 
+    public static void displaySnackBar(@NonNull View ctx, String message) {
+
+        Snackbar snackbar = Snackbar.make(ctx, message, Snackbar.LENGTH_LONG);
+        snackbar.show();
+
+    }
+
     static public void displayAlertDialog(Context context, String title, String msg, String btnPos, String btnNeg, DialogInterface.OnClickListener onClickListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);
@@ -96,7 +106,7 @@ public class DisplayViewUI {
         builder.setCancelable(false);
         if (btnPos != null) builder.setPositiveButton(btnPos, onClickListener);
         if (btnNeg != null) builder.setNegativeButton(btnNeg, onClickListener);
-        builder.setIcon(context.getResources().getDrawable(R.drawable.applogo));
+        builder.setIcon(ContextCompat.getDrawable(context, R.drawable.applogo));
         builder.show();
     }
 
