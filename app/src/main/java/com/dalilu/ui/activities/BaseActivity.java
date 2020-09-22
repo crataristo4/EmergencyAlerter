@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.dalilu.R;
+import com.dalilu.model.RequestModel;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.dalilu.utils.LanguageManager;
@@ -30,10 +31,17 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
@@ -74,6 +82,8 @@ public class BaseActivity extends AppCompatActivity {
      */
     private Boolean mRequestingLocationUpdates;
     public static Geocoder geocoder;
+    private CollectionReference friendsCollectionReference, locationCollectionReference;
+
 
     public static Context getAppContext() {
         return (Context) mContext;
@@ -82,6 +92,20 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser != null) {
+
+            userId = firebaseUser.getUid();
+            Log.i("onCreate: ", userId);
+
+
+        }
+
+
+        friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
+        locationCollectionReference = FirebaseFirestore.getInstance().collection("Locations");
+
 
         runOnUiThread(() -> {
             mContext = getApplicationContext();
@@ -199,6 +223,7 @@ public class BaseActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+            updateLocationIfSharing();
 
             Log.i(TAG, String.format(Locale.ENGLISH, "%s: %f", "lat",
                     mCurrentLocation.getLatitude()));
@@ -349,4 +374,56 @@ public class BaseActivity extends AppCompatActivity {
             startLocationUpdates();
         }
     }
+
+
+    void updateLocationIfSharing() {
+
+        friendsCollectionReference.document(userId)
+                .collection(userId)
+                .get().addOnSuccessListener(this, queryDocumentSnapshots -> {
+
+            for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
+
+                RequestModel data = ds.toObject(RequestModel.class);
+
+                boolean isLocationSharing = data.isSharingLocation();
+                String name = data.getName();
+                String idOfFriend = data.getId();
+
+                Log.i(TAG,
+                        String.format("Sharing location with : %s isSharing: %s : id %s",
+                                name, isLocationSharing, idOfFriend));
+
+
+                if (isLocationSharing) {
+
+                    Map<String, Object> updateLocationMap = new HashMap<>();
+                    updateLocationMap.put("latitude", latitude);
+                    updateLocationMap.put("longitude", longitude);
+                    updateLocationMap.put("knownName", knownName);
+
+                    Log.i(TAG, "still sharing: ");
+                    locationCollectionReference.document(userId)
+                            .collection(userId)
+                            .document(idOfFriend).update(updateLocationMap);
+
+                    locationCollectionReference.document(idOfFriend)
+                            .collection(idOfFriend)
+                            .document(userId).update(updateLocationMap);
+
+                    Log.i(TAG, "Name: " + name + " isSharing: " + knownName);
+
+
+                } else {
+
+                    Log.i(TAG, "not sharing: ");
+
+                }
+
+            }
+
+
+        });
+    }
+
 }

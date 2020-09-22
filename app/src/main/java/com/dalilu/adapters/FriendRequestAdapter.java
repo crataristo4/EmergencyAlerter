@@ -137,6 +137,13 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
                     (dialogInterface, i) -> {
                         if (i == -1) {
 
+                            friendsCollectionReference
+                                    .document(id)
+                                    .collection(id)
+                                    .document(receiverId)
+                                    .update("isSharingLocation", false);
+                            DisplayViewUI.displayToast(view.getContext(), view.getContext().getResources().getString(R.string.locationStoped));
+
 
                         } else if (i == -2) {
                             dialogInterface.dismiss();

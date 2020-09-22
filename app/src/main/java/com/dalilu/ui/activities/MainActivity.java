@@ -23,7 +23,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -48,14 +47,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements
+public class MainActivity extends BaseActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = "MainActivity";
     public static String userName, userPhotoUrl;
     private ActivityMainBinding activityMainBinding;
-    private CollectionReference alertsCollectionReference, locationCollectionDbRef;
-
+    private CollectionReference alertsCollectionReference, locationCollectionDbRef, friendsCollectionReference;
 
     // Used in checking for runtime permissions.
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
@@ -108,8 +106,19 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
 
+
+        if (knownName == null || latitude == 0.0 || longitude == 0.0) {
+            knownName = BaseActivity.knownName;
+            latitude = BaseActivity.latitude;
+            longitude = BaseActivity.longitude;
+
+
+        }
+
         alertsCollectionReference = FirebaseFirestore.getInstance().collection("Alerts");
         locationCollectionDbRef = FirebaseFirestore.getInstance().collection("Locations");
+        friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
+
 
         Intent getUserDetailsIntent = getIntent();
         if (getUserDetailsIntent != null) {
@@ -173,6 +182,8 @@ public class MainActivity extends AppCompatActivity implements
                         badgeDrawableHome.setNumber(task.getResult().size());
 
                 }));
+
+        //  updateLocationIfSharing();
 
 
     }
@@ -269,6 +280,54 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+/*
+     void updateLocationIfSharing(){
+
+        friendsCollectionReference.document(userId)
+                .collection(userId)
+                .get().addOnSuccessListener(this,queryDocumentSnapshots -> {
+
+            for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
+
+                RequestModel data = ds.toObject(RequestModel.class);
+
+                boolean isLocationSharing =  data.isSharingLocation();
+                String name = data.getName();
+                String idOfFriend = data.getId();
+
+                Log.i(TAG,
+                        String.format("Sharing location with : %s isSharing: %s : id %s",
+                        name, isLocationSharing,idOfFriend));
+
+
+                if (isLocationSharing){
+
+                    Map<String ,Object> updateLocationMap = new HashMap<>();
+                    updateLocationMap.put("latitude",latitude);
+                    updateLocationMap.put("longitude",longitude);
+                    updateLocationMap.put("knownName",knownName);
+
+                    Log.i(TAG, "still sharing: ");
+                    locationCollectionDbRef.document(userId)
+                            .collection(userId)
+                            .document(idOfFriend).update(updateLocationMap);
+
+                    Log.i(TAG, "Name: " + name + " isSharing: " +  knownName);
+
+
+                }else {
+
+                    Log.i(TAG, "not sharing: ");
+
+                }
+
+                }
+
+
+        });
+    }
+*/
+
 
     @Override
     protected void onStart() {
@@ -294,6 +353,20 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (knownName == null || latitude == 0.0 || longitude == 0.0) {
+            knownName = BaseActivity.knownName;
+            latitude = BaseActivity.latitude;
+            longitude = BaseActivity.longitude;
+
+
+        } else {
+            knownName = LocationUpdatesService.knownName;
+            latitude = LocationUpdatesService.lat;
+            longitude = LocationUpdatesService.lng;
+        }
+
+
         LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver,
                 new IntentFilter(LocationUpdatesService.ACTION_BROADCAST));
 
