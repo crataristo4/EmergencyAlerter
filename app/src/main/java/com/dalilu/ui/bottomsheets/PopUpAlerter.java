@@ -110,6 +110,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         from.put("photo", senderPhotoUrl);
         from.put("phoneNumber", senderPhoneNumber);
         from.put("response", "received");
+        from.put("isSharingLocation", false);
 
         //sender
         Map<String, Object> to = new HashMap<>();
@@ -118,6 +119,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         to.put("photo", photoUrl);
         to.put("phoneNumber", phoneNumber);
         to.put("response", "sent");
+        from.put("isSharingLocation", false);
 
 
         btnAddUser.setOnClickListener(view -> {

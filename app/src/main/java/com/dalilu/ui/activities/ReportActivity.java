@@ -595,7 +595,7 @@ public class ReportActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        gotoMain();
     }
 
     void alertItem(String type, String downloadUrl) {

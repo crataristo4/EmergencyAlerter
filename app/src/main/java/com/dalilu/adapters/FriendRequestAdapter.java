@@ -53,9 +53,15 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
     @SuppressLint({"CheckResult", "UseCompatLoadingForDrawables"})
     @Override
     protected void onBindViewHolder(@NonNull FriendRequestAdapter.RequestViewHolder holder, int position, @NonNull RequestModel users) {
+        String friends = "friends", declined = "declined", response = "response";
+
         holder.layoutRequestReceivedBinding.setRequests(users);
         holder.showResponse(users.getResponse());
-        holder.isSharingLocation(users.isSharingLocation());
+        if (users.getResponse().equals(friends)) {
+
+            holder.isSharingLocation(users.isSharingLocation());
+
+        }
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.placeholder(DisplayViewUI.getRandomDrawableColor());
@@ -76,7 +82,6 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
         String receiverId = getSnapshots().get(position).getId();
         String name = getSnapshots().get(position).getName();
 
-        String friends = "friends", declined = "declined", response = "response";
 
         holder.btnAccept.setOnClickListener(view -> {
             friendsCollectionReference.document(receiverId).collection(receiverId).document(id).update(response, friends);
@@ -187,7 +192,7 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
 
 
         //display the response details
-        void showResponse(String response) {
+        void showResponse(@NonNull String response) {
 
             switch (response) {
                 case "friends":
@@ -210,6 +215,7 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
                     btnSendLocation.setVisibility(View.GONE);
                     imgDelete.setVisibility(View.GONE);
                     txtRequestDes.setVisibility(View.VISIBLE);
+
                     txtRequestDes.setText(R.string.newReq);
                     txtRequestDes.setTextColor(this.layoutRequestReceivedBinding.getRoot().getContext().getResources().getColor(R.color.acceptGreen));
 
@@ -242,15 +248,14 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
 
         }
 
-        void isSharingLocation(boolean isSharing) {
-            if (!isSharing) {
-
+        //display location sharing
+        void isSharingLocation(@NonNull boolean isSharingLocation) {
+            if (!isSharingLocation) {
                 imgIsSharingLocation.setVisibility(View.VISIBLE);
                 imgIsSharingLocation.setImageDrawable(ContextCompat.getDrawable(layoutRequestReceivedBinding.getRoot().getContext(), R.drawable.redoffline));
                 btnSendLocation.setText(R.string.sendLocation);
 
             } else {
-
 
                 imgIsSharingLocation.setVisibility(View.VISIBLE);
                 imgIsSharingLocation.setImageDrawable(ContextCompat.getDrawable(layoutRequestReceivedBinding.getRoot().getContext(), R.drawable.green));

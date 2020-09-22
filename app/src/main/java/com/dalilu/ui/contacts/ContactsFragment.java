@@ -20,6 +20,8 @@ import com.dalilu.R;
 import com.dalilu.adapters.FriendRequestAdapter;
 import com.dalilu.databinding.FragmentContactsBinding;
 import com.dalilu.model.RequestModel;
+import com.dalilu.services.LocationUpdatesService;
+import com.dalilu.ui.activities.BaseActivity;
 import com.dalilu.ui.activities.MainActivity;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
@@ -53,10 +55,10 @@ public class ContactsFragment extends Fragment {
     // private RequestAdapter adapter;
     private FriendRequestAdapter adapter;
     String receiverName;
-    String receiverPhotoUrl;
     String receiverId;
-    String receiverPhoneNumber;
     String id;
+    String yourLocation;
+    double latitude, longitude;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -67,6 +69,19 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        CollectionReference friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
+
+        yourLocation = MainActivity.knownName;
+        latitude = MainActivity.latitude;
+        longitude = MainActivity.longitude;
+
+        if (yourLocation == null || latitude == 0.0 || longitude == 0.0) {
+            yourLocation = BaseActivity.knownName;
+            latitude = BaseActivity.latitude;
+            longitude = BaseActivity.longitude;
+        }
+
 
         initViews();
         // requireActivity().runOnUiThread(this::loadData);
@@ -84,7 +99,7 @@ public class ContactsFragment extends Fragment {
             String getUserName = adapter.getItem(position).getName();
             String getUserId = adapter.getItem(position).getId();
             String getUserPhoto = adapter.getItem(position).getPhoto();
-            String name = MainActivity.userName, photo = MainActivity.userPhotoUrl, yourLocation = MainActivity.knownName, senderId = MainActivity.userId;
+            String name = MainActivity.userName, photo = MainActivity.userPhotoUrl, senderId = MainActivity.userId;
 
             DisplayViewUI.displayAlertDialog(requireActivity(),
                     getString(R.string.sndloc),
@@ -110,7 +125,7 @@ public class ContactsFragment extends Fragment {
                             fromUser.put("latitude", latitude);
                             fromUser.put("longitude", longitude);
                             fromUser.put("timeStamp", GetTimeAgo.getTimeInMillis());
-                            fromUser.put("isSharingLocation", true);
+                            fromUser.put("isSharingLocation", false);
 
                             //..location sent to ..(user who sent  will view this) //
                             Map<String, Object> toReceiver = new HashMap<>();
@@ -135,6 +150,10 @@ public class ContactsFragment extends Fragment {
                             //to cloud server
                             locationCollectionReference.document(senderId).collection(senderId).document(getUserId).set(fromUser);
                             locationCollectionReference.document(getUserId).collection(getUserId).document(senderId).set(toReceiver);
+
+                            //update contacts when location is shared
+                            friendsCollectionReference.document(senderId).collection(senderId).document(getUserId).update("isSharingLocation", true);
+                            friendsCollectionReference.document(getUserId).collection(getUserId).document(senderId).update("isSharingLocation", true);
 
 
                             DisplayViewUI.displayToast(requireActivity(), getString(R.string.successFull));
@@ -181,7 +200,11 @@ public class ContactsFragment extends Fragment {
     private void loadData() {
 
         requireActivity().runOnUiThread(() -> {
-            Query query = friendsCollectionReference.document(id).collection(id).orderBy("name", Query.Direction.ASCENDING);
+            Query query = friendsCollectionReference
+                    .document(id)
+                    .collection(id)
+                    .orderBy("name", Query.Direction.ASCENDING);
+
             FirestoreRecyclerOptions<RequestModel> options =
                     new FirestoreRecyclerOptions.Builder<RequestModel>().setQuery(query,
                             RequestModel.class).build();
@@ -216,5 +239,21 @@ public class ContactsFragment extends Fragment {
     public void onStop() {
         super.onStop();
         adapter.stopListening();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (yourLocation == null || latitude == 0.0 || longitude == 0.0) {
+            yourLocation = LocationUpdatesService.knownName;
+            latitude = LocationUpdatesService.lat;
+            longitude = LocationUpdatesService.lng;
+        } else {
+
+            yourLocation = BaseActivity.knownName;
+            latitude = BaseActivity.latitude;
+            longitude = BaseActivity.longitude;
+        }
+
     }
 }

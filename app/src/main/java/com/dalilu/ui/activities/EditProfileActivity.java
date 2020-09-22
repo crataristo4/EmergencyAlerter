@@ -60,7 +60,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         Intent getUserDetailsIntent = getIntent();
         if (getUserDetailsIntent != null) {
-            String userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
+            userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
             userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
             uid = getUserDetailsIntent.getStringExtra(AppConstants.UID);
             phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
@@ -87,10 +87,7 @@ public class EditProfileActivity extends AppCompatActivity {
         usersCollection = FirebaseFirestore.getInstance().collection("Users");
         //storage reference
         mStorageReference = FirebaseStorage.getInstance().getReference("user photos");
-
-
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -121,7 +118,6 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private void updateName(View view) {
         userName = Objects.requireNonNull(txtUserName.getEditText()).getText().toString();
