@@ -1,15 +1,10 @@
 <resources>
     <string name="app_name">Dalilu</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
     <string name="title_alerts">Notifications</string>
     <string name="title_contacts">Contacts</string>
-    <string name="capture">Capture</string>
     <string name="recordAudio">Record audio</string>
-    <string name="recordVideo">Record video</string>
-    <string name="helpText">Do you find something suspicious , a crime , emergency or do you need help?</string>
     <string name="add">Add</string>
-    <string name="action_settings">Settings</string>
     <string name="preview_description">Image and Video preview will appear here</string>
     <string name="btn_take_picture">Take Picture</string>
     <string name="btn_record_video">Record Video</string>
@@ -26,15 +21,11 @@
     <string name="reportSuccess">report successful</string>
     <string name="vidRecCanceled">video recording cancelled</string>
     <string name="sorryVidFailed">Sorry! Failed to record video</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="play_and_pause_button">Play and pause button</string>
     <string name="delete">Delete</string>
     <string name="deleteUser">Delete</string>
     <string name="done">Done</string>
-    <string name="reset">Reset</string>
     <string name="next">Next</string>
     <string name="back">Back</string>
-    <string name="log_in">Log In</string>
     <string name="phoneNumber">Phone Number</string>
     <string name="confirmCode">Confirm code</string>
     <string name="verify">Verify</string>
@@ -46,43 +37,20 @@
     <string name="codeShort">code too short</string>
     <string name="phoneReq">phone number is required</string>
     <string name="verCode">verify code sent through sms</string>
-    <string name="title_activity_create_poi">Create POI Activity</string>
-    <string name="poi_name_hint">Name</string>
-    <string name="poi_button_text">Create</string>
     <string name="take_photo_text">Launch Camera</string>
-    <string name="title_activity_point_of_interest_details">Point Of Interest Details Activity</string>
 
     <string name="welcome">Welcome to Dalilu App</string>
-    <string name="completeProfile">Complete profile</string>
     <string name="welcomeNote">"         <![CDATA[          Thank you creating an account with <b>Dalilu. </b>         Help us fight crime by reporting suspicious activities<br> <br>          <b>Please <b>TAKE NOTE</b> of the following</b>          <ol>         <li><b>When you feel unsafe send your location to at least three of your contacts list</b></li>         <li><b>Always capture a crime , accident and upload it</b></li>         <li><b>To enable a fast crime scene investigation please follow up on comments</b> </li>         <li><b>Report any suspicious / fraudulent account </b></li>         <li><b>Do not be rude, act professional<b></li>         </ol>         <br>         ]]>     "</string>
     <!--location-->
-    <string name="latitude_label">Latitude</string>
-    <string name="longitude_label">Longitude</string>
-    <string name="last_update_time_label">Last location update time</string>
-
-    <string name="start_updates">Start updates</string>
-    <string name="stop_updates">Stop updates</string>
-
-    <string name="location_settings_inadequate_warning">The location settings on the device are not
-        adequate to run this sample. Fix in Settings.</string>
 
 
     <string name="permission_rationale">Location permissions are required to locate activities on map
     </string>
 
     <string name="accountSetUp">Account set up</string>
-    <string name="profile_picture">Profile Picture</string>
-    <string name="nameRequired">name required</string>
     <string name="enterName">Please enter name</string>
     <string name="save">Save</string>
-    <string name="firstName">Enter first name</string>
-    <string name="lastName">Enter last name</string>
-    <string name="about">Briefly tell us about you</string>
-    <string name="aboutYou">About</string>
     <string name="saveDetails">saving details please wait…</string>
-    <string name="abtReq">about field required</string>
-    <string name="fNameReq">first name is required</string>
-    <string name="lNameReq">last name is required</string>
     <string name="successFull">Successful</string>
     <string name="continueSetUp">Continue</string>
     <string name="grantPerm">Grant permission</string>
@@ -91,28 +59,21 @@
     <string name="errMsg">Location settings are inadequate, and cannot be </string>
     <string name="fixIn">fixed here. Fix in Settings.</string>
     <string name="logOut">Log out</string>
-    <string name="loc">Location: \n</string>
-    <string name="dt">Date reported: \n</string>
     <string name="type_your_comments_here">Type your comments here</string>
     <string name="upload">Upload</string>
     <string name="reportAct">Report an activity</string>
     <string name="editProfile">Edit profile</string>
-    <string name="schUser">Search for a user</string>
     <string name="searchContact">Search contact</string>
     <string name="if_you_choose_not_to_provide_a_name_a_random_name_will_be_generated_for_you_as_a_user_name">If you choose not to provide a name a random name will be generated for you as a user name</string>
     <string name="enterUserName">enter user name (optional)</string>
     <string name="plsSlct">Please select a picture</string>
     <string name="addingUser">adding user…</string>
-    <string name="added">Friends</string>
-    <string name="declined">Declined</string>
-    <string name="new_request_from">New request from</string>
     <string name="sendLocation">Send your location</string>
     <string-array name="selectLanguage">
         <item>Please select language</item>
         <item>English</item>
         <item>French</item>
     </string-array>
-    <string name="title_requests">Requests</string>
     <string name="XCC">Sending location details</string>
     <string name="sndloc">Send your location</string>
     <string name="qst">Are you sure you want to send your location details to {0}</string>
@@ -122,10 +83,6 @@
     <string name="withU">  with you  </string>
     <string name="urLoc"> Your location  </string>
     <string name="isShared"> is shared with  </string>
-    <string name="on">  on </string>
-    <string name="notifs">{0} Notifications Alerts</string>
-    <string name="noNotifs">{0} No notification alert received</string>
-    <string name="oneNotif">{0}  Notification alerts received</string>
     <string name="dcln">Decline</string>
     <string name="acpt">Accept</string>
     <string name="frnds">Friends</string>
@@ -141,22 +98,15 @@
     <string name="view">View</string>
     <string name="uploadingImage">uploading image please wait…</string>
     <string name="uploadingVideo">uploading video please wait…</string>
-    <string name="declineRequest">Decline request</string>
     <string name="qstCancel">Do you want to stop sharing location details to {0}</string>
     <string name="cancelloc">Stop sharing location</string>
-    <string name="stpdVoiceRecording">Stopped voice recording</string>
     <string name="newReq">New request</string>
     <string name="requestSentTo">Request sent to</string>
     <string name="addedUser">user added</string>
     <string name="xcvv">You will be logged out from this account.Do you want to proceed? </string>
     <string name="logMeOut">Yes, log me out</string>
-    <string name="location">Location</string>
-    <string name="title_activity_maps2">Map</string>
     <string name="invalidPhone">Invalid phone number</string>
     <string name="stpLocSharing">Stop location sharing</string>
-    <string name="da">Dalilu</string>
-    <string name="cm">Command</string>
-    <string name="cn">Center</string>
     <string name="stdVoiceRecordind">Started voice recording</string>
     <string name="rcAud">Recording audio , press stop to upload</string>
     <string name="dalilu_will_send_an_sms_message_to_verify_your_phone_number">Dalilu will send an SMS message to verify your phone number :</string>
@@ -165,28 +115,9 @@
     <string name="dash">- - - - - -</string>
     <string name="enter_6_digit_code">Enter 6-digit code</string>
     <string name="wrong_number">Wrong number?</string>
-    <string name="alerts">Alerts</string>
-    <string name="chkkdd">Checked by Police</string>
-    <string name="notChkkdd">Not seen by Police</string>
-    <string name="notSeen">Case NOT seen</string>
-    <string name="pstBy">Posted by : {0}\n\n</string>
-    <string name="locDet">Location and Details : {1}\n\n</string>
-    <string name="thisCse">This case has not been seen by the police!</string>
-    <string name="flUp">FOLLOW UP</string>
-    <string name="caseSeen">Case has been seen by the Police</string>
-    <string name="snBy">Seen by police </string>
     <string name="launch_activity">Report activity</string>
-    <string name="location_unknown">Location unknown</string>
-    <string name="location_updates_label">Location Updates</string>
-
-    <string name="permission_denied_explanation">Permission was denied, but is needed for core
-        functionality.</string>
-    <string name="settings">Settings</string>
-    <string name="request_location_updates">Request location updates</string>
-    <string name="remove_location_updates">Remove location updates</string>
 
     <string name="location_updated">Location Updated: %1$s</string>
-    <string name="NoInternet">No internet, try again</string>
     <string name="locationStoped">Location sharing stopped</string>
 
 </resources>

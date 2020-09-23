@@ -168,23 +168,30 @@ public class MainActivity extends BaseActivity implements
         badgeDrawableFriends.setBackgroundColor(getResources().getColor(R.color.black));
 
 
-        locationCollectionDbRef.document(userId).collection(userId).get().addOnCompleteListener(task -> {
-            int numberOfItems = task.getResult().size();
-            if (numberOfItems > 0)
-                badgeDrawableNotification.setNumber(numberOfItems);
+        runOnUiThread(() -> {
+            locationCollectionDbRef.document(userId).collection(userId).get().addOnCompleteListener(task -> {
+                int numberOfItems = task.getResult().size();
+                if (numberOfItems > 0)
+                    badgeDrawableNotification.setNumber(numberOfItems);
+            });
+
+            alertsCollectionReference
+                    .whereEqualTo("isSolved", false)
+                    .get().addOnCompleteListener(task -> {
+
+                if (task.getResult().size() > 0)
+                    badgeDrawableHome.setNumber(task.getResult().size());
+
+            });
+
+            friendsCollectionReference.document(userId).collection(userId).get().addOnCompleteListener(task -> {
+                int numberOfItems = task.getResult().size();
+                if (numberOfItems > 0)
+                    badgeDrawableNotification.setNumber(numberOfItems);
+            });
+
+
         });
-
-        runOnUiThread(() -> alertsCollectionReference
-                .whereEqualTo("isSolved", false)
-                .get().addOnCompleteListener(task -> {
-
-                    if (task.getResult().size() > 0)
-                        badgeDrawableHome.setNumber(task.getResult().size());
-
-                }));
-
-        //  updateLocationIfSharing();
-
 
     }
 
@@ -279,54 +286,6 @@ public class MainActivity extends BaseActivity implements
 
 
     }
-
-/*
-     void updateLocationIfSharing(){
-
-        friendsCollectionReference.document(userId)
-                .collection(userId)
-                .get().addOnSuccessListener(this,queryDocumentSnapshots -> {
-
-            for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
-
-                RequestModel data = ds.toObject(RequestModel.class);
-
-                boolean isLocationSharing =  data.isSharingLocation();
-                String name = data.getName();
-                String idOfFriend = data.getId();
-
-                Log.i(TAG,
-                        String.format("Sharing location with : %s isSharing: %s : id %s",
-                        name, isLocationSharing,idOfFriend));
-
-
-                if (isLocationSharing){
-
-                    Map<String ,Object> updateLocationMap = new HashMap<>();
-                    updateLocationMap.put("latitude",latitude);
-                    updateLocationMap.put("longitude",longitude);
-                    updateLocationMap.put("knownName",knownName);
-
-                    Log.i(TAG, "still sharing: ");
-                    locationCollectionDbRef.document(userId)
-                            .collection(userId)
-                            .document(idOfFriend).update(updateLocationMap);
-
-                    Log.i(TAG, "Name: " + name + " isSharing: " +  knownName);
-
-
-                }else {
-
-                    Log.i(TAG, "not sharing: ");
-
-                }
-
-                }
-
-
-        });
-    }
-*/
 
 
     @Override
@@ -475,11 +434,6 @@ public class MainActivity extends BaseActivity implements
                 latitude = mLocation.getLatitude();
                 longitude = mLocation.getLongitude();
 
-                /*Toast.makeText(this, "Address--" + address
-                                + " state--" + state + " country--" + country + " known name--" + knownName
-                                + " Lat--" + latitude + " lng--" + longitude
-                        , Toast.LENGTH_LONG).show();*/
-
                 Log.i(TAG, String.format(Locale.ENGLISH, "%s: %f", "lat",
                         mLocation.getLatitude()));
                 Log.i(TAG, String.format(Locale.ENGLISH, "%s: %f", "lng",
@@ -532,13 +486,7 @@ public class MainActivity extends BaseActivity implements
         public void onReceive(Context context, Intent intent) {
             Location location = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
             if (location != null) {
-                runOnUiThread(() -> {
-
-                    getAddress(location);
-
-                });
-               /* Toast.makeText(MainActivity.this, Utils.getLocationText(location),
-                        Toast.LENGTH_SHORT).show();*/
+                runOnUiThread(() -> getAddress(location));
             }
         }
     }

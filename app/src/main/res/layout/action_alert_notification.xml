@@ -14,7 +14,6 @@
 
 
     <com.nex3z.notificationbadge.NotificationBadge
-        android:id="@+id/notifBadge"
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_marginStart="-10dp"

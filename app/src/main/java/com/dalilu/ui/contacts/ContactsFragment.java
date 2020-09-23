@@ -87,101 +87,99 @@ public class ContactsFragment extends Fragment {
         // requireActivity().runOnUiThread(this::loadData);
         loadData();
 
-        adapter.setOnItemClickListener((view1, position) -> {
-            requireActivity().runOnUiThread(() -> {
-                SharedPreferences pref = requireActivity().getSharedPreferences(AppConstants.PREFS, 0);
+        adapter.setOnItemClickListener((view1, position) -> requireActivity().runOnUiThread(() -> {
+            SharedPreferences pref = requireActivity().getSharedPreferences(AppConstants.PREFS, 0);
 
-                ProgressDialog progressBar = DisplayViewUI.displayProgress(requireActivity(), getString(R.string.XCC));
-                //send location
-                //Send location details to user
-                @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:MM a");
-                String dateSent = dateFormat.format(Calendar.getInstance().getTime());
+            ProgressDialog progressBar = DisplayViewUI.displayProgress(requireActivity(), getString(R.string.XCC));
+            //send location
+            //Send location details to user
+            @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:MM a");
+            String dateSent = dateFormat.format(Calendar.getInstance().getTime());
 
-                String getUserName = adapter.getItem(position).getName();
-                String getUserId = adapter.getItem(position).getId();
-                String getUserPhoto = adapter.getItem(position).getPhoto();
-                String name = MainActivity.userName, photo = MainActivity.userPhotoUrl, senderId = MainActivity.userId;
+            String getUserName = adapter.getItem(position).getName();
+            String getUserId = adapter.getItem(position).getId();
+            String getUserPhoto = adapter.getItem(position).getPhoto();
+            String name = MainActivity.userName, photo = MainActivity.userPhotoUrl, senderId = MainActivity.userId;
 
-                DisplayViewUI.displayAlertDialog(requireActivity(),
-                        getString(R.string.sndloc),
-                        MessageFormat.format(getString(R.string.qst), getUserName), getString(R.string.yes), getString(R.string.no), (dialogInterface, i) -> {
-                            if (i == -1) {
-                                // progressBar.show();
-                                String sharedLocation = name + " " + getString(R.string.shLoc) + " " + getString(R.string.withU);
-                                String locationReceived = getString(R.string.urLoc) + " " + getString(R.string.isShared) + " " + getUserName;
+            DisplayViewUI.displayAlertDialog(requireActivity(),
+                    getString(R.string.sndloc),
+                    MessageFormat.format(getString(R.string.qst), getUserName), getString(R.string.yes), getString(R.string.no), (dialogInterface, i) -> {
+                        if (i == -1) {
+                            // progressBar.show();
+                            String sharedLocation = name + " " + getString(R.string.shLoc) + " " + getString(R.string.withU);
+                            String locationReceived = getString(R.string.urLoc) + " " + getString(R.string.isShared) + " " + getUserName;
 
-                                //get location coordinates
-                                double latitude = Double.parseDouble(Double.toString(MainActivity.latitude));
-                                double longitude = Double.parseDouble(Double.toString(MainActivity.longitude));
-                                String url = "http://maps.google.com/maps?q=loc:" + latitude + "," + longitude + "&z=15";
+                            //get location coordinates
+                            double latitude = Double.parseDouble(Double.toString(MainActivity.latitude));
+                            double longitude = Double.parseDouble(Double.toString(MainActivity.longitude));
+                            String url = "http://maps.google.com/maps?q=loc:" + latitude + "," + longitude + "&z=15";
 
-                                //..location received from another user ..//
-                                Map<String, Object> fromUser = new HashMap<>();
-                                fromUser.put("location", locationReceived);
-                                fromUser.put("knownName", yourLocation);
-                                fromUser.put("url", url);
-                                fromUser.put("date", dateSent);
-                                fromUser.put("userName", "You");
-                                fromUser.put("photo", getUserPhoto);
-                                fromUser.put("latitude", latitude);
-                                fromUser.put("longitude", longitude);
-                                fromUser.put("timeStamp", GetTimeAgo.getTimeInMillis());
-                                fromUser.put("isSharingLocation", false);
+                            //..location received from another user ..//
+                            Map<String, Object> fromUser = new HashMap<>();
+                            fromUser.put("location", locationReceived);
+                            fromUser.put("knownName", yourLocation);
+                            fromUser.put("url", url);
+                            fromUser.put("date", dateSent);
+                            fromUser.put("userName", "You");
+                            fromUser.put("photo", getUserPhoto);
+                            fromUser.put("latitude", latitude);
+                            fromUser.put("longitude", longitude);
+                            fromUser.put("timeStamp", GetTimeAgo.getTimeInMillis());
+                            fromUser.put("isSharingLocation", false);
 
-                                //..location sent to ..(user who sent  will view this) //
-                                Map<String, Object> toReceiver = new HashMap<>();
-                                toReceiver.put("location", sharedLocation);
-                                toReceiver.put("knownName", yourLocation);
-                                toReceiver.put("url", url);
-                                toReceiver.put("date", dateSent);
-                                toReceiver.put("userName", name);
-                                toReceiver.put("latitude", latitude);
-                                toReceiver.put("longitude", longitude);
-                                toReceiver.put("timeStamp", GetTimeAgo.getTimeInMillis());
-                                toReceiver.put("photo", photo);
-                                toReceiver.put("isSharingLocation", true);
-
-
-                                String locationDbId = locationDbRef.push().getKey();
-                                assert locationDbId != null;
-
-                               /* locationDbRef.child(senderId).child(locationDbId).setValue(fromUser);
-                                locationDbRef.child(getUserId).child(locationDbId).setValue(toReceiver);
-    */
-                                //to cloud server
-                                locationCollectionReference.document(senderId).collection(senderId).document(getUserId).set(fromUser);
-                                locationCollectionReference.document(getUserId).collection(getUserId).document(senderId).set(toReceiver);
-
-                                //update contacts when location is shared
-                                friendsCollectionReference.document(senderId).collection(senderId).document(getUserId).update("isSharingLocation", true);
-                                //  friendsCollectionReference.document(getUserId).collection(getUserId).document(senderId).update("isSharingLocation", true);
+                            //..location sent to ..(user who sent  will view this) //
+                            Map<String, Object> toReceiver = new HashMap<>();
+                            toReceiver.put("location", sharedLocation);
+                            toReceiver.put("knownName", yourLocation);
+                            toReceiver.put("url", url);
+                            toReceiver.put("date", dateSent);
+                            toReceiver.put("userName", name);
+                            toReceiver.put("latitude", latitude);
+                            toReceiver.put("longitude", longitude);
+                            toReceiver.put("timeStamp", GetTimeAgo.getTimeInMillis());
+                            toReceiver.put("photo", photo);
+                            toReceiver.put("isSharingLocation", true);
 
 
-                                DisplayViewUI.displayToast(requireActivity(), getString(R.string.successFull));
+                            String locationDbId = locationDbRef.push().getKey();
+                            assert locationDbId != null;
 
-                                Bundle bundle = new Bundle();
-                                bundle.putBoolean(AppConstants.IS_LOCATION_SHARED, true);
-                                bundle.putString(AppConstants.USER_NAME, receiverName);
-                                bundle.putString(AppConstants.UID, receiverId);
-                                new ContactsFragment().setArguments(bundle);
+                           /* locationDbRef.child(senderId).child(locationDbId).setValue(fromUser);
+                            locationDbRef.child(getUserId).child(locationDbId).setValue(toReceiver);
+*/
+                            //to cloud server
+                            locationCollectionReference.document(senderId).collection(senderId).document(getUserId).set(fromUser);
+                            locationCollectionReference.document(getUserId).collection(getUserId).document(senderId).set(toReceiver);
 
-                                SharedPreferences.Editor shareLocationEditor = pref.edit();
-                                shareLocationEditor.putBoolean(AppConstants.IS_LOCATION_SHARED, true);
-                                shareLocationEditor.putString(AppConstants.USER_NAME, receiverName);
-                                shareLocationEditor.putString(AppConstants.UID, receiverId);
-                                shareLocationEditor.apply();
-
-
-                            } else if (i == -2) {
-                                dialogInterface.dismiss();
+                            //update contacts when location is shared
+                            friendsCollectionReference.document(senderId).collection(senderId).document(getUserId).update("isSharingLocation", true);
+                            //  friendsCollectionReference.document(getUserId).collection(getUserId).document(senderId).update("isSharingLocation", true);
 
 
-                            }
-                        });
+                            DisplayViewUI.displayToast(requireActivity(), getString(R.string.successFull));
+
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean(AppConstants.IS_LOCATION_SHARED, true);
+                            bundle.putString(AppConstants.USER_NAME, receiverName);
+                            bundle.putString(AppConstants.UID, receiverId);
+                            new ContactsFragment().setArguments(bundle);
+
+                            SharedPreferences.Editor shareLocationEditor = pref.edit();
+                            shareLocationEditor.putBoolean(AppConstants.IS_LOCATION_SHARED, true);
+                            shareLocationEditor.putString(AppConstants.USER_NAME, receiverName);
+                            shareLocationEditor.putString(AppConstants.UID, receiverId);
+                            shareLocationEditor.apply();
 
 
-            });
-        });
+                        } else if (i == -2) {
+                            dialogInterface.dismiss();
+
+
+                        }
+                    });
+
+
+        }));
 
     }
 

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
@@ -129,24 +130,6 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                 dismiss();
 
                 DisplayViewUI.displayToast(requireContext(), requireActivity().getString(R.string.addedUser));
-/*
-
-                    friendsCollectionReference.document(senderId).collection(senderId).document(id).set(to).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                friendsCollectionReference.document(id).collection(id).document(senderId).set(from);
-                                progressBar.dismiss();
-                                dismiss();
-
-                            } else {
-                                progressBar.dismiss();
-                                DisplayViewUI.displayToast(requireContext(), Objects.requireNonNull(task.getException()).getMessage());
-                            }
-                        }
-                    });
-*/
-
 
             } catch (Exception e) {
 
@@ -178,7 +161,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                         btnAddUser.setText(R.string.cancelRequest);
                         btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
                         btnAddUser.setBackgroundColor(requireActivity().getResources().getColor(R.color.colorRed));
-                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_baseline_cancel_24), null);
+                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_cancel_24), null);
 
                         // TODO: 8/14/2020 remove request sent
                         btnAddUser.setOnClickListener(view -> DisplayViewUI.displayToast(requireActivity(), "removing user"));
@@ -187,7 +170,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                         DisplayViewUI.displayToast(requireActivity(), response);
                         btnAddUser.setText(R.string.deleteUser);
                         btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.black));
-                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
+                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete), null);
                         // TODO: 8/14/2020 delete request sent
                         btnAddUser.setOnClickListener(view -> DisplayViewUI.displayToast(requireActivity(), "deleting user"));
 
@@ -197,7 +180,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                         Log.i(TAG, "Response: " + response);
                         btnAddUser.setText(R.string.delete);
                         btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
-                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
+                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete), null);
                         // TODO: 8/14/2020 remove request received
                         btnAddUser.setOnClickListener(view -> DisplayViewUI.displayToast(requireActivity(), "removing user"));
                         break;

@@ -256,7 +256,7 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
         }
 
         //display location sharing
-        void isSharingLocation(@NonNull boolean isSharingLocation) {
+        void isSharingLocation(boolean isSharingLocation) {
             if (!isSharingLocation) {
                 imgIsSharingLocation.setVisibility(View.VISIBLE);
                 imgIsSharingLocation.setImageDrawable(ContextCompat.getDrawable(layoutRequestReceivedBinding.getRoot().getContext(), R.drawable.redoffline));

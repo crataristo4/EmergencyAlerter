@@ -95,7 +95,8 @@
             android:padding="4dp"
             app:backgroundTint="@color/colorAsh"
             android:contentDescription="TODO"
-            app:srcCompat="@drawable/ic_send" />
+            app:srcCompat="@drawable/ic_send"
+            tools:ignore="ContentDescription" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

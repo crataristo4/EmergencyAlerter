@@ -258,46 +258,43 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void uploadAudioRecording(Uri uri) throws IOException {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+        runOnUiThread(() -> {
 
-                pd.show();
-                //upload audio to server
-                filePath.putFile(uri).continueWithTask(task -> {
-                    if (!task.isSuccessful()) {
+            pd.show();
+            //upload audio to server
+            filePath.putFile(uri).continueWithTask(task -> {
+                if (!task.isSuccessful()) {
+                    pd.dismiss();
+
+                }
+                return filePath.getDownloadUrl();
+
+            }).addOnSuccessListener(CommentsActivity.this, uri1 -> {
                         pd.dismiss();
+                        DisplayViewUI.displayToast(CommentsActivity.this, getString(R.string.successFull));
+
+                        Uri downLoadUri = Uri.parse(uri1.toString());
+                        assert downLoadUri != null;
+                        String url = downLoadUri.toString();
+
+                        Map<String, Object> uploadAudio = new HashMap<>();
+                        uploadAudio.put("userName", name);
+                        uploadAudio.put("url", url);
+                        uploadAudio.put("audio", "audio");
+                        uploadAudio.put("timeStamp", GetTimeAgo.getTimeInMillis());
+                        uploadAudio.put("messageDateTime", dateTime);
+
+                        commentsRef.add(uploadAudio);
 
                     }
-                    return filePath.getDownloadUrl();
 
-                }).addOnSuccessListener(CommentsActivity.this, uri1 -> {
-                            pd.dismiss();
-                            DisplayViewUI.displayToast(CommentsActivity.this, getString(R.string.successFull));
+            ).addOnFailureListener(CommentsActivity.this, e -> {
 
-                            Uri downLoadUri = Uri.parse(uri1.toString());
-                            assert downLoadUri != null;
-                            String url = downLoadUri.toString();
+                pd.dismiss();
+                DisplayViewUI.displayToast(CommentsActivity.this, Objects.requireNonNull(e.getMessage()));
 
-                            Map<String, Object> uploadAudio = new HashMap<>();
-                            uploadAudio.put("userName", name);
-                            uploadAudio.put("url", url);
-                            uploadAudio.put("audio", "audio");
-                            uploadAudio.put("timeStamp", GetTimeAgo.getTimeInMillis());
-                            uploadAudio.put("messageDateTime", dateTime);
+            });
 
-                            commentsRef.add(uploadAudio);
-
-                        }
-
-                ).addOnFailureListener(CommentsActivity.this, e -> {
-
-                    pd.dismiss();
-                    DisplayViewUI.displayToast(CommentsActivity.this, Objects.requireNonNull(e.getMessage()));
-
-                });
-
-            }
         });
 
 

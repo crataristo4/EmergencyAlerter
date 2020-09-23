@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -91,7 +92,7 @@ public class ContactsAdapter extends FirestoreRecyclerAdapter<RequestModel, Cont
 
                             return false;
                         }
-                    }).error(holder.layoutAddUserBinding.getRoot().getContext().getDrawable(R.drawable.photo))
+                    }).error(ContextCompat.getDrawable(holder.layoutAddUserBinding.getRoot().getContext(), R.drawable.photo))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.imageView);
         }

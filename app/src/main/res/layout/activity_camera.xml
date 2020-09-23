@@ -29,7 +29,7 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="@string/preview_description"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
 
             <!-- To display picture taken -->
             <ImageView
@@ -63,6 +63,7 @@
                 android:layout_marginEnd="@dimen/eightDp"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
+                style="?android:attr/buttonBarButtonStyle"
                 android:foreground="?attr/selectableItemBackground"
                 android:text="@string/btn_take_picture"
                 android:textColor="@android:color/white"
@@ -76,6 +77,7 @@
                 android:layout_marginStart="@dimen/eightDp"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
+                style="?android:attr/buttonBarButtonStyle"
                 android:foreground="?attr/selectableItemBackground"
                 android:text="@string/btn_record_video"
                 android:textColor="@android:color/white"

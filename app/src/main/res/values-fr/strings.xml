@@ -1,16 +1,11 @@
 <resources>
     <string name="app_name">Alerte d\'Urgence</string>
     <string name="title_home">Accueil</string>
-    <string name="title_dashboard">Tableau de Bord</string>
     <string name="title_alerts">Alertes</string>
     <string name="title_contacts">Contacts</string>
-    <string name="capture">Capture</string>
     <string name="recordAudio">Enregistrer l\'audio</string>
-    <string name="recordVideo">Enregistrer la video</string>
-    <string name="helpText">Trouvez-vous quelque chose suspecte?</string>
     <string name="cancel">Annulez</string>
     <string name="add">Ajouter</string>
-    <string name="action_settings">Parametres</string>
     <string name="preview_description">Les images et videos vues apparaitront ici</string>
     <string name="btn_take_picture">Prendre un photo</string>
     <string name="btn_record_video">Enregistrer un video</string>
@@ -25,15 +20,11 @@
     <string name="comments">Commentaires</string>
     <string name="vidRecCanceled">Enregistrement de la video annullee</string>
     <string name="sorryVidFailed">Desole! Echec d\'enregistrer la video</string>
-    <string name="title_activity_maps">Carte</string>
     <string name="reportSuccess">Information transmis avec succes</string>
-    <string name="play_and_pause_button">Bouton Jouer and Pause</string>
     <string name="delete">Supprimer</string>
     <string name="done">Termine</string>
-    <string name="reset">Reinitialiser</string>
     <string name="next">Suivant</string>
     <string name="back">Arriere</string>
-    <string name="log_in">Ouvrir la session</string>
     <string name="phoneNumber">Numero de Telephone</string>
     <string name="confirmCode">Confirmer le code</string>
     <string name="verify">Verifier</string>
@@ -45,14 +36,8 @@
     <string name="codeShort">Code trop court.</string>
     <string name="phoneReq">Numero de telephone obligatoire</string>
     <string name="verCode">Verifiez. Le code est envoye par sms!!!!!</string>
-    <string name="poi_name_hint">Nom</string>
-    <string name="poi_button_text">Creer</string>
-    <string name="title_activity_create_poi">Creer une activte POI</string>
     <string name="take_photo_text">"Lancer la camera "</string>
-    <string name="title_activity_point_of_interest_details">Details d\'activite de l\'endroit d\'interet</string>
     <string name="welcome">Bienvenue sur Dalilu</string>
-    <string name="completeProfile">Remplir le profil</string>
-    <string name="latitude_label">Latitude</string>
     <string name="welcomeNote">
         <![CDATA[
 
@@ -70,27 +55,11 @@
         <br>
         ]]>
     </string>
-    <string name="longitude_label">Longitude</string>
-    <string name="last_update_time_label">Date mise a jour de  la derniere localisation</string>
-    <string name="start_updates">Commencer la mise a jour</string>
-    <string name="stop_updates">Arreter la mise a jour</string>
-    <string name="location_settings_inadequate_warning">Les parametres de localisation sur l\'appareil ne sont pas corrects</string>
-    <string name="permission_denied_explanation">Autorisation etait refuse mais elle est necessaire pour l\'application …</string>
     <string name="permission_rationale">Autorisation de localisation est obligatoire pour reperer l\'activite sur la carte</string>
-    <string name="settings">Parametres</string>
     <string name="accountSetUp">Parametre de compte</string>
-    <string name="profile_picture">Photo de profil</string>
-    <string name="nameRequired">Nom obligatoire</string>
     <string name="enterName">Entrer le nom</string>
     <string name="save">Enregistrer</string>
-    <string name="firstName">Entrer le prenom</string>
-    <string name="lastName">Entrer le nom de famille</string>
-    <string name="about">Presentez vous brievement</string>
-    <string name="aboutYou">Sur vous</string>
     <string name="saveDetails">"Engeristrement des details. Attendez SVP. "</string>
-    <string name="abtReq">Champs obligatoire</string>
-    <string name="fNameReq">Le prenom est obligatoire</string>
-    <string name="lNameReq">Le nom de famille est obligatoire</string>
     <string name="successFull">Succes</string>
     <string name="continueSetUp">Continuez</string>
     <string name="grantPerm">Autorisation accordee</string>
@@ -99,23 +68,16 @@
     <string name="errMsg">Les parametres de localisation sont inexacts et ne peuvent pas…</string>
     <string name="fixIn">"Ils sont corriges ici. Dans les parametres. "</string>
     <string name="logOut">Se deconnecter</string>
-    <string name="loc">Localisation: \n</string>
-    <string name="dt">Date renseignee: \n</string>
     <string name="type_your_comments_here">Tapez vos commentaires ici.</string>
     <string name="upload">Retransmettez</string>
     <string name="reportAct">Rapportez une activite</string>
     <string name="editProfile">Editez le profil</string>
-    <string name="schUser">Recherchez un utilisateur</string>
     <string name="searchContact">Recherchez un contact</string>
     <string name="if_you_choose_not_to_provide_a_name_a_random_name_will_be_generated_for_you_as_a_user_name">"Si vous decidez de ne pas donner votre nom, l'application donnera un nom par defaut "</string>
     <string name="enterUserName">Entrez votre nom (optionel)</string>
     <string name="plsSlct">Choisissez une photo SVP</string>
     <string name="addingUser">Ajout de …</string>
-    <string name="added">Amis</string>
-    <string name="declined">Refuse</string>
-    <string name="new_request_from">Nouvelle demande de....</string>
     <string name="sendLocation">Envoyez votre localisation</string>
-    <string name="title_requests">Requetes</string>
     <string name="XCC">Envoi de details de localisation</string>
     <string name="sndloc">Envoiyez votre localisation</string>
     <string name="qst">Etes vous sur d\'envoyer les details de votre localisation</string>
@@ -125,15 +87,11 @@
     <string name="withU">"  Avec vous "</string>
     <string name="urLoc">"Vote localisation "</string>
     <string name="isShared">"est partagee avec "</string>
-    <string name="on">sur la plateforme</string>
     <string-array name="selectLanguage">
         <item>Please select language</item>
         <item>English</item>
         <item>French</item>
     </string-array>
-    <string name="notifs">Notification d\'alerte</string>
-    <string name="noNotifs">Notification d\'alerte non recue</string>
-    <string name="oneNotif">Notification d\'alerte recue</string>
     <string name="dcln">Refuser</string>
     <string name="acpt">Accepter</string>
     <string name="frnds">Amis</string>
@@ -149,6 +107,5 @@
     <string name="view">Vue</string>
     <string name="uploadingImage">Image en cours de transmission. Attendez SVP.</string>
     <string name="uploadingVideo">Video en cours de transmission. Attendez SVP</string>
-    <string name="declineRequest">Requete refusee</string>
     <string name="deleteUser">Supprimer utilisateur</string>
 </resources>
