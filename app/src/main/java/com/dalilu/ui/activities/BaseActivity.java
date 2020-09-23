@@ -206,40 +206,48 @@ public class BaseActivity extends AppCompatActivity {
             latitude = mCurrentLocation.getLatitude();
             longitude = mCurrentLocation.getLongitude();
 
-            try {
-                List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
-
-                if (addressList != null) {
-                    address = addressList.get(0).getAddressLine(0);
-                    state = addressList.get(0).getAdminArea();
-                    country = addressList.get(0).getCountryName();
-                    knownName = addressList.get(0).getFeatureName();
-                }
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            updateLocationIfSharing();
-
             Log.i(TAG, String.format(Locale.ENGLISH, "%s: %f", "lat",
                     mCurrentLocation.getLatitude()));
             Log.i(TAG, String.format(Locale.ENGLISH, "%s: %f", "lng",
                     mCurrentLocation.getLongitude()));
-            Log.i(TAG, String.format(Locale.ENGLISH, "%s: %s", "Address",
-                    address));
-            Log.i(TAG, String.format(Locale.ENGLISH, "%s: %s", "State",
-                    state));
-            Log.i(TAG, String.format(Locale.ENGLISH, "%s: %s", "Country",
-                    country));
 
-            Log.i(TAG, String.format(Locale.ENGLISH, "%s: %s", "Known Name",
-                    knownName));
+
+            //get location address
+            getLocation(mCurrentLocation);
+
+            //update users location if it is shared
+            updateLocationIfSharing();
 
 
         }
     }
+
+    void getLocation(@NonNull Location mLocation) {
+        try {
+            List<Address> addressList = geocoder.getFromLocation(mLocation.getLatitude(), mLocation.getLongitude(), 1);
+
+            if (addressList != null) {
+                address = addressList.get(0).getAddressLine(0);
+                state = addressList.get(0).getAdminArea();
+                country = addressList.get(0).getCountryName();
+                knownName = addressList.get(0).getFeatureName();
+
+                Log.i(TAG, String.format(Locale.ENGLISH, "%s: %f", "lat",
+                        mLocation.getLatitude()));
+                Log.i(TAG, String.format(Locale.ENGLISH, "%s: %f", "lng",
+                        mLocation.getLongitude()));
+                Log.i(TAG, String.format(Locale.ENGLISH, "%s: %s",
+                        "Known Name", knownName));
+
+
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * Uses a {@link com.google.android.gms.location.LocationSettingsRequest.Builder} to build
