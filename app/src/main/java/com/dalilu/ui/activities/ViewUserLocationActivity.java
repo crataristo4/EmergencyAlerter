@@ -107,7 +107,7 @@ public class ViewUserLocationActivity extends AppCompatActivity implements OnMap
             }
 
             map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            map.setMyLocationEnabled(true);
+           // map.setMyLocationEnabled(true);
             map.getUiSettings().setZoomControlsEnabled(true);
             map.getUiSettings().setZoomGesturesEnabled(true);
             map.getUiSettings().setCompassEnabled(true);
@@ -119,7 +119,7 @@ public class ViewUserLocationActivity extends AppCompatActivity implements OnMap
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, mapZoomLevel));
 
             map.setOnCameraMoveListener(() -> mapZoomLevel = map.getCameraPosition().zoom);
-            googleMap.clear();
+            //  googleMap.clear();
             if (name.equals("You")) {
                 map.addMarker(new MarkerOptions()
                         .title("Your: " + "current location")

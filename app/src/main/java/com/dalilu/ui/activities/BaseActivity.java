@@ -214,8 +214,6 @@ public class BaseActivity extends AppCompatActivity {
                     state = addressList.get(0).getAdminArea();
                     country = addressList.get(0).getCountryName();
                     knownName = addressList.get(0).getFeatureName();
-
-
                 }
 
 
@@ -377,53 +375,57 @@ public class BaseActivity extends AppCompatActivity {
 
 
     void updateLocationIfSharing() {
+        runOnUiThread(() -> {
+            friendsCollectionReference.document(userId)
+                    .collection(userId)
+                    .get().addOnSuccessListener(this, queryDocumentSnapshots -> {
 
-        friendsCollectionReference.document(userId)
-                .collection(userId)
-                .get().addOnSuccessListener(this, queryDocumentSnapshots -> {
+                for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
 
-            for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
+                    RequestModel data = ds.toObject(RequestModel.class);
 
-                RequestModel data = ds.toObject(RequestModel.class);
+                    boolean isLocationSharing = data.isSharingLocation();
+                    String name = data.getName();
+                    String idOfFriend = data.getId();
 
-                boolean isLocationSharing = data.isSharingLocation();
-                String name = data.getName();
-                String idOfFriend = data.getId();
-
-                Log.i(TAG,
-                        String.format("Sharing location with : %s isSharing: %s : id %s",
-                                name, isLocationSharing, idOfFriend));
-
-
-                if (isLocationSharing) {
-
-                    Map<String, Object> updateLocationMap = new HashMap<>();
-                    updateLocationMap.put("latitude", latitude);
-                    updateLocationMap.put("longitude", longitude);
-                    updateLocationMap.put("knownName", knownName);
-
-                    Log.i(TAG, "still sharing: ");
-                    locationCollectionReference.document(userId)
-                            .collection(userId)
-                            .document(idOfFriend).update(updateLocationMap);
-
-                    locationCollectionReference.document(idOfFriend)
-                            .collection(idOfFriend)
-                            .document(userId).update(updateLocationMap);
-
-                    Log.i(TAG, "Name: " + name + " isSharing: " + knownName);
+                    Log.i(TAG,
+                            String.format("Sharing location with : %s isSharing: %s : id %s",
+                                    name, isLocationSharing, idOfFriend));
 
 
-                } else {
+                    if (isLocationSharing) {
 
-                    Log.i(TAG, "not sharing: ");
+                        Map<String, Object> updateLocationMap = new HashMap<>();
+                        updateLocationMap.put("latitude", latitude);
+                        updateLocationMap.put("longitude", longitude);
+                        updateLocationMap.put("knownName", knownName);
+
+                        Log.i(TAG, "still sharing: ");
+                        locationCollectionReference.document(userId)
+                                .collection(userId)
+                                .document(idOfFriend).update(updateLocationMap);
+
+                        locationCollectionReference.document(idOfFriend)
+                                .collection(idOfFriend)
+                                .document(userId).update(updateLocationMap);
+
+                        Log.i(TAG, "Name: " + name + " isSharing: " + knownName);
+
+
+                    } else {
+
+                        Log.i(TAG, "not sharing: ");
+
+                    }
 
                 }
 
-            }
 
+            });
 
         });
+
+
     }
 
 }

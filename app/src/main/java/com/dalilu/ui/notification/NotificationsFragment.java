@@ -1,7 +1,7 @@
 package com.dalilu.ui.notification;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +18,9 @@ import com.dalilu.adapters.LocationSharingAdapter;
 import com.dalilu.databinding.FragmentNotificationsBinding;
 import com.dalilu.model.ShareLocation;
 import com.dalilu.ui.activities.MainActivity;
-import com.dalilu.ui.activities.ViewUserLocationActivity;
+import com.dalilu.ui.bottomsheets.UserLocation;
 import com.dalilu.utils.AppConstants;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -30,12 +29,12 @@ import com.google.firebase.firestore.Query;
 public class NotificationsFragment extends Fragment {
 
     FragmentNotificationsBinding fragmentNotificationsBinding;
-    private DatabaseReference locationDbRef;
     String id;
     private LocationSharingAdapter adapter;
     RecyclerView rv;
     Query query;
     private CollectionReference mCollectionReference;
+    private long mLastClickTime = 0;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -90,7 +89,25 @@ public class NotificationsFragment extends Fragment {
                 double lat = adapter.getItem(position).getLatitude();
                 double lng = adapter.getItem(position).getLongitude();
 
-                Intent viewUserData = new Intent(requireContext(), ViewUserLocationActivity.class);
+
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+                    return;
+                }
+
+                UserLocation userLocation = new UserLocation();
+                Bundle bundle = new Bundle();
+                bundle.putString(AppConstants.USER_NAME, name);
+                bundle.putString(AppConstants.KNOWN_LOCATION, knownLocation);
+                bundle.putString(AppConstants.USER_PHOTO_URL, userPhoto);
+                bundle.putLong(AppConstants.TIMESTAMP, timeStamp);
+                bundle.putDouble(AppConstants.LATITUDE, lat);
+                bundle.putDouble(AppConstants.LONGITUDE, lng);
+
+                userLocation.setArguments(bundle);
+                userLocation.setCancelable(false);
+                userLocation.show(getChildFragmentManager(), "location");
+
+               /* Intent viewUserData = new Intent(requireContext(), ViewUserLocationActivity.class);
                 viewUserData.putExtra(AppConstants.USER_NAME, name);
                 viewUserData.putExtra(AppConstants.KNOWN_LOCATION, knownLocation);
                 viewUserData.putExtra(AppConstants.USER_PHOTO_URL, userPhoto);
@@ -98,7 +115,7 @@ public class NotificationsFragment extends Fragment {
                 viewUserData.putExtra(AppConstants.LATITUDE, lat);
                 viewUserData.putExtra(AppConstants.LONGITUDE, lng);
 
-                startActivity(viewUserData);
+                startActivity(viewUserData);*/
             });
 
 

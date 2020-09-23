@@ -82,7 +82,7 @@ public class AlertItems extends BaseObservable {
         this.userName = userName;
     }
 
-
+    @Bindable
     public String getUrl() {
         return url;
     }
@@ -91,13 +91,6 @@ public class AlertItems extends BaseObservable {
         this.url = url;
     }
 
-    public String getAudioUrl() {
-        return audioUrl;
-    }
-
-    public void setAudioUrl(String audioUrl) {
-        this.audioUrl = audioUrl;
-    }
 
     public String getUserPhotoUrl() {
         return userPhotoUrl;
@@ -107,6 +100,7 @@ public class AlertItems extends BaseObservable {
         this.userPhotoUrl = userPhotoUrl;
     }
 
+    @Bindable
     public long getTimeStamp() {
         return (long) timeStamp;
     }
@@ -115,6 +109,7 @@ public class AlertItems extends BaseObservable {
         this.timeStamp = timeStamp;
     }
 
+    @Bindable
     public double getLatitude() {
         return latitude;
     }
@@ -123,6 +118,7 @@ public class AlertItems extends BaseObservable {
         this.latitude = latitude;
     }
 
+    @Bindable
     public double getLongitude() {
         return longitude;
     }
@@ -158,20 +154,5 @@ public class AlertItems extends BaseObservable {
         this.phoneNumber = phoneNumber;
     }
 
-    @Bindable
-    public String getStatus() {
-        return status;
-    }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public int getAudioLength() {
-        return audioLength;
-    }
-
-    public void setAudioLength(int audioLength) {
-        this.audioLength = audioLength;
-    }
 }
