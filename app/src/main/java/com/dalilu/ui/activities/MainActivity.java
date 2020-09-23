@@ -72,6 +72,7 @@ public class MainActivity extends BaseActivity implements
 
     // Tracks the bound state of the service.
     private boolean mBound = false;
+    int numberOfItems;
 
     // Monitors the state of the connection to the service.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -163,14 +164,15 @@ public class MainActivity extends BaseActivity implements
 
         BadgeDrawable badgeDrawableHome = navView.getOrCreateBadge(menuItemHome.getItemId());
         BadgeDrawable badgeDrawableNotification = navView.getOrCreateBadge(menuItemNotification.getItemId());
-        badgeDrawableNotification.setBackgroundColor(getResources().getColor(R.color.amber));
+        badgeDrawableNotification.setBackgroundColor(getResources().getColor(R.color.acceptGreen));
         BadgeDrawable badgeDrawableFriends = navView.getOrCreateBadge(menuItemFriends.getItemId());
         badgeDrawableFriends.setBackgroundColor(getResources().getColor(R.color.black));
 
 
         runOnUiThread(() -> {
+
             locationCollectionDbRef.document(userId).collection(userId).get().addOnCompleteListener(task -> {
-                int numberOfItems = task.getResult().size();
+                numberOfItems = task.getResult().size();
                 if (numberOfItems > 0)
                     badgeDrawableNotification.setNumber(numberOfItems);
             });
@@ -178,8 +180,9 @@ public class MainActivity extends BaseActivity implements
             alertsCollectionReference
                     .whereEqualTo("isSolved", false)
                     .get().addOnCompleteListener(task -> {
+                numberOfItems = task.getResult().size();
 
-                if (task.getResult().size() > 0)
+                if (numberOfItems > 0)
                     badgeDrawableHome.setNumber(task.getResult().size());
 
             });
@@ -187,7 +190,7 @@ public class MainActivity extends BaseActivity implements
             friendsCollectionReference.document(userId).collection(userId).get().addOnCompleteListener(task -> {
                 int numberOfItems = task.getResult().size();
                 if (numberOfItems > 0)
-                    badgeDrawableNotification.setNumber(numberOfItems);
+                    badgeDrawableFriends.setNumber(numberOfItems);
             });
 
 

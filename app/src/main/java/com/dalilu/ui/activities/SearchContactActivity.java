@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dalilu.R;
 import com.dalilu.adapters.ContactsAdapter;
+import com.dalilu.databinding.ActivitySearchContactBinding;
 import com.dalilu.model.RequestModel;
 import com.dalilu.ui.bottomsheets.PopUpAlerter;
 import com.dalilu.utils.AppConstants;
@@ -46,7 +47,7 @@ public class SearchContactActivity extends AppCompatActivity {
         requestDbRef = FirebaseDatabase.getInstance().getReference("Friends");
 
 
-        com.dalilu.databinding.ActivitySearchContactBinding activitySearchContactBinding = DataBindingUtil.setContentView(this, R.layout.activity_search_contact);
+        ActivitySearchContactBinding activitySearchContactBinding = DataBindingUtil.setContentView(this, R.layout.activity_search_contact);
         progressBar = activitySearchContactBinding.progressLoading;
         activitySearchContactBinding.imgBackBtn.setOnClickListener(view -> onBackPressed());
 
