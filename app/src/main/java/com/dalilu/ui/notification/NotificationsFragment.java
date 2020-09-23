@@ -94,6 +94,8 @@ public class NotificationsFragment extends Fragment {
                     return;
                 }
 
+                mLastClickTime = SystemClock.elapsedRealtime();
+
                 UserLocation userLocation = new UserLocation();
                 Bundle bundle = new Bundle();
                 bundle.putString(AppConstants.USER_NAME, name);
