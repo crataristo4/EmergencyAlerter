@@ -21,6 +21,7 @@ import com.dalilu.databinding.ActivityEditProfileBinding;
 import com.dalilu.model.AlertItems;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
+import com.dalilu.utils.GetTimeAgo;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,6 +35,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -49,7 +51,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private String phoneNumber;
     private String userPhotoUrl;
     private String uid, alertUserId, postId;
-    private static final String TAG = "EditProfileActivity";
+    private static final String TAG = "Edit-Profile";
     private Uri uri;
     private TextInputLayout txtUserName;
     String userName;
@@ -97,11 +99,16 @@ public class EditProfileActivity extends AppCompatActivity {
         //storage reference
         mStorageReference = FirebaseStorage.getInstance().getReference("user photos");
 
-
+        timeInThirtyDays = 2592000000L;
         //check and disable button for updating user profile
-        timeInThirtyDays = (long) 2.592e+9;
+        String timeIn30days = String.valueOf(TimeUnit.MILLISECONDS.toDays(timeInThirtyDays));
+        String timeUpdated = GetTimeAgo.getTimeAgo(timeStamp);
 
-        if (timeStamp < timeInThirtyDays) {
+        assert timeUpdated != null;
+        String[] split = timeUpdated.split("\\s");
+        int splitDay = Integer.parseInt(split[0]);
+
+        if (splitDay < Integer.parseInt(timeIn30days)) {
             activityEditProfileBinding.btnSave.setEnabled(false);
             Objects.requireNonNull(txtUserName.getEditText()).setError(getString(R.string.updateTime));
         } else {
@@ -146,6 +153,7 @@ public class EditProfileActivity extends AppCompatActivity {
         userName = Objects.requireNonNull(txtUserName.getEditText()).getText().toString();
         Map<String, Object> accountInfo = new HashMap<>();
         accountInfo.put("userName", userName);
+        accountInfo.put("timeStamp", GetTimeAgo.getTimeInMillis());
 
         //validations for user name
         if (!userName.trim().isEmpty()) {
@@ -189,23 +197,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
             });
 
-
-            //  onUpdateDone();
-
-
         }
-    }
-
-
-    void onUpdateDone() {
-        Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
-        intent.putExtra(AppConstants.UID, uid);
-        intent.putExtra(AppConstants.USER_NAME, userName);
-        intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
-        intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
-        startActivity(intent);
-        EditProfileActivity.this.finishAffinity();
-
     }
 
 
@@ -276,8 +268,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 //  usersCollection.document(uid).update(accountInfo);
 
                 DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.successFull));
-                //  onUpdateDone();
-
 
             }).addOnFailureListener(this, e -> {
                 progressDialog.dismiss();
@@ -379,6 +369,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 .putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl)
                 .putExtra(AppConstants.USER_NAME, userName)
                 .putExtra(AppConstants.UID, uid)
+                .putExtra(AppConstants.TIMESTAMP, timeStamp)
         );
         finishAffinity();
     }

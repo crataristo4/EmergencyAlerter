@@ -52,9 +52,9 @@ public class MainActivity extends BaseActivity implements
 
     private static final String TAG = "MainActivity";
     public static String userName, userPhotoUrl;
+    private long timeStamp;
     private ActivityMainBinding activityMainBinding;
     private CollectionReference alertsCollectionReference, locationCollectionDbRef, friendsCollectionReference;
-
     // Used in checking for runtime permissions.
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     /**
@@ -127,6 +127,7 @@ public class MainActivity extends BaseActivity implements
             userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
             userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
             phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
+            timeStamp = getUserDetailsIntent.getLongExtra(AppConstants.TIMESTAMP, 0);
 
 
         }
@@ -284,6 +285,7 @@ public class MainActivity extends BaseActivity implements
         intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
         intent.putExtra(AppConstants.USER_NAME, userName);
         intent.putExtra(AppConstants.UID, userId);
+        intent.putExtra(AppConstants.TIMESTAMP, timeStamp);
 
         startActivity(intent);
         finish();

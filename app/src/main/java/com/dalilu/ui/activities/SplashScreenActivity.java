@@ -15,7 +15,6 @@ import com.dalilu.databinding.ActivitySplashScreenBinding;
 import com.dalilu.ui.auth.RegisterPhoneNumberActivity;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
-import com.dalilu.utils.GetTimeAgo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -24,6 +23,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -74,7 +74,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                                         userPhotoUrl = Objects.requireNonNull(document.getString("userPhotoUrl"));
                                         userName = Objects.requireNonNull(document.getString("userName"));
                                         phoneNumber = Objects.requireNonNull(document.getString("phoneNumber"));
-                                        timeStamp = Objects.requireNonNull(document.getLong("timeStamp"));
+                                        timeStamp = (long) Objects.requireNonNull(document.get("timeStamp"));
 
                                         intent = new Intent(SplashScreenActivity.this, MainActivity.class);
                                         intent.putExtra(AppConstants.UID, uid);
@@ -83,7 +83,10 @@ public class SplashScreenActivity extends AppCompatActivity {
                                         intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
                                         intent.putExtra(AppConstants.TIMESTAMP, timeStamp);
 
-                                        Log.i(TAG, "startSplash: " + userName + phoneNumber + userPhotoUrl + GetTimeAgo.getTimeAgo(timeStamp));
+                                        String days = String.valueOf(TimeUnit.MILLISECONDS.toDays(timeStamp));
+
+                                        Log.i(TAG, "days--" + days);
+                                        Log.i(TAG, "timestamp--" + timeStamp);
 
                                     } else {
 
