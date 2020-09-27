@@ -15,6 +15,7 @@ import com.dalilu.databinding.ActivitySplashScreenBinding;
 import com.dalilu.ui.auth.RegisterPhoneNumberActivity;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
+import com.dalilu.utils.GetTimeAgo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -29,6 +30,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     Intent intent;
     private CollectionReference usersCollectionRef;
     private String uid, phoneNumber, userName, userPhotoUrl;
+    private long timeStamp;
     private static final String TAG = "SplashScreenActivity";
 
     @Override
@@ -68,17 +70,20 @@ public class SplashScreenActivity extends AppCompatActivity {
                                 if (task1.isSuccessful()) {
                                     DocumentSnapshot document = task1.getResult();
                                     if (document != null && document.exists()) {
+
                                         userPhotoUrl = Objects.requireNonNull(document.getString("userPhotoUrl"));
                                         userName = Objects.requireNonNull(document.getString("userName"));
                                         phoneNumber = Objects.requireNonNull(document.getString("phoneNumber"));
+                                        timeStamp = Objects.requireNonNull(document.getLong("timeStamp"));
 
                                         intent = new Intent(SplashScreenActivity.this, MainActivity.class);
                                         intent.putExtra(AppConstants.UID, uid);
                                         intent.putExtra(AppConstants.PHONE_NUMBER, phoneNumber);
                                         intent.putExtra(AppConstants.USER_NAME, userName);
                                         intent.putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl);
+                                        intent.putExtra(AppConstants.TIMESTAMP, timeStamp);
 
-                                        Log.i(TAG, "startSplash: " + userName + phoneNumber + userPhotoUrl);
+                                        Log.i(TAG, "startSplash: " + userName + phoneNumber + userPhotoUrl + GetTimeAgo.getTimeAgo(timeStamp));
 
                                     } else {
 

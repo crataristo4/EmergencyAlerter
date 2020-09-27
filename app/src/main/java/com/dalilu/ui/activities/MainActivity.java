@@ -136,17 +136,17 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void initViews() {
-       // faBsMenu = activityMainBinding.fabsMenu;
+        // faBsMenu = activityMainBinding.fabsMenu;
         BottomNavigationView navView = activityMainBinding.navView;
         Menu menu = navView.getMenu();
         MenuItem menuItemHome = menu.findItem(R.id.navigation_home);
         MenuItem menuItemFriends = menu.findItem(R.id.navigation_contacts);
         MenuItem menuItemNotification = menu.findItem(R.id.navigation_alerts);
 
+
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_alerts, R.id.navigation_home, R.id.navigation_contacts)
                 .build();
-
 
         new Handler().postDelayed(() -> {
             activityMainBinding.pbLoading.setVisibility(View.GONE);
@@ -159,7 +159,7 @@ public class MainActivity extends BaseActivity implements
 
             });
 
-        }, 10000);
+        }, 2000);
 
 
         BadgeDrawable badgeDrawableHome = navView.getOrCreateBadge(menuItemHome.getItemId());
@@ -168,7 +168,7 @@ public class MainActivity extends BaseActivity implements
         BadgeDrawable badgeDrawableFriends = navView.getOrCreateBadge(menuItemFriends.getItemId());
         badgeDrawableFriends.setBackgroundColor(getResources().getColor(R.color.black));
 
-
+        //set up number of items on menus
         runOnUiThread(() -> {
 
             locationCollectionDbRef.document(userId).collection(userId).get().addOnCompleteListener(task -> {
@@ -195,6 +195,7 @@ public class MainActivity extends BaseActivity implements
 
 
         });
+
 
     }
 

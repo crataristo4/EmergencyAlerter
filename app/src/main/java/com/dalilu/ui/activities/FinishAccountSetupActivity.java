@@ -20,6 +20,7 @@ import com.dalilu.R;
 import com.dalilu.ui.bottomsheets.WelcomeNoticeBottomSheet;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
+import com.dalilu.utils.GetTimeAgo;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -151,6 +152,7 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
                 accountInfo.put("userName", finalUserName);
                 accountInfo.put("phoneNumber", phoneNumber);
                 accountInfo.put("userId", uid);
+                accountInfo.put("timeStamp", GetTimeAgo.getTimeInMillis());
 
                 usersCollection.document(uid).set(accountInfo);
 

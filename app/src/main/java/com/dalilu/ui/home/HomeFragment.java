@@ -113,7 +113,6 @@ public class HomeFragment extends Fragment {
 //group data by images
                 if (ds.getData().containsKey("image")) {
 
-
                     arrayList.add(new AlertItems(AppConstants.IMAGE_TYPE,
                             userName,
                             userPhotoUrl,

@@ -119,5 +119,7 @@
 
     <string name="location_updated">Location Updated: %1$s</string>
     <string name="locationStoped">Location sharing stopped</string>
+    <string name="userName">user name</string>
+    <string name="updateTime">you can only update user name after 30 days</string>
 
 </resources>

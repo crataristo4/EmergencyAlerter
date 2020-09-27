@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -16,11 +17,14 @@ import androidx.databinding.DataBindingUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dalilu.R;
+import com.dalilu.databinding.ActivityEditProfileBinding;
+import com.dalilu.model.AlertItems;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -39,21 +43,24 @@ public class EditProfileActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     private CircleImageView imgUserPhoto;
     private StorageReference mStorageReference;
-    private CollectionReference usersCollection;
-    private String uid;
+    long timeInThirtyDays;
+    private CollectionReference usersCollection, alertsCollection;
     private String getImageUri;
     private String phoneNumber;
     private String userPhotoUrl;
+    private String uid, alertUserId, postId;
     private static final String TAG = "EditProfileActivity";
     private Uri uri;
     private TextInputLayout txtUserName;
     String userName;
+    private long timeStamp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        com.dalilu.databinding.ActivityEditProfileBinding activityEditProfileBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile);
+        ActivityEditProfileBinding activityEditProfileBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile);
         setSupportActionBar(activityEditProfileBinding.toolBarCompleteProfile);
+
 
         imgUserPhoto = activityEditProfileBinding.imgUploadPhoto;
         txtUserName = activityEditProfileBinding.txtUserName;
@@ -64,6 +71,7 @@ public class EditProfileActivity extends AppCompatActivity {
             userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
             uid = getUserDetailsIntent.getStringExtra(AppConstants.UID);
             phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
+            timeStamp = getUserDetailsIntent.getLongExtra(AppConstants.TIMESTAMP, 0);
 
             Objects.requireNonNull(txtUserName.getEditText()).setText(userName);
             Objects.requireNonNull(activityEditProfileBinding.txtPhone.getEditText()).setText(phoneNumber);
@@ -79,14 +87,29 @@ public class EditProfileActivity extends AppCompatActivity {
 
         progressDialog = DisplayViewUI.displayProgress(this, getString(R.string.saveDetails));
 
-        activityEditProfileBinding.btnSave.setOnClickListener(this::updateName);
-
         activityEditProfileBinding.fabUploadPhoto.setOnClickListener(view -> DisplayViewUI.openGallery(EditProfileActivity.this));
         imgUserPhoto.setOnClickListener(view -> DisplayViewUI.openGallery(EditProfileActivity.this));
 
+        //users
         usersCollection = FirebaseFirestore.getInstance().collection("Users");
+        //alerts
+        alertsCollection = FirebaseFirestore.getInstance().collection("Alerts");
         //storage reference
         mStorageReference = FirebaseStorage.getInstance().getReference("user photos");
+
+
+        //check and disable button for updating user profile
+        timeInThirtyDays = (long) 2.592e+9;
+
+        if (timeStamp < timeInThirtyDays) {
+            activityEditProfileBinding.btnSave.setEnabled(false);
+            Objects.requireNonNull(txtUserName.getEditText()).setError(getString(R.string.updateTime));
+        } else {
+            //user can update profile
+            activityEditProfileBinding.btnSave.setOnClickListener(this::updateName);
+
+        }
+
     }
 
     @Override
@@ -121,14 +144,49 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void updateName(View view) {
         userName = Objects.requireNonNull(txtUserName.getEditText()).getText().toString();
-        //  progressDialog.show();
+        Map<String, Object> accountInfo = new HashMap<>();
+        accountInfo.put("userName", userName);
+
         //validations for user name
         if (!userName.trim().isEmpty()) {
             runOnUiThread(() -> {
+
+                alertsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
+
+                    assert queryDocumentSnapshots != null;
+                    for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
+
+                        AlertItems alertItems = ds.toObject(AlertItems.class);
+                        postId = ds.getId();
+                        alertUserId = alertItems.getUserId();
+
+                        //user has made a post
+                        //compare id and update the name of the user who made the post
+                        if (uid.equals(alertUserId)) {
+
+                            alertsCollection.document(postId).update(accountInfo);
+                            usersCollection.document(uid).update(accountInfo);
+
+                            Log.i(TAG, "user name updated: " + userName + " on post id" + ds.getId());
+
+
+                        } else {
+
+                            //user has not made any post
+                            //update only users details
+                            usersCollection.document(uid).update(accountInfo);
+
+                        }
+
+
+                    }
+
+
+                });
+
+
                 DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.successFull));
-                Map<String, Object> accountInfo = new HashMap<>();
-                accountInfo.put("userName", userName);
-                usersCollection.document(uid).update(accountInfo);
+
             });
 
 
@@ -153,7 +211,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void uploadFile() throws IOException {
         progressDialog.show();
-
+        Map<String, Object> accountInfo = new HashMap<>();
         Bitmap bitmap;
         //push to db
         if (uri != null) {
@@ -179,11 +237,43 @@ public class EditProfileActivity extends AppCompatActivity {
                 Uri downLoadUri = Uri.parse(uri.toString());
                 assert downLoadUri != null;
                 getImageUri = downLoadUri.toString();
-
-                Map<String, Object> accountInfo = new HashMap<>();
                 accountInfo.put("userPhotoUrl", getImageUri);
 
-                usersCollection.document(uid).update(accountInfo);
+                alertsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
+
+                    assert queryDocumentSnapshots != null;
+                    for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
+
+                        AlertItems alertItems = ds.toObject(AlertItems.class);
+                        postId = ds.getId();
+                        alertUserId = alertItems.getUserId();
+
+                        //user has made a post
+                        //compare id and update the name of the user who made the post
+                        if (uid.equals(alertUserId)) {
+
+                            alertsCollection.document(postId).update(accountInfo);
+                            usersCollection.document(uid).update(accountInfo);
+
+                            Log.i(TAG, "user photo updated: " + getImageUri + " on post id" + ds.getId());
+
+
+                        } else {
+
+                            //user has not made any post
+                            //update only users details
+                            usersCollection.document(uid).update(accountInfo);
+                            Log.i(TAG, "user photo updated: " + getImageUri);
+
+
+                        }
+
+
+                    }
+
+
+                });
+                //  usersCollection.document(uid).update(accountInfo);
 
                 DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.successFull));
                 //  onUpdateDone();
@@ -246,6 +336,36 @@ public class EditProfileActivity extends AppCompatActivity {
         } else {
             DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.plsSlct));
         }
+    }
+
+
+    private void checkIfUserIdExist() {
+        runOnUiThread(() -> {
+            alertsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
+
+                assert queryDocumentSnapshots != null;
+                for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
+
+                    AlertItems alertItems = ds.toObject(AlertItems.class);
+                    postId = ds.getId();
+                    alertUserId = alertItems.getUserId();
+
+                    Log.i(TAG, "user id: " + alertUserId);
+
+                    if (uid.equals(alertUserId)) {
+
+                        Map<String, Object> accountInfo = new HashMap<>();
+                        accountInfo.put("userName", userName);
+                        alertsCollection.document(postId).update(accountInfo);
+
+                    }
+
+
+                }
+
+
+            });
+        });
     }
 
     @Override

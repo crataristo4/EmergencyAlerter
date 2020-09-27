@@ -3,6 +3,8 @@ package com.dalilu.model;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
+import com.google.firebase.firestore.Exclude;
+
 public class AlertItems extends BaseObservable {
     public String userName;
     public String url;
@@ -16,6 +18,7 @@ public class AlertItems extends BaseObservable {
     public String phoneNumber;
     public String status;
     public String id;
+    public String userId;
     public int type, audioLength;
 
     public AlertItems() {
@@ -152,6 +155,15 @@ public class AlertItems extends BaseObservable {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    @Exclude
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
 

@@ -82,16 +82,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/eightDp"
-                            android:background="@drawable/textinputbackground"
                             android:textColorHint="@color/black"
+                            app:helperTextTextColor="@color/black"
                             app:counterEnabled="true"
                             app:counterMaxLength="10"
-                            app:helperTextTextColor="@color/white">
+                            app:hintTextColor="@color/black">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/enterName"
+                                android:hint="@string/userName"
                                 android:inputType="textCapWords"
                                 android:maxLength="10"
                                 android:selectAllOnFocus="true"
@@ -107,7 +107,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/eightDp"
-                            android:background="@drawable/textinputbackground"
                             android:textColorHint="@color/black"
                             app:helperTextTextColor="@color/white">
 
