@@ -17,6 +17,7 @@ import androidx.databinding.DataBindingUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dalilu.R;
+import com.dalilu.databinding.ActivityFinishAccountSetupBinding;
 import com.dalilu.ui.bottomsheets.WelcomeNoticeBottomSheet;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
@@ -30,6 +31,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -47,7 +49,7 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        com.dalilu.databinding.ActivityFinishAccountSetupBinding activityFinishAccountSetupBinding = DataBindingUtil.setContentView(this, R.layout.activity_finish_account_setup);
+        ActivityFinishAccountSetupBinding activityFinishAccountSetupBinding = DataBindingUtil.setContentView(this, R.layout.activity_finish_account_setup);
 
         imgUserPhoto = activityFinishAccountSetupBinding.imgUploadPhoto;
         txtUserName = activityFinishAccountSetupBinding.txtUserName;
@@ -59,11 +61,30 @@ public class FinishAccountSetupActivity extends AppCompatActivity {
         }
 
         activityFinishAccountSetupBinding.btnSave.setOnClickListener(view -> {
-            try {
-                uploadFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            DisplayViewUI.displayAlertDialogMsg(this,
+                    getString(R.string.ntice),
+                    MessageFormat.format(getString(R.string.bfr) +
+                                    getString(R.string.tkn) +
+                                    getString(R.string.rcd) +
+                                    getString(R.string.orUse),
+                            Objects.requireNonNull(txtUserName.getEditText()).getText()),
+                    getString(R.string.cancel),
+                    getString(R.string.proCeed),
+                    (dialogInterface, i) -> {
+
+                        if (i == -1) {
+                            try {
+                                uploadFile();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        } else if (i == -2) {
+                            dialogInterface.dismiss();
+                        }
+
+                    });
+
         });
 
 //select or capture photo
