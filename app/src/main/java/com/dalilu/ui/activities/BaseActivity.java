@@ -34,6 +34,8 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -42,13 +44,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 public class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
     /**
      * Time when the location was updated represented as a String.
      */
-    public static String knownName, state, country, phoneNumber, userId, address;
+    public static String knownName, state, country, phoneNumber, address;
     public static double latitude, longitude;
     private static Object mContext;
     /**
@@ -83,7 +86,11 @@ public class BaseActivity extends AppCompatActivity {
     private Boolean mRequestingLocationUpdates;
     public static Geocoder geocoder;
     private CollectionReference friendsCollectionReference, locationCollectionReference;
-
+    public static String uid, userName, userPhotoUrl;
+    public static long timeStamp;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
+    private CollectionReference usersCollectionRef;
 
     public static Context getAppContext() {
         return (Context) mContext;
@@ -92,37 +99,27 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser != null) {
-
-            userId = firebaseUser.getUid();
-            Log.i("onCreate: ", userId);
-
-
-        }
-
-
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
         friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
         locationCollectionReference = FirebaseFirestore.getInstance().collection("Locations");
 
+        loadUserData();
 
-        runOnUiThread(() -> {
-            mContext = getApplicationContext();
-            mRequestingLocationUpdates = false;
+        mContext = getApplicationContext();
+        mRequestingLocationUpdates = false;
 
-            // Update values using data stored in the Bundle.
-            updateValuesFromBundle(savedInstanceState);
+        // Update values using data stored in the Bundle.
+        updateValuesFromBundle(savedInstanceState);
 
-            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-            mSettingsClient = LocationServices.getSettingsClient(this);
-            geocoder = new Geocoder(this, Locale.getDefault());
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mSettingsClient = LocationServices.getSettingsClient(this);
+        geocoder = new Geocoder(this, Locale.getDefault());
 
-            if (checkPermissions()) {
-                createLocationCallback();
-                createLocationRequest();
-            }
-        });
+        if (checkPermissions()) {
+            createLocationCallback();
+            createLocationRequest();
+        }
 
     }
 
@@ -231,7 +228,6 @@ public class BaseActivity extends AppCompatActivity {
 
         }
     }
-
 
 
     /**
@@ -368,8 +364,8 @@ public class BaseActivity extends AppCompatActivity {
 
 
     void updateLocationIfSharing() {
-        runOnUiThread(() -> friendsCollectionReference.document(userId)
-                .collection(userId)
+        runOnUiThread(() -> friendsCollectionReference.document(uid)
+                .collection(uid)
                 .get().addOnSuccessListener(this, queryDocumentSnapshots -> {
 
                     for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
@@ -393,13 +389,13 @@ public class BaseActivity extends AppCompatActivity {
                             updateLocationMap.put("knownName", knownName);
 
                             Log.i(TAG, "still sharing: ");
-                            locationCollectionReference.document(userId)
-                                    .collection(userId)
+                            locationCollectionReference.document(uid)
+                                    .collection(uid)
                                     .document(idOfFriend).update(updateLocationMap);
 
                             locationCollectionReference.document(idOfFriend)
                                     .collection(idOfFriend)
-                                    .document(userId).update(updateLocationMap);
+                                    .document(uid).update(updateLocationMap);
 
                             Log.i(TAG, "Name: " + name + " isSharing: " + knownName);
 
@@ -417,5 +413,47 @@ public class BaseActivity extends AppCompatActivity {
 
 
     }
+
+    //loads users details to be used by all activities
+    void loadUserData() {
+        runOnUiThread(() -> {
+            if (firebaseUser != null) {
+
+                uid = firebaseUser.getUid();
+                phoneNumber = firebaseUser.getPhoneNumber();
+
+                usersCollectionRef = FirebaseFirestore.getInstance().collection("Users");
+
+                usersCollectionRef.get().addOnCompleteListener(task -> {
+
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().getDocuments().isEmpty()) {
+                            DocumentReference usersDocDbRef = usersCollectionRef.document(uid);
+
+                            usersDocDbRef.get().addOnCompleteListener(task1 -> {
+
+                                if (task1.isSuccessful()) {
+                                    DocumentSnapshot document = task1.getResult();
+                                    if (document != null && document.exists()) {
+
+                                        userPhotoUrl = Objects.requireNonNull(document.getString("userPhotoUrl"));
+                                        userName = Objects.requireNonNull(Objects.requireNonNull(document).getString("userName"));
+                                        //   phoneNumber = Objects.requireNonNull(document.getString("phoneNumber"));
+                                        timeStamp = (long) Objects.requireNonNull(document.get("timeStamp"));
+
+                                        Log.i(TAG, "User details : " + userName + " timestamp" + timeStamp);
+
+                                    }
+
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
+    }
+
 
 }

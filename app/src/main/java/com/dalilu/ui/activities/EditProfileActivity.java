@@ -67,24 +67,20 @@ public class EditProfileActivity extends AppCompatActivity {
         imgUserPhoto = activityEditProfileBinding.imgUploadPhoto;
         txtUserName = activityEditProfileBinding.txtUserName;
 
-        Intent getUserDetailsIntent = getIntent();
-        if (getUserDetailsIntent != null) {
-            userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
-            userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
-            uid = getUserDetailsIntent.getStringExtra(AppConstants.UID);
-            phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
-            timeStamp = getUserDetailsIntent.getLongExtra(AppConstants.TIMESTAMP, 0);
+        userName = BaseActivity.userName;
+        userPhotoUrl = BaseActivity.userPhotoUrl;
+        uid = BaseActivity.uid;
+        phoneNumber = BaseActivity.phoneNumber;
+        timeStamp = BaseActivity.timeStamp;
 
-            Objects.requireNonNull(txtUserName.getEditText()).setText(userName);
-            Objects.requireNonNull(activityEditProfileBinding.txtPhone.getEditText()).setText(phoneNumber);
+        Objects.requireNonNull(txtUserName.getEditText()).setText(userName);
+        Objects.requireNonNull(activityEditProfileBinding.txtPhone.getEditText()).setText(phoneNumber);
 
-            runOnUiThread(() -> Glide.with(EditProfileActivity.this)
-                    .load(userPhotoUrl)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .error(R.drawable.photo)
-                    .into(imgUserPhoto));
-
-        }
+        runOnUiThread(() -> Glide.with(EditProfileActivity.this)
+                .load(userPhotoUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .error(R.drawable.photo)
+                .into(imgUserPhoto));
 
 
         progressDialog = DisplayViewUI.displayProgress(this, getString(R.string.saveDetails));
@@ -199,7 +195,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
         }
     }
-
 
     private void uploadFile() throws IOException {
         progressDialog.show();
@@ -327,7 +322,6 @@ public class EditProfileActivity extends AppCompatActivity {
             DisplayViewUI.displayToast(EditProfileActivity.this, getString(R.string.plsSlct));
         }
     }
-
 
     private void checkIfUserIdExist() {
         runOnUiThread(() -> {

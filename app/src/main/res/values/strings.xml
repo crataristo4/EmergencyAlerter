@@ -116,7 +116,7 @@
     <string name="enter_6_digit_code">Enter 6-digit code</string>
     <string name="wrong_number">Wrong number?</string>
     <string name="launch_activity">Report activity</string>
-
+    <string name="launch_activity_disabled">Report activity disabled</string>
     <string name="location_updated">Location Updated: %1$s</string>
     <string name="locationStoped">Location sharing stopped</string>
     <string name="userName">user name</string>
@@ -124,8 +124,9 @@
     <string name="proCeed">Proceed</string>
     <string name="ntice">Notice</string>
     <string name="bfr">Before you proceed ,</string>
-    <string name="tkn">\" please note that you can only update your user name {0} after 30 days.\"</string>
+    <string name="tkn"> please note that you can only update your user name {0} after 30 days.</string>
     <string name="rcd">\nWe recommend you use the random name generated to stay anonymous</string>
-    <string name="orUse">\" or use a suitable name that can help friends easily find you.\"</string>
+    <string name="orUse"> or use a suitable name that can help friends easily find you.</string>
+    <string name="scDsb">Search disabled</string>
 
 </resources>

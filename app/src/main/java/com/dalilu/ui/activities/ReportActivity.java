@@ -34,9 +34,13 @@ import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.CameraUtils;
 import com.dalilu.utils.DisplayViewUI;
 import com.dalilu.utils.GetTimeAgo;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.karumi.dexter.Dexter;
@@ -81,6 +85,8 @@ public class ReportActivity extends BaseActivity {
     ConstraintLayout constraintLayout;
     ConnectivityManager connectivityManager;
     NetworkInfo networkInfo;
+    private CollectionReference usersCollectionRef;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,50 +94,46 @@ public class ReportActivity extends BaseActivity {
         activityReportBinding = DataBindingUtil.setContentView(this, R.layout.activity_report);
         setSupportActionBar(activityReportBinding.toolBarReport);
         constraintLayout = activityReportBinding.constrainReport;
+        usersCollectionRef = FirebaseFirestore.getInstance().collection("Users");
+
 
         connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         networkInfo = (connectivityManager).getActiveNetworkInfo();
 
         addressBuilder = new StringBuilder();
 
-        Intent getUserDetailsIntent = getIntent();
-        if (getUserDetailsIntent != null) {
-            userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
-            userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
-            userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
-            phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
+        userName = BaseActivity.userName;
+        userPhotoUrl = BaseActivity.userPhotoUrl;
+        userId = BaseActivity.uid;
+        phoneNumber = BaseActivity.phoneNumber;
 
-            Log.i(TAG, "onCreate: " + userName + userPhotoUrl + userId + phoneNumber);
+        Log.i(TAG, "onCreate: " + userName + userPhotoUrl + userId + phoneNumber);
 
 
 //get location details from Main activity
-            address = MainActivity.address;
-            state = MainActivity.state;
-            country = MainActivity.country;
-            knownName = MainActivity.knownName;
-            latitude = MainActivity.latitude;
-            longitude = MainActivity.longitude;
-            Log.i("onCreate: ", "tags from Main::" + state + " " + country + " " + knownName);
+        address = MainActivity.address;
+        state = MainActivity.state;
+        country = MainActivity.country;
+        knownName = MainActivity.knownName;
+        latitude = MainActivity.latitude;
+        longitude = MainActivity.longitude;
+        Log.i("onCreate: ", "tags from Main::" + state + " " + country + " " + knownName);
 
 
-            // if location details from Main is not found try again and get details from Base
-            if (address == null && state == null && country == null && knownName == null) {
+        // if location details from Main is not found try again and get details from Base
+        if (address == null && state == null && country == null && knownName == null) {
 
-                address = BaseActivity.address;
-                state = BaseActivity.state;
-                country = BaseActivity.country;
-                knownName = BaseActivity.knownName;
+            address = BaseActivity.address;
+            state = BaseActivity.state;
+            country = BaseActivity.country;
+            knownName = BaseActivity.knownName;
 
-                latitude = BaseActivity.latitude;
-                longitude = BaseActivity.longitude;
-                Log.i("onCreate: ", "Tags from Base-- " + longitude + " ... " + latitude + "tags::--" + knownName + " " + country + " " + state);
-
-
-            }
+            latitude = BaseActivity.latitude;
+            longitude = BaseActivity.longitude;
+            Log.i("onCreate: ", "Tags from Base-- " + longitude + " ... " + latitude + "tags::--" + knownName + " " + country + " " + state);
 
 
         }
-
 
         StorageReference imageStorageRef = FirebaseStorage.getInstance().getReference().child("alerts");
         filePath = imageStorageRef.child(UUID.randomUUID().toString());
@@ -638,12 +640,7 @@ public class ReportActivity extends BaseActivity {
     }
 
     void gotoMain() {
-        startActivity(new Intent(this, MainActivity.class)
-                .putExtra(AppConstants.PHONE_NUMBER, phoneNumber)
-                .putExtra(AppConstants.USER_PHOTO_URL, userPhotoUrl)
-                .putExtra(AppConstants.USER_NAME, userName)
-                .putExtra(AppConstants.UID, userId)
-        );
+        startActivity(new Intent(this, MainActivity.class));
         finishAffinity();
     }
 
@@ -663,7 +660,34 @@ public class ReportActivity extends BaseActivity {
             latitude = LocationUpdatesService.lat;
             longitude = LocationUpdatesService.lng;
         }
+        if (userName == null || userPhotoUrl == null) {
+
+            usersCollectionRef.get().addOnCompleteListener(this::onComplete);
+        }
+
 
     }
 
+    private void onComplete(Task<QuerySnapshot> task) {
+        if (task.isSuccessful()) {
+            if (!task.getResult().getDocuments().isEmpty()) {
+                DocumentReference usersDocDbRef = usersCollectionRef.document(uid);
+
+                usersDocDbRef.get().addOnCompleteListener(task1 -> {
+
+                    if (task1.isSuccessful()) {
+                        DocumentSnapshot document = task1.getResult();
+                        if (document != null && document.exists()) {
+
+                            userPhotoUrl = Objects.requireNonNull(document.getString("userPhotoUrl"));
+                            userName = Objects.requireNonNull(Objects.requireNonNull(document).getString("userName"));
+                            Log.i(TAG, "User details : " + userName + " photo" + userPhotoUrl);
+
+                        }
+
+                    }
+                });
+            }
+        }
+    }
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_photo_camera"
+        android:shortcutDisabledMessage="@string/launch_activity_disabled"
+        android:shortcutId="report"
+        android:shortcutLongLabel="@string/launch_activity"
+        android:shortcutShortLabel="@string/launch_activity"
+        tools:targetApi="n_mr1">
+
+        <intent
+
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.dalilu.ui.activities.ReportActivity"
+            android:targetPackage="com.dalilu" />
+
+
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:shortcutDisabledMessage="@string/scDsb"
+        android:shortcutId="search"
+        android:shortcutLongLabel="@string/searchContact"
+        android:shortcutShortLabel="@string/searchContact"
+        tools:targetApi="n_mr1">
+
+        <intent
+
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.dalilu.ui.activities.SearchContactActivity"
+            android:targetPackage="com.dalilu" />
+
+
+    </shortcut>
+
+    <!-- Specify more shortcuts here. -->
+</shortcuts>

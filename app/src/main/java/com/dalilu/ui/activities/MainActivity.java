@@ -120,17 +120,11 @@ public class MainActivity extends BaseActivity implements
         locationCollectionDbRef = FirebaseFirestore.getInstance().collection("Locations");
         friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
 
-
-        Intent getUserDetailsIntent = getIntent();
-        if (getUserDetailsIntent != null) {
-            userName = getUserDetailsIntent.getStringExtra(AppConstants.USER_NAME);
-            userPhotoUrl = getUserDetailsIntent.getStringExtra(AppConstants.USER_PHOTO_URL);
-            userId = getUserDetailsIntent.getStringExtra(AppConstants.UID);
-            phoneNumber = getUserDetailsIntent.getStringExtra(AppConstants.PHONE_NUMBER);
-            timeStamp = getUserDetailsIntent.getLongExtra(AppConstants.TIMESTAMP, 0);
-
-
-        }
+        userName = BaseActivity.userName;
+        userPhotoUrl = BaseActivity.userPhotoUrl;
+        userId = BaseActivity.uid;
+        phoneNumber = BaseActivity.phoneNumber;
+        timeStamp = BaseActivity.timeStamp;
 
         initViews();
 

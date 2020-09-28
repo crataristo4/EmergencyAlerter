@@ -25,7 +25,7 @@ import com.bumptech.glide.request.target.Target;
 import com.dalilu.R;
 import com.dalilu.databinding.LayoutAddUserBinding;
 import com.dalilu.model.RequestModel;
-import com.dalilu.ui.activities.MainActivity;
+import com.dalilu.ui.activities.BaseActivity;
 import com.dalilu.utils.DisplayViewUI;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -57,7 +57,7 @@ public class ContactsAdapter extends FirestoreRecyclerAdapter<RequestModel, Cont
 
         DocumentSnapshot ds = getSnapshots().getSnapshot(position);
         String id = ds.getId();
-        String userId = MainActivity.userId;
+        String userId = BaseActivity.uid;
 
         //check if the searched id is equal to the current user
         if (userId.equals(id)) {
