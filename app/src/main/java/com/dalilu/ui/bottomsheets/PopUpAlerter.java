@@ -21,7 +21,7 @@ import com.bumptech.glide.Glide;
 import com.dalilu.R;
 import com.dalilu.databinding.PopUpAlerterBottomSheetBinding;
 import com.dalilu.model.RequestModel;
-import com.dalilu.ui.activities.MainActivity;
+import com.dalilu.ui.activities.BaseActivity;
 import com.dalilu.utils.AppConstants;
 import com.dalilu.utils.DisplayViewUI;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -80,7 +80,6 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         btnAddUser = popUpAlerterBottomSheetBinding.btnAddUser;
 
         DatabaseReference friendsDbCheck = FirebaseDatabase.getInstance().getReference().child("Friends");
-        DatabaseReference friendsDbRef = FirebaseDatabase.getInstance().getReference("Friends");
         friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
 
         Bundle getUserDetailsBundle = getArguments();
@@ -90,7 +89,6 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
             id = getUserDetailsBundle.getString(AppConstants.UID);
             photoUrl = getUserDetailsBundle.getString(AppConstants.USER_PHOTO_URL);
             phoneNumber = getUserDetailsBundle.getString(AppConstants.PHONE_NUMBER);
-            String response = getUserDetailsBundle.getString(AppConstants.RESPONSE);
 
             txtName.setText(name);
             Glide.with(requireActivity()).load(photoUrl).into(imgPhoto);
@@ -99,10 +97,10 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
 
 
         //sender details
-        String senderName = MainActivity.userName;
-        String senderId = MainActivity.userId;
-        String senderPhotoUrl = MainActivity.userPhotoUrl;
-        String senderPhoneNumber = MainActivity.phoneNumber;
+        String senderName = BaseActivity.userName;
+        String senderId = BaseActivity.uid;
+        String senderPhotoUrl = BaseActivity.userPhotoUrl;
+        String senderPhoneNumber = BaseActivity.phoneNumber;
 
         //receiver
         Map<String, Object> from = new HashMap<>();
@@ -125,6 +123,20 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
 
         btnAddUser.setOnClickListener(view -> {
             try {
+
+                if (view.getTag().equals(R.string.cancelRequest)) {
+                    Log.i(TAG, "cancelling request");
+
+
+                } else if (view.getTag().equals(R.string.deleteUser)) {
+                    Log.i(TAG, "deleting request");
+
+                } else if (view.getTag().equals(R.string.delete)) {
+                    Log.i(TAG, "removing request");
+
+                }
+
+
                 friendsCollectionReference.document(senderId).collection(senderId).document(id).set(to);
                 friendsCollectionReference.document(id).collection(id).document(senderId).set(from);
                 dismiss();
@@ -144,7 +156,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         //1. check friends db
         //2. check the senders and receivers node respectively
         //3. check the response and update the UI
-        Query query = friendsCollectionReference.document(senderId).collection(senderId).document(senderId).collection(id);
+        Query query = friendsCollectionReference.document(senderId).collection(senderId);
 
         query.addSnapshotListener((value, error) -> {
 
@@ -158,101 +170,50 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                         //change add user btn to cancel request
                         Log.i(TAG, "Response: " + response);
 
+                        btnAddUser.setTag(R.string.cancelRequest);
                         btnAddUser.setText(R.string.cancelRequest);
                         btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
                         btnAddUser.setBackgroundColor(requireActivity().getResources().getColor(R.color.colorRed));
                         btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_cancel_24), null);
 
-                        // TODO: 8/14/2020 remove request sent
-                        btnAddUser.setOnClickListener(view -> DisplayViewUI.displayToast(requireActivity(), "removing user"));
+
                         break;
                     case "friends":
                         DisplayViewUI.displayToast(requireActivity(), response);
                         btnAddUser.setText(R.string.deleteUser);
+                        btnAddUser.setTag(R.string.deleteUser);
                         btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.black));
                         btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete), null);
                         // TODO: 8/14/2020 delete request sent
-                        btnAddUser.setOnClickListener(view -> DisplayViewUI.displayToast(requireActivity(), "deleting user"));
+                        /*if (Objects.equals(btnAddUser.getText().toString(), R.string.deleteUser)){
+                            btnAddUser.setOnClickListener(view -> DisplayViewUI.displayToast(requireContext(), "deleting user"));
+                            Log.i(TAG, "deleting user");
+
+                        }*/
 
                         break;
                     case "received":
                         DisplayViewUI.displayToast(requireActivity(), response);
                         Log.i(TAG, "Response: " + response);
                         btnAddUser.setText(R.string.delete);
+                        btnAddUser.setTag(R.string.delete);
                         btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
                         btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete), null);
                         // TODO: 8/14/2020 remove request received
-                        btnAddUser.setOnClickListener(view -> DisplayViewUI.displayToast(requireActivity(), "removing user"));
+                        // TODO: 8/14/2020 delete request sent
+                        /*if (Objects.equals(btnAddUser.getText().toString(), R.string.deleteUser)){
+                            btnAddUser.setOnClickListener(view -> DisplayViewUI.displayToast(requireContext(), "removing user"));
+
+                        }*/
                         break;
+
+                    default:
+                        btnAddUser.setTag(R.string.add);
                 }
 
             }
 
         });
-
-
-       /* friendsDbCheck.child(senderId).child(id).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    String response = (String) snapshot.child("response").getValue();
-
-                    Log.i("Response", "Response: " + response);
-                    assert response != null;
-                    if (response.equals("sent")) {
-                        //change add user btn to cancel request
-                        btnAddUser.setText(R.string.cancelRequest);
-                        btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.colorRed));
-                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_baseline_cancel_24), null);
-                    } else if (response.equals("friends")) {
-//change add user btn to delete request
-                        btnAddUser.setText(R.string.delete);
-                        btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.white));
-                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_delete), null);
-
-                    }*//*else {
-                        //change add user btn to accept  request
-                        btnAddUser.setText(R.string.acpt);
-                        btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.acceptGreen));
-                        btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_check_black_24dp), null);
-
-                    }*//*
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-*/
-
-       /* friendsDbCheck.child(id).child(senderId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                String response = (String) snapshot.child("response").getValue();
-                assert  response != null;
-
-                Log.i(TAG, "response: " + response);
-
-                if (response.equals("received")){
-                    Log.i(TAG, "response: " + response);
-                    //change add user btn to accept  request
-                    btnAddUser.setText(R.string.acpt);
-                    btnAddUser.setTextColor(requireActivity().getResources().getColor(R.color.acceptGreen));
-                    btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, requireActivity().getDrawable(R.drawable.ic_check_black_24dp), null);
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-*/
 
 
     }
@@ -260,5 +221,10 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 }

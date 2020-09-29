@@ -1,6 +1,8 @@
 package com.dalilu.adapters;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,8 +96,8 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
 
         if (holder.btnDecline.getText().toString().equals(holder.layoutRequestReceivedBinding.getRoot().getResources().getString(R.string.cancelRequest))) {
             holder.btnDecline.setOnClickListener(view -> DisplayViewUI.displayAlertDialog(view.getContext(),
-                    "Decline", "Are you sure you want to cancel request to " + name,
-                    " Yes", "No",
+                    view.getContext().getString(R.string.dcln), view.getContext().getString(R.string.cancelRqst) + name,
+                    view.getContext().getString(R.string.yes), view.getContext().getString(R.string.no),
                     (dialogInterface, i) -> {
                         if (i == -1) {
 
@@ -110,8 +112,8 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
                     }));
         } else if (holder.btnDecline.getText().toString().equals(holder.layoutRequestReceivedBinding.getRoot().getResources().getString(R.string.dcln))) {
             holder.btnDecline.setOnClickListener(view -> DisplayViewUI.displayAlertDialog(view.getContext(),
-                    "Decline", "Are you sure you want to decline " + name,
-                    " Yes", "No",
+                    view.getContext().getString(R.string.declin), view.getContext().getString(R.string.sureDcl) + name,
+                    view.getContext().getString(R.string.yes), view.getContext().getString(R.string.no),
                     (dialogInterface, i) -> {
                         if (i == -1) {
 
@@ -152,6 +154,28 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
                         }
                     }));
         }
+
+        holder.imgDelete.setOnClickListener(view -> DisplayViewUI.displayAlertDialog(view.getContext(),
+                view.getContext().getString(R.string.rmUser), view.getContext().getString(R.string.sure) + name,
+                view.getContext().getString(R.string.yesDel), view.getContext().getString(R.string.cancel),
+                (dialogInterface, i) -> {
+                    if (i == -1) {
+                        ProgressDialog progressDialog = DisplayViewUI.displayProgress(view.getContext(), view.getContext().getString(R.string.dltUser));
+                        progressDialog.show();
+                        //remove document id for receiver
+                        //  friendsCollectionReference.document(receiverId).collection(receiverId).document(id).update(response, declined);
+                        //completely delete user from both friends
+                        friendsCollectionReference.document(id).collection(id).document(receiverId).delete();
+                        friendsCollectionReference.document(receiverId).collection(receiverId).document(id).delete();
+
+                        new Handler().postDelayed(progressDialog::dismiss, 3000);
+
+
+                    } else if (i == -2) {
+                        dialogInterface.dismiss();
+                    }
+
+                }));
 
     }
 

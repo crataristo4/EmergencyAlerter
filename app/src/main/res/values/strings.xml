@@ -128,5 +128,12 @@
     <string name="rcd">\nWe recommend you use the random name generated to stay anonymous</string>
     <string name="orUse"> or use a suitable name that can help friends easily find you.</string>
     <string name="scDsb">Search disabled</string>
+    <string name="dltUser">Deleting user...</string>
+    <string name="rmUser">Remove user</string>
+    <string name="yesDel">Yes Delete</string>
+    <string name="sure">\"Are you sure you want to delete \"</string>
+    <string name="declin">Decline</string>
+    <string name="sureDcl">\"Are you sure you want to decline \"</string>
+    <string name="cancelRqst">\"Are you sure you want to cancel request to \"</string>
 
 </resources>

@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
@@ -41,7 +40,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.graphics.Bitmap.CompressFormat;
 
-public class EditProfileActivity extends AppCompatActivity {
+public class EditProfileActivity extends BaseActivity {
     ProgressDialog progressDialog;
     private CircleImageView imgUserPhoto;
     private StorageReference mStorageReference;
@@ -324,32 +323,30 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void checkIfUserIdExist() {
-        runOnUiThread(() -> {
-            alertsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
+        runOnUiThread(() -> alertsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
 
-                assert queryDocumentSnapshots != null;
-                for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
+            assert queryDocumentSnapshots != null;
+            for (QueryDocumentSnapshot ds : queryDocumentSnapshots) {
 
-                    AlertItems alertItems = ds.toObject(AlertItems.class);
-                    postId = ds.getId();
-                    alertUserId = alertItems.getUserId();
+                AlertItems alertItems = ds.toObject(AlertItems.class);
+                postId = ds.getId();
+                alertUserId = alertItems.getUserId();
 
-                    Log.i(TAG, "user id: " + alertUserId);
+                Log.i(TAG, "user id: " + alertUserId);
 
-                    if (uid.equals(alertUserId)) {
+                if (uid.equals(alertUserId)) {
 
-                        Map<String, Object> accountInfo = new HashMap<>();
-                        accountInfo.put("userName", userName);
-                        alertsCollection.document(postId).update(accountInfo);
-
-                    }
-
+                    Map<String, Object> accountInfo = new HashMap<>();
+                    accountInfo.put("userName", userName);
+                    alertsCollection.document(postId).update(accountInfo);
 
                 }
 
 
-            });
-        });
+            }
+
+
+        }));
     }
 
     @Override

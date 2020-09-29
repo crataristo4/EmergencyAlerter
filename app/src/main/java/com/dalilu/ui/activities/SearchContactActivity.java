@@ -1,5 +1,6 @@
 package com.dalilu.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -135,6 +136,11 @@ public class SearchContactActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        gotoMain();
+    }
+
+    void gotoMain() {
+        startActivity(new Intent(this, MainActivity.class));
+        finishAffinity();
     }
 }

@@ -57,6 +57,7 @@
             android:drawablePadding="@dimen/eightDp"
             android:padding="@dimen/eightDp"
             android:text="@string/add"
+            android:tag="@string/add"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/black"
