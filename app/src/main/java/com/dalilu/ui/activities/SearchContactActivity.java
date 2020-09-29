@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +27,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-public class SearchContactActivity extends BaseActivity {
+public class SearchContactActivity extends AppCompatActivity {
     private CollectionReference usersDbReF;
     private ContactsAdapter adapter;
     ProgressBar progressBar;
@@ -143,4 +144,6 @@ public class SearchContactActivity extends BaseActivity {
         startActivity(new Intent(this, MainActivity.class));
         finishAffinity();
     }
+
+
 }
