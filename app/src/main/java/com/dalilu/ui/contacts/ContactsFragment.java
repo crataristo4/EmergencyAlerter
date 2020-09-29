@@ -29,8 +29,6 @@ import com.dalilu.utils.GetTimeAgo;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -51,7 +49,6 @@ public class ContactsFragment extends Fragment {
     private FragmentContactsBinding fragmentContactsBinding;
     RecyclerView rv;
     private CollectionReference friendsCollectionReference, locationCollectionReference;
-    private DatabaseReference locationDbRef;
     // private RequestAdapter adapter;
     private FriendRequestAdapter adapter;
     String receiverName;
@@ -140,10 +137,6 @@ public class ContactsFragment extends Fragment {
                             toReceiver.put("photo", photo);
                             toReceiver.put("isSharingLocation", true);
 
-
-                            String locationDbId = locationDbRef.push().getKey();
-                            assert locationDbId != null;
-
                            /* locationDbRef.child(senderId).child(locationDbId).setValue(fromUser);
                             locationDbRef.child(getUserId).child(locationDbId).setValue(toReceiver);
 */
@@ -181,6 +174,7 @@ public class ContactsFragment extends Fragment {
 
         }));
 
+
     }
 
     void initViews() {
@@ -197,8 +191,6 @@ public class ContactsFragment extends Fragment {
         progressBar = fragmentContactsBinding.progressLoading;
         friendsCollectionReference = FirebaseFirestore.getInstance().collection("Friends");
         locationCollectionReference = FirebaseFirestore.getInstance().collection("Locations");
-        locationDbRef = FirebaseDatabase.getInstance().getReference("Locations");
-
 
     }
 
@@ -217,16 +209,6 @@ public class ContactsFragment extends Fragment {
             adapter = new FriendRequestAdapter(options);
             rv.setAdapter(adapter);
 
-           /* adapter.setOnItemClickListener((view1, position) -> {
-                receiverId = adapter.getItem(position).getId();
-                receiverName = adapter.getItem(position).getUserName();
-                receiverPhotoUrl = adapter.getItem(position).getUserPhotoUrl();
-                receiverPhoneNumber = adapter.getItem(position).getPhoneNumber();
-
-                //todo send location to user
-
-
-            });*/
         });
 
 

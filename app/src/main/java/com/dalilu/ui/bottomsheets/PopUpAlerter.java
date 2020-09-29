@@ -1,6 +1,5 @@
 package com.dalilu.ui.bottomsheets;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -24,7 +23,6 @@ import com.dalilu.databinding.PopUpAlerterBottomSheetBinding;
 import com.dalilu.model.RequestModel;
 import com.dalilu.ui.activities.BaseActivity;
 import com.dalilu.utils.AppConstants;
-import com.dalilu.utils.DisplayViewUI;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -41,6 +39,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
     private String id;
     private String phoneNumber;
     private String photoUrl;
+    String senderId;
     private AppCompatButton btnAddUser;
     private CollectionReference friendsCollectionReference;
     ConstraintLayout constraintLayout;
@@ -72,8 +71,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
     }
 
     private void initViews() {
-        ProgressDialog progressBar = DisplayViewUI.displayProgress(requireActivity(), getString(R.string.addingUser));
-
+        //ProgressDialog progressBar = DisplayViewUI.displayProgress(requireActivity(), getString(R.string.addingUser));
         TextView txtName = popUpAlerterBottomSheetBinding.txtName;
         ImageView imgPhoto = popUpAlerterBottomSheetBinding.imgPhoto;
         btnAddUser = popUpAlerterBottomSheetBinding.btnAddUser;
@@ -95,7 +93,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         }
         //sender details
         String senderName = BaseActivity.userName;
-        String senderId = BaseActivity.uid;
+        senderId = BaseActivity.uid;
         String senderPhotoUrl = BaseActivity.userPhotoUrl;
         String senderPhoneNumber = BaseActivity.phoneNumber;
 
@@ -119,14 +117,10 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
 
         btnAddUser.setOnClickListener(view -> {
             try {
-
-
                 friendsCollectionReference.document(senderId).collection(senderId).document(id).set(to);
                 friendsCollectionReference.document(id).collection(id).document(senderId).set(from);
                 //  DisplayViewUI.displaySnackBar(constraintLayout,"Request sent to " + name);
                 new Handler().postDelayed(this::dismiss, 2000);
-
-                // DisplayViewUI.displayToast(requireActivity(), getString(R.string.addedUser));
 
             } catch (Exception e) {
 
@@ -152,9 +146,6 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
 
                 switch (response) {
                     case "sent":
-                        //change add user btn to cancel request
-                        Log.i(TAG, "Response: " + response);
-
                         btnAddUser.setTag(R.string.cancelRequest);
                         btnAddUser.setText(R.string.cancelRequest);
                         btnAddUser.setTextColor(requireContext().getResources().getColor(R.color.white));
@@ -163,6 +154,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
 
                         if (btnAddUser.getTag().equals(R.string.cancelRequest)) {
                             btnAddUser.setOnClickListener(view -> {
+                                deleteOrRemoveUser();
                                 Log.i(TAG, "cancelling request");
 
                             });
@@ -177,10 +169,10 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                         btnAddUser.setTag(R.string.deleteUser);
                         btnAddUser.setTextColor(requireContext().getResources().getColor(R.color.black));
                         btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete), null);
-                        // TODO: 8/14/2020 delete request sent
-
+                        // Delete user from friends
                         if (btnAddUser.getTag().equals(R.string.deleteUser)) {
                             btnAddUser.setOnClickListener(view -> {
+                                deleteOrRemoveUser();
                                 Log.i(TAG, "deleting request");
 
                             });
@@ -194,10 +186,11 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
                         btnAddUser.setTag(R.string.delete);
                         btnAddUser.setTextColor(requireContext().getResources().getColor(R.color.white));
                         btnAddUser.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete), null);
-                        // TODO: 8/14/2020 remove request received
-                        // TODO: 8/14/2020 delete request sent
+                        //  remove request received
+                        //  delete request sent
                         if (btnAddUser.getTag().equals(R.string.delete)) {
                             btnAddUser.setOnClickListener(view -> {
+                                deleteOrRemoveUser();
                                 Log.i(TAG, "removing request");
 
                             });
@@ -211,6 +204,12 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         });
 
 
+    }
+
+    void deleteOrRemoveUser() {
+        friendsCollectionReference.document(id).collection(id).document(senderId).delete();
+        friendsCollectionReference.document(senderId).collection(senderId).document(id).delete();
+        new Handler().postDelayed(this::dismiss, 2000);
     }
 
 }

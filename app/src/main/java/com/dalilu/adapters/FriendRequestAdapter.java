@@ -36,12 +36,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel, FriendRequestAdapter.RequestViewHolder> {
     private static FriendRequestAdapter.onItemClickListener onItemClickListener;
 
-    /**
-     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
-     * FirestoreRecyclerOptions} for configuration options.
-     *
-     * @param options
-     */
+
     public FriendRequestAdapter(@NonNull FirestoreRecyclerOptions<RequestModel> options) {
         super(options);
     }
