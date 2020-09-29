@@ -99,7 +99,7 @@ public class ContactsFragment extends Fragment {
             String getUserName = adapter.getItem(position).getName();
             String getUserId = adapter.getItem(position).getId();
             String getUserPhoto = adapter.getItem(position).getPhoto();
-            String name = MainActivity.userName, photo = MainActivity.userPhotoUrl, senderId = MainActivity.userId;
+            String name = BaseActivity.userName, photo = BaseActivity.userPhotoUrl, senderId = BaseActivity.uid;
 
             DisplayViewUI.displayAlertDialog(requireActivity(),
                     getString(R.string.sndloc),
