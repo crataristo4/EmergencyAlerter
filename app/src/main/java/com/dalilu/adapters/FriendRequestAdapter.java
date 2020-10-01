@@ -153,7 +153,7 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<RequestModel,
         }
 
         holder.imgDelete.setOnClickListener(view -> DisplayViewUI.displayAlertDialog(view.getContext(),
-                view.getContext().getString(R.string.rmUser), view.getContext().getString(R.string.sure) + name,
+                view.getContext().getString(R.string.rmUser), view.getContext().getString(R.string.sure) + " " + name + " ?",
                 view.getContext().getString(R.string.yesDel), view.getContext().getString(R.string.cancel),
                 (dialogInterface, i) -> {
                     if (i == -1) {

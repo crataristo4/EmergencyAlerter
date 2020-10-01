@@ -51,8 +51,6 @@ public class ContactsFragment extends Fragment {
     private CollectionReference friendsCollectionReference, locationCollectionReference;
     // private RequestAdapter adapter;
     private FriendRequestAdapter adapter;
-    String receiverName;
-    String receiverId;
     String id;
     String yourLocation;
     double latitude, longitude;
@@ -78,7 +76,6 @@ public class ContactsFragment extends Fragment {
             latitude = BaseActivity.latitude;
             longitude = BaseActivity.longitude;
         }
-
 
         initViews();
         // requireActivity().runOnUiThread(this::loadData);
@@ -151,18 +148,6 @@ public class ContactsFragment extends Fragment {
 
                             DisplayViewUI.displayToast(requireActivity(), getString(R.string.successFull));
 
-                            Bundle bundle = new Bundle();
-                            bundle.putBoolean(AppConstants.IS_LOCATION_SHARED, true);
-                            bundle.putString(AppConstants.USER_NAME, receiverName);
-                            bundle.putString(AppConstants.UID, receiverId);
-                            new ContactsFragment().setArguments(bundle);
-
-                            SharedPreferences.Editor shareLocationEditor = pref.edit();
-                            shareLocationEditor.putBoolean(AppConstants.IS_LOCATION_SHARED, true);
-                            shareLocationEditor.putString(AppConstants.USER_NAME, receiverName);
-                            shareLocationEditor.putString(AppConstants.UID, receiverId);
-                            shareLocationEditor.apply();
-
 
                         } else if (i == -2) {
                             dialogInterface.dismiss();
@@ -170,7 +155,6 @@ public class ContactsFragment extends Fragment {
 
                         }
                     });
-
 
         }));
 

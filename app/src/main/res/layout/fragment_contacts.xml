@@ -19,6 +19,7 @@
             android:descendantFocusability="beforeDescendants"
             android:focusable="true"
             android:queryHint="@string/searchContact"
+            android:visibility="gone"
             android:showDividers="beginning"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
