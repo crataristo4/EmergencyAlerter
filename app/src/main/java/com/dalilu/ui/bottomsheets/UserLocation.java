@@ -117,7 +117,7 @@ public class UserLocation extends BottomSheetDialogFragment implements OnMapRead
             //  googleMap.clear();
             if (name.equals("You")) {
                 map.addMarker(new MarkerOptions()
-                        .title("Your: " + "last location shared")
+                        .title("Your last location shared")
                         .snippet(location)
                         .position(latLng)).showInfoWindow();
             } else {
