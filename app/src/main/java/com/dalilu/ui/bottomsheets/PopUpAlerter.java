@@ -2,7 +2,6 @@ package com.dalilu.ui.bottomsheets;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,21 +12,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
 import com.bumptech.glide.Glide;
 import com.dalilu.R;
 import com.dalilu.databinding.PopUpAlerterBottomSheetBinding;
-import com.dalilu.model.RequestModel;
 import com.dalilu.ui.activities.BaseActivity;
 import com.dalilu.utils.AppConstants;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -137,6 +133,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
         //3. check the response and update the UI
         Query query = friendsCollectionReference.document(senderId).collection(senderId);
 
+/*
         query.addSnapshotListener((value, error) -> {
 
             assert value != null;
@@ -202,6 +199,7 @@ public class PopUpAlerter extends BottomSheetDialogFragment {
             }
 
         });
+*/
 
 
     }
